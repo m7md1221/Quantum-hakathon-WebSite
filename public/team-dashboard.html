@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Dashboard - Quantum Hackathon</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Team Dashboard</h1>
+      <p>Manage your project submission</p>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h2>Submission Status</h2>
+        <div id="status">
+          <p>Loading...</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Quick Actions</h2>
+        <a href="upload-project.html" class="btn btn-block btn-success" style="margin-bottom: 10px;">
+          Upload Project
+        </a>
+        <button id="logout" class="btn btn-block btn-secondary">Logout</button>
+      </div>
+    </div>
+  </div>
+  <script src="team.js"></script>
+</body>
+</html>

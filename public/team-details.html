@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Details - Quantum Hackathon</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Team Details</h1>
+      <p>Detailed evaluation breakdown</p>
+    </div>
+
+    <div id="loading">Loading team details...</div>
+
+    <div id="team-info" style="display: none;">
+      <div class="card">
+        <h2 id="team-name"></h2>
+        <div class="grid grid-2">
+          <div>
+            <p><strong>Hall:</strong> <span id="team-hall"></span></p>
+            <p><strong>Status:</strong> <span id="team-status"></span></p>
+          </div>
+          <div>
+            <p><strong>Submitted:</strong> <span id="submitted-at"></span></p>
+            <p><strong>Average Score:</strong> <span id="average-score"></span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Judge Evaluations</h2>
+        <div id="evaluations-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Detailed Scores by Criterion</h2>
+        <div id="criteria-breakdown"></div>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="admin-dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+  <script src="team-details.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+const token = localStorage.getItem('token');
+
+if (!token) {
+  window.location.href = 'login.html';
+}
+
+// Function to validate token
+async function validateToken() {
+  try {
+    const response = await fetch('/api/judge/teams', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // First validate token
+  const isValidToken = await validateToken();
+  if (!isValidToken) {
+    localStorage.clear();
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    // Get hall info
+    const hallResponse = await fetch('/api/judge/teams', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!hallResponse.ok) {
+      // Handle authentication errors
+      if (hallResponse.status === 401) {
+        localStorage.clear();
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const errorData = await hallResponse.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(errorData.message || 'Failed to load teams');
+    }
+
+    const teams = await hallResponse.json();
+
+    // Extract hall from first team (assuming all teams are from same hall)
+    const hall = teams.length > 0 ? teams[0].hall || 'Unknown' : 'No teams assigned';
+    document.getElementById('hall').textContent = hall;
+
+    // Display teams
+    const teamsContainer = document.getElementById('teams-container');
+    const loadingDiv = document.getElementById('teams-loading');
+
+    if (teams.length === 0) {
+      loadingDiv.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No teams assigned to your hall yet.</p>';
+    } else {
+      loadingDiv.style.display = 'none';
+      teamsContainer.style.display = 'grid';
+
+      teams.forEach(team => {
+        const teamCard = document.createElement('div');
+        teamCard.className = 'judge-card';
+        teamCard.innerHTML = `
+          <h3>${team.name}</h3>
+          <p><strong>Status:</strong> ${team.submitted_at ? '<span style="color: var(--success-color);">Submitted</span>' : '<span style="color: var(--warning-color);">Pending</span>'}</p>
+          ${team.submitted_at ? `<p><strong>Submitted:</strong> ${new Date(team.submitted_at).toLocaleDateString()}</p>` : ''}
+          <button onclick="evaluateTeam(${team.id})" class="btn btn-block btn-success" style="margin-top: 15px;">
+            Evaluate Team
+          </button>
+        `;
+        teamsContainer.appendChild(teamCard);
+      });
+    }
+  } catch (error) {
+    console.error('Error loading teams:', error);
+    document.getElementById('teams-loading').innerHTML = `
+      <div class="message error">Failed to load teams. Please check your connection and try again.</div>
+    `;
+  }
+});
+
+function evaluateTeam(teamId) {
+  window.location.href = `evaluate-team.html?teamId=${teamId}`;
+}
+
+document.getElementById('logout').addEventListener('click', () => {
+  localStorage.clear();
+  window.location.href = 'login.html';
+});

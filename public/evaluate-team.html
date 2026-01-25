@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluate Team - Quantum Hackathon</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Evaluate Team</h1>
+      <p id="team-name">Loading...</p>
+    </div>
+
+    <div class="card" style="max-width: 700px;">
+      <form id="evaluationForm">
+        <h3 style="margin-bottom: 20px; color: var(--primary-color);">Evaluation Criteria</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 0.9rem;">Rate each criterion from 0 to 10</p>
+        
+        <!-- Problem & Importance (15%) -->
+        <div class="form-group">
+          <label for="problem_importance">
+            Problem & Importance <span style="color: var(--primary-color); font-weight: 600;">(15%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              How significant is the problem being addressed?
+            </small>
+          </label>
+          <input type="number" id="problem_importance" name="problem_importance" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <!-- Use of AI / Quantum Computing (15%) -->
+        <div class="form-group">
+          <label for="ai_quantum_use">
+            Use of AI / Quantum Computing <span style="color: var(--primary-color); font-weight: 600;">(15%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              How effectively are AI or Quantum technologies utilized?
+            </small>
+          </label>
+          <input type="number" id="ai_quantum_use" name="ai_quantum_use" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <!-- UN SDGs (10%) -->
+        <div class="form-group">
+          <label for="sdgs">
+            UN Sustainable Development Goals <span style="color: var(--primary-color); font-weight: 600;">(10%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              How well does the project align with UN SDGs?
+            </small>
+          </label>
+          <input type="number" id="sdgs" name="sdgs" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <!-- Innovation & Creativity (15%) -->
+        <div class="form-group">
+          <label for="innovation">
+            Innovation & Creativity <span style="color: var(--primary-color); font-weight: 600;">(15%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              How innovative and creative is the solution?
+            </small>
+          </label>
+          <input type="number" id="innovation" name="innovation" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <!-- Social Impact (15%) -->
+        <div class="form-group">
+          <label for="social_impact">
+            Social Impact <span style="color: var(--primary-color); font-weight: 600;">(15%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              What is the potential social impact of this solution?
+            </small>
+          </label>
+          <input type="number" id="social_impact" name="social_impact" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <!-- Code Quality & Extensibility (10%) -->
+        <div class="form-group">
+          <label for="code_quality">
+            Code Quality & Extensibility <span style="color: var(--primary-color); font-weight: 600;">(10%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              How clean, maintainable, and extensible is the code?
+            </small>
+          </label>
+          <input type="number" id="code_quality" name="code_quality" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <!-- Performance & Result Quality (10%) -->
+        <div class="form-group">
+          <label for="performance">
+            Performance & Result Quality <span style="color: var(--primary-color); font-weight: 600;">(10%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              How well does the solution perform and produce quality results?
+            </small>
+          </label>
+          <input type="number" id="performance" name="performance" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <!-- Presentation & Teamwork (10%) -->
+        <div class="form-group">
+          <label for="presentation">
+            Presentation & Teamwork <span style="color: var(--primary-color); font-weight: 600;">(10%)</span>
+            <small style="display: block; color: var(--text-secondary);">
+              How well did the team present and collaborate?
+            </small>
+          </label>
+          <input type="number" id="presentation" name="presentation" 
+                 min="0" max="10" step="0.5" required placeholder="0-10">
+        </div>
+
+        <button type="submit" class="btn btn-block btn-success" style="margin-top: 20px;">
+          Submit Evaluation
+        </button>
+      </form>
+
+      <div id="message" style="margin-top: 15px;"></div>
+
+      <div style="margin-top: 20px; text-align: center;">
+        <a href="judge-dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+  <script src="evaluate.js"></script>
+</body>
+</html>

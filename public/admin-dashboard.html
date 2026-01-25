@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Quantum Hackathon</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Admin Dashboard</h1>
+      <p>Quantum Hackathon Management System</p>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h2>Overview</h2>
+        <div id="stats">
+          <p>Loading statistics...</p>
+        </div>
+        <button id="refresh-btn" class="btn btn-secondary" style="margin-top: 15px;">
+          Refresh Data
+        </button>
+      </div>
+
+      <div class="card">
+        <h2>Quick Actions</h2>
+        <a href="results.html" class="btn btn-block btn-success" style="margin-bottom: 10px;">
+          View Final Results
+        </a>
+        <button id="logout" class="btn btn-block btn-secondary">Logout</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Statistics by Hall</h2>
+      <div id="detailed-stats">
+        <p>Loading detailed statistics...</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Teams Ranking</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 15px;">Sorted by average score (highest first). Top 5 teams are highlighted.</p>
+      <div id="teams-loading">Loading teams...</div>
+      <div id="teams-container" class="grid grid-3" style="display: none;"></div>
+    </div>
+  </div>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Results - Quantum Hackathon</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Final Results</h1>
+      <p>Teams ranked by average evaluation scores</p>
+    </div>
+
+    <div class="card">
+      <h2>Rankings</h2>
+      <div style="margin-bottom: 20px; text-align: center;">
+        <button id="export-btn" class="btn btn-success" style="margin-right: 10px;">Export to CSV</button>
+      </div>
+      <div id="results-loading">Loading results...</div>
+      <ol id="results" class="results-list" style="display: none;"></ol>
+
+      <div style="margin-top: 30px; text-align: center;">
+        <a href="admin-dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Evaluation Summary</h2>
+      <p style="color: var(--text-secondary);">
+        Results are calculated based on weighted average scores from all judges in each team's hall.
+        The top 5 teams are highlighted.
+      </p>
+    </div>
+  </div>
+  <script src="results.js"></script>
+</body>
+</html>

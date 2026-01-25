@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Judge Dashboard - Quantum Hackathon</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Judge Dashboard</h1>
+      <p>Evaluate teams in your assigned hall</p>
+    </div>
+
+    <div class="card">
+      <h2>Your Hall: <span id="hall" style="color: var(--primary-color); font-weight: 700;"></span></h2>
+    </div>
+
+    <div class="card">
+      <h2>Teams to Evaluate</h2>
+      <div id="teams-loading">Loading teams...</div>
+      <div id="teams-container" class="grid grid-3" style="display: none;"></div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="logout" class="btn btn-secondary">Logout</button>
+    </div>
+  </div>
+  <script src="judge.js"></script>
+</body>
+</html>

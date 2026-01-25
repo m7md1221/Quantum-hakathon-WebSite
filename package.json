@@ -6,7 +6,6 @@
   "scripts": {
   "build": "npm install",
   "start": "node server.js",
-  "postinstall": "node applyMigration.js && node seed.js"
 }
 ,
   "dependencies": {

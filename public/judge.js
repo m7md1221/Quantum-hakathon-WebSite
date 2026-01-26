@@ -59,17 +59,48 @@ document.addEventListener('DOMContentLoaded', async () => {
       loadingDiv.style.display = 'none';
       teamsContainer.style.display = 'grid';
 
-      teams.forEach(team => {
+      // Sort teams: non-evaluated first, then evaluated
+      const sortedTeams = [...teams].sort((a, b) => {
+        const aEvaluated = !!a.evaluated;
+        const bEvaluated = !!b.evaluated;
+        // Non-evaluated teams come first (false < true)
+        if (aEvaluated !== bEvaluated) {
+          return aEvaluated ? 1 : -1;
+        }
+        return 0;
+      });
+
+      sortedTeams.forEach(team => {
         const teamCard = document.createElement('div');
-        teamCard.className = 'judge-card';
+        const isSubmitted = !!team.submitted_at;
+        const isEvaluated = !!team.evaluated;
+
+        // Add different class for evaluated teams
+        teamCard.className = isEvaluated ? 'judge-card judge-card-evaluated' : 'judge-card judge-card-pending';
+
         teamCard.innerHTML = `
-          <h3>${team.name}</h3>
-          <p><strong>Status:</strong> ${team.submitted_at ? '<span style="color: var(--success-color);">Submitted</span>' : '<span style="color: var(--warning-color);">Pending</span>'}</p>
-          ${team.submitted_at ? `<p><strong>Submitted:</strong> ${new Date(team.submitted_at).toLocaleDateString()}</p>` : ''}
-          <button onclick="evaluateTeam(${team.id})" class="btn btn-block btn-success" style="margin-top: 15px;">
-            Evaluate Team
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="margin: 0;">${team.name}</h3>
+            ${isEvaluated
+              ? '<span class="status-badge status-evaluated" title="This team has been evaluated by you">تم التقييم</span>'
+              : '<span class="status-badge status-pending" title="You have not evaluated this team yet">لم يُقيَّم بعد</span>'
+            }
+          </div>
+          <p><strong>Status:</strong> ${
+            isSubmitted
+              ? '<span style="color: var(--success-color);">Submitted</span>'
+              : '<span style="color: var(--warning-color);">Pending</span>'
+          }</p>
+          ${
+            isSubmitted
+              ? `<p><strong>Submitted:</strong> ${new Date(team.submitted_at).toLocaleDateString()}</p>`
+              : ''
+          }
+          <button onclick="evaluateTeam(${team.id})" class="btn btn-block ${isEvaluated ? 'btn-secondary' : 'btn-success'}" style="margin-top: 15px;">
+            ${isEvaluated ? 'تعديل التقييم' : 'تقييم الفريق'}
           </button>
         `;
+
         teamsContainer.appendChild(teamCard);
       });
     }

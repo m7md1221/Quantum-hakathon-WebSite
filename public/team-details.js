@@ -67,20 +67,41 @@ function displayTeamDetails(data) {
       // Convert to /100 scale
       const score = eval.total_score ? (parseFloat(eval.total_score) * 10).toFixed(1) : 'N/A';
       evalDiv.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: var(--card-bg);">
           <div>
             <strong>${eval.judge_name}</strong>
             <br>
             <small style="color: var(--text-secondary);">Hall ${eval.judge_hall}</small>
           </div>
-          <div style="text-align: right;">
-            <div style="font-size: 1.2rem; font-weight: bold; color: var(--success-color);">
-              ${score !== 'N/A' ? score + '/100' : 'N/A'}
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="text-align: right;">
+              <div style="font-size: 1.2rem; font-weight: bold; color: var(--success-color);">
+                ${score !== 'N/A' ? score + '/100' : 'N/A'}
+              </div>
             </div>
+            <button 
+              class="btn btn-danger delete-eval-btn" 
+              style="padding: 8px 16px; font-size: 0.9rem;"
+              data-evaluation-id="${eval.evaluation_id}"
+              data-judge-name="${eval.judge_name}"
+              data-team-id="${teamId}"
+              title="حذف تقييم هذا الحكم">
+              🗑️ حذف التقييم
+            </button>
           </div>
         </div>
       `;
       evaluationsList.appendChild(evalDiv);
+    });
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('.delete-eval-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const evaluationId = this.getAttribute('data-evaluation-id');
+        const judgeName = this.getAttribute('data-judge-name');
+        const teamId = this.getAttribute('data-team-id');
+        deleteEvaluation(evaluationId, judgeName, teamId);
+      });
     });
   }
 
@@ -121,5 +142,63 @@ function displayTeamDetails(data) {
       `;
       criteriaBreakdown.appendChild(criterionDiv);
     });
+  }
+}
+
+async function deleteEvaluation(evaluationId, judgeName, teamId) {
+  if (!evaluationId || !judgeName) {
+    alert('❌ معلومات غير صحيحة');
+    return;
+  }
+
+  if (!confirm(`هل أنت متأكد من حذف تقييم الحكم "${judgeName}" من هذا الفريق؟\nسيتم إعادة حساب متوسط الفريق تلقائياً.`)) {
+    return;
+  }
+
+  try {
+    console.log('Deleting evaluation:', { evaluationId, judgeName, teamId });
+    
+    const response = await fetch(`/api/admin/evaluations/${evaluationId}`, {
+      method: 'DELETE',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+
+    let data;
+    const contentType = response.headers.get('content-type');
+    
+    if (contentType && contentType.includes('application/json')) {
+      try {
+        data = await response.json();
+        console.log('Response data:', data);
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+        const text = await response.text();
+        console.error('Response text:', text);
+        data = { message: `Server error: ${text || 'Invalid response'}` };
+      }
+    } else {
+      const text = await response.text();
+      console.error('Non-JSON response:', text);
+      data = { message: `Server returned: ${text || 'Unknown error'}` };
+    }
+
+    if (response.ok) {
+      alert('✅ تم حذف التقييم بنجاح! سيتم تحديث الصفحة...');
+      // Reload page to show updated data
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } else {
+      alert(`❌ خطأ (${response.status}): ${data.message || 'فشل حذف التقييم'}`);
+    }
+  } catch (error) {
+    console.error('Error deleting evaluation:', error);
+    alert(`❌ حدث خطأ أثناء حذف التقييم: ${error.message || 'يرجى المحاولة مرة أخرى'}`);
   }
 }

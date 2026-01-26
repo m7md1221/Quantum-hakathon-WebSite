@@ -4,6 +4,12 @@ const { pool } = require('../db');
 
 const router = express.Router();
 
+// Test route to verify router is working
+router.delete('/test-delete', (req, res) => {
+  console.log('Test DELETE route called');
+  res.json({ message: 'DELETE route is working' });
+});
+
 // Get all teams with scores
 router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
   try {
@@ -128,7 +134,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
         ju.name as judge_name,
         j.hall as judge_hall,
         e.id as evaluation_id,
-        SUM(es.score * c.weight / 100) as total_score
+        COALESCE(SUM(es.score * c.weight / 100), 0) as total_score
       FROM judges j
       JOIN users ju ON j.user_id = ju.id
       LEFT JOIN evaluations e ON j.id = e.judge_id AND e.team_id = $1
@@ -224,6 +230,111 @@ router.get('/stats', authenticate, authorize(['admin']), async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get all judges with their evaluation counts
+router.get('/judges', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const judgesResult = await pool.query(`
+      SELECT
+        j.id,
+        u.name,
+        j.hall,
+        COUNT(e.id) as evaluation_count
+      FROM judges j
+      JOIN users u ON j.user_id = u.id
+      LEFT JOIN evaluations e ON j.id = e.judge_id
+      GROUP BY j.id, u.name, j.hall
+      ORDER BY j.hall, u.name
+    `);
+
+    res.json(judgesResult.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete evaluation from a specific team
+router.delete('/evaluations/:evaluationId', authenticate, authorize(['admin']), async (req, res) => {
+  console.log('=== DELETE /evaluations/:evaluationId ROUTE CALLED ===');
+  console.log('Request params:', req.params);
+  console.log('Request method:', req.method);
+  console.log('Request url:', req.url);
+  
+  try {
+    const { evaluationId } = req.params;
+    console.log('DELETE /evaluations/:evaluationId called with:', { evaluationId, user: req.user });
+
+    if (!evaluationId || isNaN(parseInt(evaluationId))) {
+      console.log('Invalid evaluation ID:', evaluationId);
+      return res.status(400).json({ message: 'Invalid evaluation ID' });
+    }
+
+    const evalId = parseInt(evaluationId);
+    console.log('Parsed evaluation ID:', evalId);
+
+    // Check if evaluation exists
+    const evalCheck = await pool.query('SELECT id, judge_id, team_id FROM evaluations WHERE id = $1', [evalId]);
+    console.log('Evaluation check result:', evalCheck.rows);
+    
+    if (evalCheck.rows.length === 0) {
+      console.log('Evaluation not found:', evalId);
+      return res.status(404).json({ message: 'Evaluation not found' });
+    }
+
+    console.log('Deleting evaluation:', evalId);
+    console.log('Evaluation details:', evalCheck.rows[0]);
+    
+    // Delete evaluation (cascade will delete evaluation_scores)
+    const deleteResult = await pool.query('DELETE FROM evaluations WHERE id = $1 RETURNING id', [evalId]);
+    console.log('Delete result:', deleteResult.rows);
+    console.log('Evaluation deleted successfully:', evalId);
+
+    res.json({ 
+      message: 'Evaluation deleted successfully',
+      deletedId: evalId
+    });
+  } catch (error) {
+    console.error('Error deleting evaluation:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ message: 'Server error: ' + (error.message || 'Unknown error') });
+  }
+});
+
+// Delete all evaluations from a specific judge
+router.delete('/judges/:judgeId/evaluations', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const { judgeId } = req.params;
+
+    if (!judgeId || isNaN(parseInt(judgeId))) {
+      return res.status(400).json({ message: 'Invalid judge ID' });
+    }
+
+    // Check if judge exists
+    const judgeCheck = await pool.query('SELECT id FROM judges WHERE id = $1', [judgeId]);
+    if (judgeCheck.rows.length === 0) {
+      return res.status(404).json({ message: 'Judge not found' });
+    }
+
+    // Get count before deletion
+    const countResult = await pool.query(
+      'SELECT COUNT(*) as count FROM evaluations WHERE judge_id = $1',
+      [judgeId]
+    );
+    const deletedCount = parseInt(countResult.rows[0].count) || 0;
+
+    // Delete all evaluations from this judge (cascade will delete evaluation_scores)
+    await pool.query('DELETE FROM evaluations WHERE judge_id = $1', [judgeId]);
+
+    res.json({ 
+      message: `Deleted ${deletedCount} evaluation(s) from judge`,
+      deletedCount 
+    });
+  } catch (error) {
+    console.error('Error deleting judge evaluations:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 });
 

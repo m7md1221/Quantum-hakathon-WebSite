@@ -7,19 +7,41 @@ const router = express.Router();
 // Get teams for judge's hall
 router.get('/teams', authenticate, authorize(['judge']), async (req, res) => {
   try {
-    const judgeResult = await pool.query('SELECT hall FROM judges WHERE user_id = $1', [req.user.id]);
+    // Get judge info (hall + id)
+    const judgeResult = await pool.query(
+      'SELECT id, hall FROM judges WHERE user_id = $1',
+      [req.user.id]
+    );
+
     if (judgeResult.rows.length === 0) {
       return res.status(404).json({ message: 'Judge not found' });
     }
 
+    const judgeId = judgeResult.rows[0].id;
     const hall = judgeResult.rows[0].hall;
-    const teams = await pool.query(`
-      SELECT t.id, u.name, t.hall, p.submitted_at
+
+    // Fetch teams in judge's hall and whether THIS judge already evaluated them
+    const teams = await pool.query(
+      `
+      SELECT
+        t.id,
+        u.name,
+        t.hall,
+        p.submitted_at,
+        EXISTS (
+          SELECT 1
+          FROM evaluations e
+          WHERE e.team_id = t.id
+            AND e.judge_id = $2
+        ) AS evaluated
       FROM teams t
       JOIN users u ON t.user_id = u.id
       LEFT JOIN projects p ON t.id = p.team_id
       WHERE t.hall = $1
-    `, [hall]);
+      ORDER BY t.id
+    `,
+      [hall, judgeId]
+    );
 
     res.json(teams.rows);
   } catch (error) {

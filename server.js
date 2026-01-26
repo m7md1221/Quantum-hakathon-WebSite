@@ -15,13 +15,34 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Routes
+// Debug middleware to log all API requests
+app.use('/api', (req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
+// API Routes - MUST come before static files
 app.use('/api/auth', authRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/judge', judgeRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Static files - MUST come after API routes
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Debug: Log all registered routes
+console.log('\n=== Registered Admin Routes ===');
+adminRoutes.stack.forEach((r) => {
+  if (r.route && r.route.path) {
+    const methods = Object.keys(r.route.methods).map(m => m.toUpperCase()).join(', ');
+    console.log(`  ${methods.padEnd(10)} /api/admin${r.route.path}`);
+  } else if (r.name === 'router') {
+    // Handle nested routers
+    console.log(`  [Router] ${r.regexp}`);
+  }
+});
+console.log('================================\n');
 
 // Serve frontend
 app.get('/', (req, res) => {

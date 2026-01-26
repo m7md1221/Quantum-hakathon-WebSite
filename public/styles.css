@@ -66,7 +66,7 @@ body {
     box-shadow: var(--shadow);
     padding: 30px;
     margin: 20px auto;
-    max-width: 500px;
+    max-width: 700px;
 }
 
 .card h2 {
@@ -201,6 +201,34 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
     overflow: visible;
+}
+
+/* Judge card styles - pending (not evaluated) */
+.judge-card-pending {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    border: 2px solid var(--success-color);
+    border-left: 4px solid var(--success-color);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.judge-card-pending:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+/* Judge card styles - evaluated */
+.judge-card-evaluated {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid var(--border);
+    border-left: 4px solid var(--text-secondary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    opacity: 0.85;
+}
+
+.judge-card-evaluated:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+    opacity: 0.95;
 }
 
 .team-card:hover,
@@ -420,4 +448,200 @@ body {
     display: block;
     margin-top: 25px;
     color: #94a3b8;
+}
+
+/* --- Hall Sections Styles --- */
+.hall-section {
+    margin-bottom: 20px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.3s ease;
+}
+
+.hall-section:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.hall-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.hall-header:hover {
+    background: linear-gradient(135deg, #f1f5f9 0%, #f8fafc 100%);
+}
+
+.hall-header.active {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border-bottom-color: var(--primary-color);
+}
+
+.hall-header-content {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex: 1;
+}
+
+.hall-title-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hall-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.2;
+}
+
+.hall-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hall-stats {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.hall-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 15px;
+    background: rgba(37, 99, 235, 0.08);
+    border-radius: 8px;
+    min-width: 70px;
+}
+
+.hall-stat-number {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.hall-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hall-toggle-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 15px;
+    background: var(--primary-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.hall-header.active .hall-toggle-section {
+    background: var(--primary-hover);
+}
+
+.hall-toggle-text {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.hall-toggle-icon {
+    color: white;
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.hall-header.active .hall-toggle-icon {
+    transform: rotate(90deg);
+}
+
+.hall-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 25px;
+}
+
+.hall-content.open {
+    max-height: 5000px;
+    padding: 25px;
+}
+
+.hall-teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.hall-empty-message {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+/* Responsive design for halls */
+@media (max-width: 768px) {
+    .hall-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 18px 20px;
+    }
+
+    .hall-header-content {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .hall-stats {
+        width: 100%;
+        justify-content: space-around;
+        gap: 10px;
+    }
+
+    .hall-stat-item {
+        flex: 1;
+        min-width: auto;
+    }
+
+    .hall-toggle-section {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hall-content.open {
+        padding: 20px 15px;
+    }
+
+    .hall-teams-grid {
+        grid-template-columns: 1fr;
+    }
 }

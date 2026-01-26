@@ -322,66 +322,107 @@ async function loadJudges() {
       judgesByHall[judge.hall].push(judge);
     });
 
-    Object.keys(judgesByHall).sort().forEach(hall => {
-      const hallSection = document.createElement('div');
-      hallSection.style.marginBottom = '30px';
-      hallSection.innerHTML = `<h3 style="color: var(--primary-color); margin-bottom: 15px;">القاعة ${hall} - Hall ${hall}</h3>`;
-      
-      const judgesGrid = document.createElement('div');
-      judgesGrid.className = 'grid grid-3';
-      judgesGrid.style.gap = '15px';
+  Object.keys(judgesByHall).sort().forEach(hall => {
+  const hallSection = document.createElement('div');
+  hallSection.className = 'hall-section';
 
-      judgesByHall[hall].forEach(judge => {
-        const judgeCard = document.createElement('div');
-        judgeCard.className = 'judge-card';
-        judgeCard.style.padding = '20px';
-        
-        const judgeNameEscaped = judge.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        const deleteBtnId = `delete-btn-${judge.id}`;
-        
-        judgeCard.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
-            <div>
-              <h3 style="margin: 0 0 5px 0; color: var(--primary-color);">${judge.name}</h3>
-              <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Hall ${judge.hall}</p>
-            </div>
-            <span class="status-badge ${judge.evaluation_count > 0 ? 'status-evaluated' : 'status-pending'}" style="font-size: 0.8rem;">
-              ${judge.evaluation_count} تقييم
-            </span>
-          </div>
-          <div style="margin-bottom: 15px;">
-            <p style="color: var(--text-secondary); font-size: 0.9rem;">
-              <strong>عدد التقييمات:</strong> ${judge.evaluation_count}
-            </p>
-          </div>
-          ${judge.evaluation_count > 0 ? `
-            <button 
-              id="${deleteBtnId}"
-              class="btn btn-block btn-danger" 
-              style="margin-top: 10px;">
-              🗑️ حذف جميع التقييمات (${judge.evaluation_count})
-            </button>
-          ` : `
-            <button disabled class="btn btn-block btn-secondary" style="margin-top: 10px;">
+  // Header
+  const header = document.createElement('div');
+  header.className = 'hall-header';
+  header.innerHTML = `
+    <div class="hall-header-content">
+      <div class="hall-title-section">
+        <h3 class="hall-title">القاعة ${hall}</h3>
+        <span class="hall-subtitle">Hall ${hall}</span>
+      </div>
+      <div class="hall-stats">
+        <div class="hall-stat-item">
+          <span class="hall-stat-number">${judgesByHall[hall].length}</span>
+          <span class="hall-stat-label">حكام</span>
+        </div>
+      </div>
+    </div>
+    <div class="hall-toggle-section">
+      <span class="hall-toggle-text">عرض الحكام</span>
+      <span class="hall-toggle-icon">▶</span>
+    </div>
+  `;
+
+  // Content
+  const content = document.createElement('div');
+  content.className = 'hall-content';
+
+  const judgesGrid = document.createElement('div');
+  judgesGrid.className = 'grid grid-3';
+  judgesGrid.style.gap = '15px';
+
+  judgesByHall[hall].forEach(judge => {
+    const judgeCard = document.createElement('div');
+    judgeCard.className = 'judge-card';
+    judgeCard.style.padding = '20px';
+
+    const deleteBtnId = `delete-btn-${judge.id}`;
+
+    judgeCard.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div>
+          <h3 style="margin:0;color:var(--primary-color);">${judge.name}</h3>
+          <p style="margin:0;color:var(--text-secondary);font-size:0.85rem;">
+            Hall ${judge.hall}
+          </p>
+        </div>
+        <span class="status-badge ${judge.evaluation_count > 0 ? 'status-evaluated' : 'status-pending'}">
+          ${judge.evaluation_count} تقييم
+        </span>
+      </div>
+
+      ${
+        judge.evaluation_count > 0
+          ? `<button id="${deleteBtnId}" class="btn btn-block btn-danger">
+              🗑️ حذف جميع التقييمات
+            </button>`
+          : `<button disabled class="btn btn-block btn-secondary">
               لا توجد تقييمات
-            </button>
-          `}
-        `;
-        
-        // Add event listener instead of inline onclick
-        if (judge.evaluation_count > 0) {
-          const deleteBtn = judgeCard.querySelector(`#${deleteBtnId}`);
-          deleteBtn.addEventListener('click', () => {
-            deleteAllJudgeEvaluations(judge.id, judge.name, judge.evaluation_count);
-          });
-        }
-        
-        judgesGrid.appendChild(judgeCard);
-      });
+            </button>`
+      }
+    `;
 
-      hallSection.appendChild(judgesGrid);
-      judgesContainer.appendChild(hallSection);
-    });
+    if (judge.evaluation_count > 0) {
+      judgeCard.querySelector(`#${deleteBtnId}`)
+        .addEventListener('click', () => {
+          deleteAllJudgeEvaluations(
+            judge.id,
+            judge.name,
+            judge.evaluation_count
+          );
+        });
+    }
+
+    judgesGrid.appendChild(judgeCard);
+  });
+
+  content.appendChild(judgesGrid);
+
+  // Toggle behavior (زي Teams)
+  header.addEventListener('click', () => {
+    const isOpen = content.classList.contains('open');
+
+    document.querySelectorAll('#judges-container .hall-content')
+      .forEach(c => c.classList.remove('open'));
+    document.querySelectorAll('#judges-container .hall-header')
+      .forEach(h => h.classList.remove('active'));
+
+    if (!isOpen) {
+      content.classList.add('open');
+      header.classList.add('active');
+    }
+  });
+
+  hallSection.appendChild(header);
+  hallSection.appendChild(content);
+  judgesContainer.appendChild(hallSection);
+});
+
 
   } catch (error) {
     console.error('Error loading judges:', error);

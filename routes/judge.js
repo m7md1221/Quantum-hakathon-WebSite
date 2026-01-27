@@ -25,6 +25,7 @@ router.get('/teams', authenticate, authorize(['judge']), async (req, res) => {
       `
       SELECT
         t.id,
+        u.team_number,
         u.name,
         t.hall,
         p.submitted_at,

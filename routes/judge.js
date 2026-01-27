@@ -4,6 +4,82 @@ const { pool } = require('../db');
 
 const router = express.Router();
 
+// Get maximum score for a criterion based on its field name
+function getMaxScoreForCriterion(criterionKey) {
+  const max15Criteria = ['problem_importance', 'ai_quantum_use', 'innovation', 'social_impact'];
+  const max10Criteria = ['sdgs', 'code_quality', 'performance', 'presentation'];
+  
+  if (max15Criteria.includes(criterionKey)) {
+    return 15;
+  } else if (max10Criteria.includes(criterionKey)) {
+    return 10;
+  }
+  return 10; // Default fallback
+}
+
+// Get evaluation scores for a specific team (for current judge)
+router.get('/team-evaluation', authenticate, authorize(['judge']), async (req, res) => {
+  try {
+    const { teamId } = req.query;
+    
+    if (!teamId) {
+      return res.status(400).json({ message: 'teamId is required' });
+    }
+
+    // Get judge info
+    const judgeResult = await pool.query(
+      'SELECT id, hall FROM judges WHERE user_id = $1',
+      [req.user.id]
+    );
+
+    if (judgeResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Judge not found' });
+    }
+
+    const judgeId = judgeResult.rows[0].id;
+    const judgeHall = judgeResult.rows[0].hall;
+
+    // Check if team is in judge's hall
+    const teamResult = await pool.query('SELECT hall FROM teams WHERE id = $1', [teamId]);
+    if (teamResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+
+    if (teamResult.rows[0].hall !== judgeHall) {
+      return res.status(403).json({ message: 'You can only view evaluations for teams in your hall' });
+    }
+
+    // Get evaluation ID
+    const evaluationResult = await pool.query(
+      'SELECT id FROM evaluations WHERE judge_id = $1 AND team_id = $2',
+      [judgeId, teamId]
+    );
+
+    if (evaluationResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Evaluation not found' });
+    }
+
+    const evaluationId = evaluationResult.rows[0].id;
+
+    // Get all scores for this evaluation
+    const scoresResult = await pool.query(
+      'SELECT criterion_key, score FROM evaluation_scores WHERE evaluation_id = $1',
+      [evaluationId]
+    );
+
+    // Convert to object format: { criterion_key: score }
+    const scores = {};
+    scoresResult.rows.forEach(row => {
+      scores[row.criterion_key] = parseFloat(row.score);
+    });
+
+    res.json({ scores });
+  } catch (error) {
+    console.error('Error fetching team evaluation:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get teams for judge's hall
 router.get('/teams', authenticate, authorize(['judge']), async (req, res) => {
   try {
@@ -65,8 +141,9 @@ router.post('/evaluate', authenticate, authorize(['judge']), async (req, res) =>
   // Validate scores
   for (const [key, score] of Object.entries(scores)) {
     const numScore = parseFloat(score);
-    if (isNaN(numScore) || numScore < 0 || numScore > 10) {
-      return res.status(400).json({ message: `Invalid score for ${key}: must be between 0 and 10` });
+    const maxScore = getMaxScoreForCriterion(key);
+    if (isNaN(numScore) || numScore < 0 || numScore > maxScore) {
+      return res.status(400).json({ message: `Invalid score for ${key}: must be between 0 and ${maxScore}` });
     }
   }
 
@@ -136,6 +213,94 @@ router.post('/evaluate', authenticate, authorize(['judge']), async (req, res) =>
   } catch (error) {
     console.error('Error in evaluate:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Submit evaluation (Final)
+// Submit evaluation (Final)
+// Submit evaluation (Final)
+router.post('/finalize-evaluation', authenticate, authorize(['judge']), async (req, res) => {
+  console.log('Received /finalize-evaluation request');
+  const { teamId, scores, is_final } = req.body;
+
+  if (!is_final) {
+    return res.status(400).json({ message: 'Only final submissions are allowed via this endpoint' });
+  }
+
+  // Validate input
+  if (!teamId || !scores || typeof scores !== 'object') {
+    return res.status(400).json({ message: 'Invalid request: teamId and scores are required' });
+  }
+
+  let client;
+  try {
+    console.log('Connecting to pool...');
+    client = await pool.connect();
+    console.log('Connected.');
+
+    const judgeResult = await client.query('SELECT id, hall FROM judges WHERE user_id = $1', [req.user.id]);
+    if (judgeResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Judge not found' });
+    }
+
+    const judgeId = judgeResult.rows[0].id;
+    const judgeHall = judgeResult.rows[0].hall;
+
+    // Check if team is in judge's hall
+    const teamResult = await client.query('SELECT hall FROM teams WHERE id = $1', [teamId]);
+    if (teamResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+
+    if (teamResult.rows[0].hall !== judgeHall) {
+      return res.status(403).json({ message: 'You can only evaluate teams in your hall' });
+    }
+
+    // CHECK IF ALREADY EVALUATED
+    const existingEvaluation = await client.query(
+      'SELECT id FROM evaluations WHERE judge_id = $1 AND team_id = $2',
+      [judgeId, teamId]
+    );
+
+    if (existingEvaluation.rows.length > 0) {
+      return res.status(400).json({ message: 'Team already evaluated. You cannot modify this evaluation.' });
+    }
+
+    // Start transaction
+    await client.query('BEGIN');
+
+    // Create evaluation
+    const evaluationResult = await client.query(
+      'INSERT INTO evaluations (judge_id, team_id) VALUES ($1, $2) RETURNING id',
+      [judgeId, teamId]
+    );
+    const evaluationId = evaluationResult.rows[0].id;
+
+    // Insert scores
+    for (const [key, score] of Object.entries(scores)) {
+      const numScore = parseFloat(score);
+      const maxScore = getMaxScoreForCriterion(key);
+      if (isNaN(numScore) || numScore < 0 || numScore > maxScore) {
+        throw new Error(`Invalid score for ${key}: must be between 0 and ${maxScore}`);
+      }
+      await client.query(
+        'INSERT INTO evaluation_scores (evaluation_id, criterion_key, score) VALUES ($1, $2, $3)',
+        [evaluationId, key, numScore]
+      );
+    }
+
+    await client.query('COMMIT');
+    console.log('Evaluation submitted successfully');
+    res.json({ message: 'Evaluation submitted successfully' });
+
+  } catch (error) {
+    if (client) {
+      try { await client.query('ROLLBACK'); } catch (e) { console.error('Rollback failed:', e); }
+    }
+    console.error('Error in submit-evaluation:', error);
+    res.status(500).json({ message: error.message || 'Server error' });
+  } finally {
+    if (client) client.release();
   }
 });
 

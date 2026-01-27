@@ -28,6 +28,16 @@ app.use('/api/team', teamRoutes);
 app.use('/api/judge', judgeRoutes);
 app.use('/api/admin', adminRoutes);
 
+// 404 handler for API routes (before static files)
+app.use('/api', (req, res) => {
+  console.error(`[404] ${req.method} ${req.path} - Route not found`);
+  res.status(404).json({ 
+    error: 'Route not found', 
+    method: req.method, 
+    path: req.path 
+  });
+});
+
 // Static files - MUST come after API routes
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -44,6 +54,18 @@ adminRoutes.stack.forEach((r) => {
 });
 console.log('================================\n');
 
+console.log('\n=== Registered Judge Routes ===');
+judgeRoutes.stack.forEach((r) => {
+  if (r.route && r.route.path) {
+    const methods = Object.keys(r.route.methods).map(m => m.toUpperCase()).join(', ');
+    console.log(`  ${methods.padEnd(10)} /api/judge${r.route.path}`);
+  } else if (r.name === 'router') {
+    // Handle nested routers
+    console.log(`  [Router] ${r.regexp}`);
+  }
+});
+console.log('================================\n');
+
 // Serve frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
@@ -51,4 +73,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('Quantum Hackathon Server Started [UPDATED VERSION - route /finalize-evaluation active]');
 });

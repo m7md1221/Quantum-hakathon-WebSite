@@ -4,6 +4,9 @@ if (!token) {
   window.location.href = 'login.html';
 }
 
+// Global teams variable
+let teams = [];
+
 // Function to validate token
 async function validateToken() {
   try {
@@ -43,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       throw new Error(errorData.message || 'Failed to load teams');
     }
 
-    const teams = await hallResponse.json();
+    teams = await hallResponse.json();
 
     // Extract hall from first team (assuming all teams are from same hall)
     const hall = teams.length > 0 ? teams[0].hall || 'Unknown' : 'No teams assigned';
@@ -74,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const teamCard = document.createElement('div');
         const isSubmitted = !!team.submitted_at;
         const isEvaluated = !!team.evaluated;
+        const isFinal = !!team.is_final;
 
         // Add different class for evaluated teams
         teamCard.className = isEvaluated ? 'judge-card judge-card-evaluated' : 'judge-card judge-card-pending';
@@ -84,23 +88,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   الفريق رقم ${team.team_number ?? '-'}
 </h3>
             ${isEvaluated
-              ? '<span class="status-badge status-evaluated" title="This team has been evaluated by you">تم التقييم</span>'
-              : '<span class="status-badge status-pending" title="You have not evaluated this team yet">لم يُقيَّم بعد</span>'
-            }
-          </div>
-          <p><strong>Status:</strong> ${
-            isSubmitted
-              ? '<span style="color: var(--success-color);">Submitted</span>'
-              : '<span style="color: var(--warning-color);">Pending</span>'
-          }</p>
-          ${
-            isSubmitted
-              ? `<p><strong>Submitted:</strong> ${new Date(team.submitted_at).toLocaleDateString()}</p>`
-              : ''
+            ? '<span class="status-badge status-evaluated" title="This team has been evaluated by you">تم التقييم</span>'
+            : '<span class="status-badge status-pending" title="You have not evaluated this team yet">لم يُقيَّم بعد</span>'
           }
-          <button onclick="evaluateTeam(${team.id})" class="btn btn-block ${isEvaluated ? 'btn-secondary' : 'btn-success'}" style="margin-top: 15px;">
-            ${isEvaluated ? 'تعديل التقييم' : 'تقييم الفريق'}
-          </button>
+          </div>
+          <p><strong>Status:</strong> ${isSubmitted
+            ? '<span style="color: var(--success-color);">Submitted</span>'
+            : '<span style="color: var(--warning-color);">Pending</span>'
+          }</p>
+          ${isSubmitted
+            ? `<p><strong>Submitted:</strong> ${new Date(team.submitted_at).toLocaleDateString()}</p>`
+            : ''
+          }
+         <button
+  onclick="evaluateTeam(${team.id})"
+  class="btn btn-block ${isEvaluated ? 'btn-secondary' : 'btn-success'}"
+  style="margin-top: 15px;"
+>
+  ${isEvaluated ? 'View Evaluation' : 'Evaluate Team'}
+</button>
+
+
         `;
 
         teamsContainer.appendChild(teamCard);
@@ -115,8 +123,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function evaluateTeam(teamId) {
-  window.location.href = `evaluate-team.html?teamId=${teamId}`;
+  const team = teams.find(t => t.id === teamId);
+  const mode = team.evaluated ? 'view' : 'edit';
+  window.location.href = `evaluate-team.html?teamId=${teamId}&mode=${mode}`;
 }
+
 
 document.getElementById('logout').addEventListener('click', () => {
   localStorage.clear();

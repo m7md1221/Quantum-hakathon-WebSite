@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Evaluate Team - Quantum Hackathon</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
     <div class="header">
@@ -13,11 +15,178 @@
       <p id="team-name">Loading...</p>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+      <div class="modal-content">
+        <h2>Confirm Evaluation</h2>
+        <div id="confirmBody"></div>
+      </div>
+    </div>
+
+    <style>
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 500px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-summary p {
+        margin: 10px 0;
+        font-size: 1rem;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .modal-summary span {
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .warning-text {
+        color: #d32f2f;
+        background: #ffebee;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        border-left: 4px solid #d32f2f;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      /* Score Control Styles - Professional & Neutral */
+      .score-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .score-btn {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #374151;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 1;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        padding: 0;
+      }
+
+      .score-btn:hover:not(:disabled) {
+        background: #f9fafb;
+        border-color: #9ca3af;
+        color: #111827;
+      }
+
+      .score-btn:active:not(:disabled) {
+        background: #f3f4f6;
+        transform: scale(0.98);
+      }
+
+      .score-btn:focus:not(:disabled) {
+        outline: 2px solid #6b7280;
+        outline-offset: 2px;
+      }
+
+      .score-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        color: #9ca3af;
+      }
+
+      .score-display {
+        width: 90px;
+        height: 40px;
+        padding: 0 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background: #ffffff;
+        font-size: 16px;
+        font-weight: 500;
+        color: #111827;
+        text-align: center;
+        transition: all 0.15s ease;
+        -moz-appearance: textfield;
+      }
+
+      .score-display::-webkit-outer-spin-button,
+      .score-display::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .score-display:focus {
+        outline: 2px solid #6b7280;
+        outline-offset: 0;
+        border-color: #6b7280;
+        background: #ffffff;
+      }
+
+      .score-display:disabled {
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        color: #6b7280;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      .score-control input[type="hidden"] {
+        display: none;
+      }
+    </style>
+
     <div class="card" style="max-width: 700px;">
       <form id="evaluationForm">
         <h3 style="margin-bottom: 20px; color: var(--primary-color);">Evaluation Criteria</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 0.9rem;">Rate each criterion from 0 to 10</p>
-        
+        <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 0.9rem;"></p>
+
         <!-- Problem & Importance (15%) -->
         <div class="form-group">
           <label for="problem_importance">
@@ -26,8 +195,12 @@
               How significant is the problem being addressed?
             </small>
           </label>
-          <input type="number" id="problem_importance" name="problem_importance" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="problem_importance" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="problem_importance-display" min="0" max="15" value="0" aria-label="Problem & Importance score">
+            <button type="button" class="score-btn plus" data-field="problem_importance" aria-label="Increase score">+</button>
+            <input type="hidden" id="problem_importance" name="problem_importance" value="0" required>
+          </div>
         </div>
 
         <!-- Use of AI / Quantum Computing (15%) -->
@@ -38,8 +211,12 @@
               How effectively are AI or Quantum technologies utilized?
             </small>
           </label>
-          <input type="number" id="ai_quantum_use" name="ai_quantum_use" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="ai_quantum_use" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="ai_quantum_use-display" min="0" max="15" value="0" aria-label="AI/Quantum Use score">
+            <button type="button" class="score-btn plus" data-field="ai_quantum_use" aria-label="Increase score">+</button>
+            <input type="hidden" id="ai_quantum_use" name="ai_quantum_use" value="0" required>
+          </div>
         </div>
 
         <!-- UN SDGs (10%) -->
@@ -50,8 +227,12 @@
               How well does the project align with UN SDGs?
             </small>
           </label>
-          <input type="number" id="sdgs" name="sdgs" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="sdgs" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="sdgs-display" min="0" max="10" value="0" aria-label="SDGs score">
+            <button type="button" class="score-btn plus" data-field="sdgs" aria-label="Increase score">+</button>
+            <input type="hidden" id="sdgs" name="sdgs" value="0" required>
+          </div>
         </div>
 
         <!-- Innovation & Creativity (15%) -->
@@ -62,8 +243,12 @@
               How innovative and creative is the solution?
             </small>
           </label>
-          <input type="number" id="innovation" name="innovation" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="innovation" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="innovation-display" min="0" max="15" value="0" aria-label="Innovation score">
+            <button type="button" class="score-btn plus" data-field="innovation" aria-label="Increase score">+</button>
+            <input type="hidden" id="innovation" name="innovation" value="0" required>
+          </div>
         </div>
 
         <!-- Social Impact (15%) -->
@@ -74,8 +259,12 @@
               What is the potential social impact of this solution?
             </small>
           </label>
-          <input type="number" id="social_impact" name="social_impact" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="social_impact" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="social_impact-display" min="0" max="15" value="0" aria-label="Social Impact score">
+            <button type="button" class="score-btn plus" data-field="social_impact" aria-label="Increase score">+</button>
+            <input type="hidden" id="social_impact" name="social_impact" value="0" required>
+          </div>
         </div>
 
         <!-- Code Quality & Extensibility (10%) -->
@@ -86,8 +275,12 @@
               How clean, maintainable, and extensible is the code?
             </small>
           </label>
-          <input type="number" id="code_quality" name="code_quality" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="code_quality" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="code_quality-display" min="0" max="10" value="0" aria-label="Code Quality score">
+            <button type="button" class="score-btn plus" data-field="code_quality" aria-label="Increase score">+</button>
+            <input type="hidden" id="code_quality" name="code_quality" value="0" required>
+          </div>
         </div>
 
         <!-- Performance & Result Quality (10%) -->
@@ -98,8 +291,12 @@
               How well does the solution perform and produce quality results?
             </small>
           </label>
-          <input type="number" id="performance" name="performance" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="performance" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="performance-display" min="0" max="10" value="0" aria-label="Performance score">
+            <button type="button" class="score-btn plus" data-field="performance" aria-label="Increase score">+</button>
+            <input type="hidden" id="performance" name="performance" value="0" required>
+          </div>
         </div>
 
         <!-- Presentation & Teamwork (10%) -->
@@ -110,9 +307,14 @@
               How well did the team present and collaborate?
             </small>
           </label>
-          <input type="number" id="presentation" name="presentation" 
-                 min="0" max="10" step="0.5" required placeholder="0-10">
+          <div class="score-control">
+            <button type="button" class="score-btn minus" data-field="presentation" aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="presentation-display" min="0" max="10" value="0" aria-label="Presentation score">
+            <button type="button" class="score-btn plus" data-field="presentation" aria-label="Increase score">+</button>
+            <input type="hidden" id="presentation" name="presentation" value="0" required>
+          </div>
         </div>
+
 
         <button type="submit" class="btn btn-block btn-success" style="margin-top: 20px;">
           Submit Evaluation
@@ -127,5 +329,167 @@
     </div>
   </div>
   <script src="evaluate.js"></script>
+  <script>
+    // Score control functionality - handles +/- button clicks
+    document.addEventListener('DOMContentLoaded', function() {
+      const scoreButtons = document.querySelectorAll('.score-btn');
+
+      scoreButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Get field name from button's data attribute
+          const fieldName = this.getAttribute('data-field');
+          if (!fieldName) return;
+
+          // Get DOM elements
+          const hiddenInput = document.getElementById(fieldName);
+          const display = document.getElementById(fieldName + '-display');
+          if (!hiddenInput) return;
+
+          // Determine if this is a plus or minus button
+          const isPlus = this.classList.contains('plus');
+          const isMinus = this.classList.contains('minus');
+          
+          // Get current score and max score for this criterion
+          let currentScore = parseFloat(hiddenInput.value) || 0;
+          const maxScore = getMaxScore(fieldName);
+
+          // Update score based on button clicked
+          if (isPlus && currentScore < maxScore) {
+            currentScore = Math.min(currentScore + 1, maxScore);
+          } else if (isMinus && currentScore > 0) {
+            currentScore = Math.max(currentScore - 1, 0);
+          }
+
+          // Update hidden input and display
+          hiddenInput.value = currentScore;
+          if (display) {
+            display.value = currentScore;
+          }
+
+          // Update button states (disable/enable based on limits)
+          if (typeof updateButtonStates === 'function') {
+            updateButtonStates(fieldName, currentScore);
+          }
+        });
+      });
+
+      // Initialize button states and sync display inputs for all fields on page load
+      const fields = [
+        'problem_importance',
+        'ai_quantum_use',
+        'sdgs',
+        'innovation',
+        'social_impact',
+        'code_quality',
+        'performance',
+        'presentation'
+      ];
+
+      fields.forEach(field => {
+        const hiddenInput = document.getElementById(field);
+        const displayInput = document.getElementById(field + '-display');
+        
+        if (hiddenInput) {
+          const score = parseFloat(hiddenInput.value) || 0;
+          
+          // Sync display input with hidden input value
+          if (displayInput) {
+            displayInput.value = score;
+          }
+          
+          // Update button states
+          if (typeof updateButtonStates === 'function') {
+            updateButtonStates(field, score);
+          }
+        }
+      });
+    });
+  </script>
+  <script>
+    // Handle manual input in score display fields
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.score-display').forEach(input => {
+        // Handle input event (while typing)
+        input.addEventListener('input', function() {
+          const fieldName = this.id.replace('-display', '');
+          const hiddenInput = document.getElementById(fieldName);
+          if (!hiddenInput) return;
+
+          const maxScore = getMaxScore(fieldName);
+          let value = parseFloat(this.value);
+
+          // Allow empty input while typing
+          if (this.value === '' || this.value === '-') {
+            return;
+          }
+
+          // Validate numeric input
+          if (isNaN(value)) {
+            value = 0;
+          }
+
+          // Clamp value to valid range
+          value = Math.max(0, Math.min(value, maxScore));
+
+          // Update display and hidden input
+          this.value = value;
+          hiddenInput.value = value;
+
+          // Update button states
+          if (typeof updateButtonStates === 'function') {
+            updateButtonStates(fieldName, value);
+          }
+        });
+
+        // Handle blur event (when field loses focus) - final validation
+        input.addEventListener('blur', function() {
+          const fieldName = this.id.replace('-display', '');
+          const hiddenInput = document.getElementById(fieldName);
+          if (!hiddenInput) return;
+
+          const maxScore = getMaxScore(fieldName);
+          let value = parseFloat(this.value);
+
+          // If empty or invalid, set to 0
+          if (isNaN(value) || this.value === '') {
+            value = 0;
+          }
+
+          // Clamp value to valid range
+          value = Math.max(0, Math.min(value, maxScore));
+
+          // Update display and hidden input
+          this.value = value;
+          hiddenInput.value = value;
+
+          // Update button states
+          if (typeof updateButtonStates === 'function') {
+            updateButtonStates(fieldName, value);
+          }
+        });
+
+        // Prevent non-numeric characters (except minus sign at start)
+        input.addEventListener('keydown', function(e) {
+          // Allow: backspace, delete, tab, escape, enter, decimal point, minus
+          if ([46, 8, 9, 27, 13, 110, 189, 190].indexOf(e.keyCode) !== -1 ||
+            // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+            (e.keyCode === 65 && e.ctrlKey === true) ||
+            (e.keyCode === 67 && e.ctrlKey === true) ||
+            (e.keyCode === 86 && e.ctrlKey === true) ||
+            (e.keyCode === 88 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+            return;
+          }
+          // Ensure that it is a number and stop the keypress
+          if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+          }
+        });
+      });
+    });
+  </script>
+
 </body>
-</html>
+
+</html> 

@@ -27,13 +27,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Convert to /100 scale
         const scoreOutOf100 = result.average_score ? (parseFloat(result.average_score) * 10).toFixed(1) : 'N/A';
+console.log(results); // شوف إذا team_number رجع صح
 
         li.innerHTML = `
           <div class="rank" style="min-width: 50px; text-align: center;">
             <span style="display: inline-block; width: 28px; height: 28px; line-height: 28px; background: ${index < 3 ? '#d4af37' : 'var(--primary-color)'}; color: white; border-radius: 50%; font-size: 0.85rem; font-weight: 600;">${index + 1}</span>
           </div>
           <div style="flex: 1;">
-            <strong>${result.name}</strong>
+    <strong class="team-number">الفريق رقم ${result.team_number}</strong><br>
+    <span class="team-name">${result.name}</span>
             <br>
             <small style="color: var(--text-secondary);">Hall ${result.hall}</small>
           </div>
@@ -65,10 +67,10 @@ function exportToCSV() {
   }
 
   const csvContent = [
-    ['Rank', 'Team Name', 'Hall', 'Average Score (out of 100)'],
+    ['Rank', 'Team number', 'Hall', 'Average Score (out of 100)'],
     ...resultsData.map((result, index) => [
       index + 1,
-      result.name,
+      result.team_number,
       result.hall,
       result.average_score ? (parseFloat(result.average_score) * 10).toFixed(1) : 'N/A'
     ])

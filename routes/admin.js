@@ -31,7 +31,7 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
     // For each team, calculate scores
     const teams = await Promise.all(teamsResult.rows.map(async (team) => {
       const teamId = parseInt(team.id);
-      
+
       // Get judge totals for this team
       const judgeScoresResult = await pool.query(`
         SELECT 
@@ -74,40 +74,42 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-// Get results
+// Get results (average of judge's total scores)
 router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
   try {
-    // Calculate averages - first get judge totals, then average them
-    const results = await pool.query(`
-      SELECT
-        t.id,
-        u.name,
-        t.hall,
-        AVG(judge_total) as average_score
-      FROM (
-        SELECT
-          t.id,
-          e.judge_id,
-          SUM(es.score * c.weight / 100) as judge_total
-        FROM teams t
-        JOIN evaluations e ON t.id = e.team_id
-        JOIN evaluation_scores es ON e.id = es.evaluation_id
-        JOIN criteria c ON es.criterion_key = c.key
-        GROUP BY t.id, e.judge_id
-      ) judge_scores
-      JOIN teams t ON judge_scores.id = t.id
-      JOIN users u ON t.user_id = u.id
-      GROUP BY t.id, u.name, t.hall
-      ORDER BY average_score DESC
-    `);
+   const resultsResult = await pool.query(`
+  SELECT
+    t.id,
+    u.team_number,
+    u.name,
+    t.hall,
+    AVG(judge_total) as average_score
+  FROM (
+    SELECT
+      t.id,
+      e.judge_id,
+      SUM(es.score * c.weight / 100) as judge_total
+    FROM teams t
+    JOIN evaluations e ON t.id = e.team_id
+    JOIN evaluation_scores es ON e.id = es.evaluation_id
+    JOIN criteria c ON es.criterion_key = c.key
+    GROUP BY t.id, e.judge_id
+  ) judge_scores
+  JOIN teams t ON judge_scores.id = t.id
+  JOIN users u ON t.user_id = u.id
+  GROUP BY t.id, u.team_number, u.name, t.hall
+  ORDER BY average_score DESC
+`);
 
-    res.json(results.rows);
+
+    res.json(resultsResult.rows);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error in /results:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 });
+
+
 
 // Get team details with all evaluations
 router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res) => {
@@ -173,26 +175,20 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 // Get final results
 router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
   try {
-    const results = await pool.query(`
-      SELECT
-        t.id,
-        u.name,
-        t.hall,
-        AVG(es.score * c.weight / 100) as average_score
-      FROM teams t
-      JOIN users u ON t.user_id = u.id
-      LEFT JOIN evaluations e ON t.id = e.team_id
-      LEFT JOIN evaluation_scores es ON e.id = es.evaluation_id
-      LEFT JOIN criteria c ON es.criterion_key = c.key
-      WHERE es.score IS NOT NULL
-      GROUP BY t.id, u.name, t.hall
-      ORDER BY average_score DESC
-    `);
-
+    const results = await pool.query(
+      `SELECT t.id,u.team_number, u.name, t.hall, AVG(es.score * c.weight / 100) as average_score
+             FROM teams t
+             JOIN users u ON t.user_id = u.id
+             LEFT JOIN evaluations e ON t.id = e.team_id
+             LEFT JOIN evaluation_scores es ON e.id = es.evaluation_id
+             LEFT JOIN criteria c ON es.criterion_key = c.key
+             WHERE es.score IS NOT NULL
+             GROUP BY t.id, u.team_number, u.name, t.hall
+             ORDER BY average_score DESC`
+    );
     res.json(results.rows);
   } catch (error) {
     console.error(error);
@@ -264,7 +260,7 @@ router.delete('/evaluations/:evaluationId', authenticate, authorize(['admin']), 
   console.log('Request params:', req.params);
   console.log('Request method:', req.method);
   console.log('Request url:', req.url);
-  
+
   try {
     const { evaluationId } = req.params;
     console.log('DELETE /evaluations/:evaluationId called with:', { evaluationId, user: req.user });
@@ -280,7 +276,7 @@ router.delete('/evaluations/:evaluationId', authenticate, authorize(['admin']), 
     // Check if evaluation exists
     const evalCheck = await pool.query('SELECT id, judge_id, team_id FROM evaluations WHERE id = $1', [evalId]);
     console.log('Evaluation check result:', evalCheck.rows);
-    
+
     if (evalCheck.rows.length === 0) {
       console.log('Evaluation not found:', evalId);
       return res.status(404).json({ message: 'Evaluation not found' });
@@ -288,13 +284,13 @@ router.delete('/evaluations/:evaluationId', authenticate, authorize(['admin']), 
 
     console.log('Deleting evaluation:', evalId);
     console.log('Evaluation details:', evalCheck.rows[0]);
-    
+
     // Delete evaluation (cascade will delete evaluation_scores)
     const deleteResult = await pool.query('DELETE FROM evaluations WHERE id = $1 RETURNING id', [evalId]);
     console.log('Delete result:', deleteResult.rows);
     console.log('Evaluation deleted successfully:', evalId);
 
-    res.json({ 
+    res.json({
       message: 'Evaluation deleted successfully',
       deletedId: evalId
     });
@@ -330,9 +326,9 @@ router.delete('/judges/:judgeId/evaluations', authenticate, authorize(['admin'])
     // Delete all evaluations from this judge (cascade will delete evaluation_scores)
     await pool.query('DELETE FROM evaluations WHERE judge_id = $1', [judgeId]);
 
-    res.json({ 
+    res.json({
       message: `Deleted ${deletedCount} evaluation(s) from judge`,
-      deletedCount 
+      deletedCount
     });
   } catch (error) {
     console.error('Error deleting judge evaluations:', error);

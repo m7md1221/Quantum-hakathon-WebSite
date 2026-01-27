@@ -250,7 +250,10 @@ function createTeamCard(team, isWinner, rank) {
   teamCard.innerHTML = `
     ${rankBadge}
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-      <h3 style="margin: 0;">${team.team_number}</h3>
+      <h3 style="margin: 0;">
+  الفريق رقم ${team.team_number ?? '-'}
+</h3>
+
     </div>
     <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px;">
       <p style="margin: 4px 0;"><strong>Status:</strong> ${team.submitted_at ? '<span style="color: var(--success-color);">Submitted</span>' : '<span style="color: var(--warning-color);">Pending</span>'}</p>

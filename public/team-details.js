@@ -86,7 +86,7 @@ function displayTeamDetails(data) {
               data-judge-name="${eval.judge_name}"
               data-team-id="${teamId}"
               title="حذف تقييم هذا الحكم">
-              🗑️ حذف التقييم
+               حذف التقييم
             </button>
           </div>
         </div>

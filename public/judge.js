@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         teamCard.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 style="margin: 0;">${team.name}</h3>
+            <h3 style="margin: 0;">${team.team_number}</h3>
             ${isEvaluated
               ? '<span class="status-badge status-evaluated" title="This team has been evaluated by you">تم التقييم</span>'
               : '<span class="status-badge status-pending" title="You have not evaluated this team yet">لم يُقيَّم بعد</span>'

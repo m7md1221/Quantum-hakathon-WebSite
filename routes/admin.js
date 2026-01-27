@@ -17,6 +17,7 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
     const teamsResult = await pool.query(`
       SELECT
         t.id,
+        u.team_number,
         u.name,
         t.hall,
         p.submitted_at,
@@ -24,7 +25,7 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
       FROM teams t
       JOIN users u ON t.user_id = u.id
       LEFT JOIN projects p ON t.id = p.team_id
-      GROUP BY t.id, u.name, t.hall, p.submitted_at
+       GROUP BY t.id, u.team_number, t.hall, p.submitted_at , u.name
     `);
 
     // For each team, calculate scores
@@ -54,6 +55,7 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
 
       return {
         id: teamId,
+        team_number: team.team_number,
         name: team.name,
         hall: team.hall,
         submitted_at: team.submitted_at,

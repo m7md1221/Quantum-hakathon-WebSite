@@ -229,26 +229,6 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
     res.status(500).json({ message: 'Server error' });
   }
 });
-// Get final results
-router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
-  try {
-    const results = await pool.query(
-      `SELECT t.id,u.team_number, u.name, t.hall, AVG(es.score * c.weight / 100) as average_score
-             FROM teams t
-             JOIN users u ON t.user_id = u.id
-             LEFT JOIN evaluations e ON t.id = e.team_id
-             LEFT JOIN evaluation_scores es ON e.id = es.evaluation_id
-             LEFT JOIN criteria c ON es.criterion_key = c.key
-             WHERE es.score IS NOT NULL
-             GROUP BY t.id, u.team_number, u.name, t.hall
-             ORDER BY average_score DESC`
-    );
-    res.json(results.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 // Get detailed statistics
 router.get('/stats', authenticate, authorize(['admin']), async (req, res) => {

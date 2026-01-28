@@ -169,8 +169,15 @@ async function downloadProject(teamId) {
 
     const { signedUrl } = await response.json();
 
-    // Redirect browser to the signed HTTPS URL
-    window.location.href = signedUrl;
+    // Trigger download using a hidden anchor tag for better cross-browser support
+    const a = document.createElement('a');
+    a.href = signedUrl;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+    }, 100);
 
   } catch (err) {
     console.error('Download Error:', err);

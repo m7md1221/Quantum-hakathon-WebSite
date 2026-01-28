@@ -269,9 +269,18 @@ async function downloadProject() {
 
     const { signedUrl } = await response.json();
 
-    // Redirect browser to the signed HTTPS URL
-    // This handles large files efficiently and avoids Mixed Content errors
-    window.location.href = signedUrl;
+    // Trigger download using a hidden anchor tag for better cross-browser support
+    const a = document.createElement('a');
+    a.href = signedUrl;
+    // Cloudinary signed URLs for raw files should automatically trigger download, 
+    // but we can hint at it. The 'download' attribute might be ignored for cross-origin,
+    // but the signed URL usually carries the correct headers.
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+    }, 100);
 
   } catch (error) {
     console.error('Download error:', error);

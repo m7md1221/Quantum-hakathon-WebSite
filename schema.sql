@@ -29,7 +29,9 @@ CREATE TABLE projects (
   id SERIAL PRIMARY KEY,
   team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
   file_path VARCHAR(500) NOT NULL,
-  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  public_id VARCHAR(255),
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(team_id)
 );
 
 -- Evaluations table

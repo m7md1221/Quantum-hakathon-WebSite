@@ -1,7 +1,14 @@
 const express = require('express');
+const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const router = express.Router();
 
@@ -114,16 +121,26 @@ router.get('/projects/:teamId', authenticate, authorize(['admin']), async (req, 
   try {
     const teamId = req.params.teamId;
     const result = await pool.query(
-      'SELECT file_path FROM projects WHERE team_id = $1',
+      'SELECT file_path, public_id FROM projects WHERE team_id = $1',
       [teamId]
     );
 
     if (result.rows.length === 0) return res.status(404).json({ message: 'Project not found' });
 
-    const fileUrl = result.rows[0].file_path;
+    const { file_path, public_id } = result.rows[0];
 
-    // Redirect to Cloudinary URL
-    res.redirect(fileUrl);
+    // If we have a public_id, generate a signed URL
+    if (public_id) {
+      const signedUrl = cloudinary.url(public_id, {
+        sign_url: true,
+        resource_type: 'raw',
+        expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
+      });
+      return res.redirect(signedUrl);
+    }
+
+    // Fallback for older projects without public_id (might still give 401 if private)
+    res.redirect(file_path);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

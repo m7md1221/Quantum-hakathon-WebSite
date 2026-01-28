@@ -1,7 +1,14 @@
 const express = require('express');
+const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const router = express.Router();
 
@@ -332,9 +339,9 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.status(403).json({ message: 'You can only download projects for teams in your hall' });
     }
 
-    // Get project file path
+    // Get project file info
     const projectResult = await pool.query(
-      'SELECT file_path FROM projects WHERE team_id = $1',
+      'SELECT file_path, public_id FROM projects WHERE team_id = $1',
       [teamId]
     );
 
@@ -342,10 +349,20 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.status(404).json({ message: 'No project submission found for this team' });
     }
 
-    const fileUrl = projectResult.rows[0].file_path;
+    const { file_path, public_id } = projectResult.rows[0];
 
-    // Redirect to Cloudinary URL
-    res.redirect(fileUrl);
+    // If we have a public_id, generate a signed URL
+    if (public_id) {
+      const signedUrl = cloudinary.url(public_id, {
+        sign_url: true,
+        resource_type: 'raw',
+        expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour
+      });
+      return res.redirect(signedUrl);
+    }
+
+    // Redirect to original URL as fallback for legacy data
+    res.redirect(file_path);
   } catch (error) {
     console.error('Error in judge project download:', error);
     res.status(500).json({ message: 'Server error' });

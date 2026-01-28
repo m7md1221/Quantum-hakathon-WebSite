@@ -28,31 +28,24 @@ const upload = multer({ storage });
 
 // Upload project
 router.post('/upload', authenticate, authorize(['team']), upload.single('project'), async (req, res) => {
-  const deadline = new Date('2026-02-01T23:59:59');
-   console.log("File upload info:", req.file);
-  if (new Date() > deadline) {
-    return res.status(400).json({ message: 'Submission deadline has passed' });
-  }
-
   try {
-    const teamResult = await pool.query('SELECT id FROM teams WHERE user_id = $1', [req.user.id]);
-    if (teamResult.rows.length === 0) return res.status(404).json({ message: 'Team not found' });
+    console.log("File upload info:", req.file); // تأكد Multer استلم الملف
+    const fileUrl = req.file.path;
 
-    const teamId = teamResult.rows[0].id;
-    const existingProject = await pool.query('SELECT id FROM projects WHERE team_id = $1', [teamId]);
-    if (existingProject.rows.length > 0) return res.status(400).json({ message: 'Project already submitted' });
-
-    const fileUrl = req.file.path; // رابط الملف على Cloudinary
-    console.log("Uploaded file URL:", fileUrl);
-
-    await pool.query('INSERT INTO projects (team_id, file_path) VALUES ($1, $2)', [teamId, fileUrl]);
+    // خزنه في DB
+    await pool.query('INSERT INTO projects (team_id, file_path) VALUES ($1, $2)', [req.user.id, fileUrl]);
 
     res.json({ message: 'Project uploaded successfully', fileUrl });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Upload error:", error); // <-- هاد مهم
+    res.status(500).json({ 
+      message: 'Server error', 
+      error: error.message,     // <-- حوّل الخطأ لرسالة نصية
+      stack: error.stack       // <-- لإظهار تفاصيل الأخطاء لو تحب
+    });
   }
 });
+
 
 // Get team status
 router.get('/status', authenticate, authorize(['team']), async (req, res) => {

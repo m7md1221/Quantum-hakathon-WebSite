@@ -306,8 +306,22 @@ router.post('/finalize-evaluation', authenticate, authorize(['judge']), async (r
     if (client) {
       try { await client.query('ROLLBACK'); } catch (e) { console.error('Rollback failed:', e); }
     }
-    console.error('Error in submit-evaluation:', error);
-    res.status(500).json({ message: error.message || 'Server error' });
+    console.error('CRITICAL: Error in finalize-evaluation:', error);
+
+    // Provide more specific feedback for common database errors
+    let errorMessage = 'Server error';
+    if (error.code === '23514') { // PostgreSQL Check Constraint Violation
+      errorMessage = 'Evaluation failed: One or more scores exceed the allowed limit for their category.';
+    } else if (error.code === '23505') { // Unique Violation
+      errorMessage = 'This team has already been evaluated.';
+    } else {
+      errorMessage = error.message || 'Internal server error during evaluation submission.';
+    }
+
+    res.status(500).json({
+      message: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   } finally {
     if (client) client.release();
   }

@@ -47,17 +47,15 @@ router.post('/upload', authenticate, authorize(['team']), upload.single('project
     }
 
     const teamId = teamResult.rows[0].id;
-    const publicId = req.file.filename; // Cloudinary storage provides public_id in filename
 
     // Save to DB with UPSERT logic (using team_id as the unique key)
     await pool.query(`
-      INSERT INTO projects (team_id, file_path, public_id) 
-      VALUES ($1, $2, $3)
+      INSERT INTO projects (team_id, file_path) 
+      VALUES ($1, $2)
       ON CONFLICT (team_id) DO UPDATE SET 
         file_path = EXCLUDED.file_path, 
-        public_id = EXCLUDED.public_id,
         submitted_at = NOW()
-    `, [teamId, fileUrl, publicId]);
+    `, [teamId, fileUrl]);
 
     res.json({ message: 'Project uploaded successfully', fileUrl });
   } catch (error) {

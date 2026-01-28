@@ -341,7 +341,7 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
 
     // Get project file info
     const projectResult = await pool.query(
-      'SELECT file_path, public_id FROM projects WHERE team_id = $1',
+      'SELECT file_path FROM projects WHERE team_id = $1',
       [teamId]
     );
 
@@ -349,20 +349,29 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.status(404).json({ message: 'No project submission found for this team' });
     }
 
-    const { file_path, public_id } = projectResult.rows[0];
+    const filePath = projectResult.rows[0].file_path;
 
-    // If we have a public_id, generate a signed URL
-    if (public_id) {
-      const signedUrl = cloudinary.url(public_id, {
+    // Extract public_id from Cloudinary URL and sign it
+    try {
+      const uploadPart = filePath.split('/upload/')[1];
+      if (!uploadPart) throw new Error('Invalid URL');
+
+      const parts = uploadPart.split('/');
+      const publicId = (parts[0].startsWith('v') && parts.length > 1)
+        ? parts.slice(1).join('/')
+        : uploadPart;
+
+      const signedUrl = cloudinary.url(publicId, {
         sign_url: true,
         resource_type: 'raw',
         expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour
       });
-      return res.redirect(signedUrl);
-    }
 
-    // Redirect to original URL as fallback for legacy data
-    res.redirect(file_path);
+      return res.redirect(signedUrl);
+    } catch (err) {
+      console.error('Signed URL Error:', err);
+      res.redirect(filePath);
+    }
   } catch (error) {
     console.error('Error in judge project download:', error);
     res.status(500).json({ message: 'Server error' });

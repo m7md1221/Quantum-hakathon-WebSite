@@ -121,26 +121,37 @@ router.get('/projects/:teamId', authenticate, authorize(['admin']), async (req, 
   try {
     const teamId = req.params.teamId;
     const result = await pool.query(
-      'SELECT file_path, public_id FROM projects WHERE team_id = $1',
+      'SELECT file_path FROM projects WHERE team_id = $1',
       [teamId]
     );
 
     if (result.rows.length === 0) return res.status(404).json({ message: 'Project not found' });
 
-    const { file_path, public_id } = result.rows[0];
+    const filePath = result.rows[0].file_path;
 
-    // If we have a public_id, generate a signed URL
-    if (public_id) {
-      const signedUrl = cloudinary.url(public_id, {
+    // Extract public_id from Cloudinary URL and sign it
+    try {
+      const uploadPart = filePath.split('/upload/')[1];
+      if (!uploadPart) throw new Error('Invalid URL');
+
+      const parts = uploadPart.split('/');
+      // Skip version (v123/) if it exists
+      const publicId = (parts[0].startsWith('v') && parts.length > 1)
+        ? parts.slice(1).join('/')
+        : uploadPart;
+
+      const signedUrl = cloudinary.url(publicId, {
         sign_url: true,
         resource_type: 'raw',
-        expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
+        expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour
       });
-      return res.redirect(signedUrl);
-    }
 
-    // Fallback for older projects without public_id (might still give 401 if private)
-    res.redirect(file_path);
+      return res.redirect(signedUrl);
+    } catch (err) {
+      console.error('Signed URL Error:', err);
+      // Fallback: Redirect to original URL
+      res.redirect(filePath);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

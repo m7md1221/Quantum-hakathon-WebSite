@@ -7,12 +7,13 @@ const cloudinary = require('cloudinary').v2;
 
 const router = express.Router();
 
-// إعداد Cloudinary
+require('dotenv').config(); // مهم جدًا على Render
 cloudinary.config({
-  cloud_name: 'dsb7rtmcr',
-  api_key: '894363245818157',
-  api_secret: 'eM_Uv6D9pstT6EwMqKloXn-mFzY'
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
@@ -28,6 +29,7 @@ const upload = multer({ storage });
 // Upload project
 router.post('/upload', authenticate, authorize(['team']), upload.single('project'), async (req, res) => {
   const deadline = new Date('2026-02-01T23:59:59');
+   console.log("File upload info:", req.file);
   if (new Date() > deadline) {
     return res.status(400).json({ message: 'Submission deadline has passed' });
   }

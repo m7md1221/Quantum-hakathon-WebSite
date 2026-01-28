@@ -7,7 +7,8 @@ const { pool } = require('../db');
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true // <--- Ensures all URLs are HTTPS
 });
 
 const router = express.Router();
@@ -364,6 +365,7 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       const signedUrl = cloudinary.url(publicId, {
         sign_url: true,
         resource_type: 'raw',
+        secure: true, // <--- Added explicitly
         expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour
       });
 

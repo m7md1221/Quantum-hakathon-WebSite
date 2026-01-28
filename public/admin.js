@@ -381,7 +381,7 @@ async function loadJudges() {
 
       ${judge.evaluation_count > 0
             ? `<button id="${deleteBtnId}" class="btn btn-block btn-danger">
-              🗑️ حذف جميع التقييمات
+               حذف جميع التقييمات
             </button>`
             : `<button disabled class="btn btn-block btn-secondary">
               لا توجد تقييمات

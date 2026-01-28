@@ -251,8 +251,8 @@ router.get('/stats', authenticate, authorize(['admin']), async (req, res) => {
     const hallStats = await pool.query(`
       SELECT
         hall,
-        COUNT(*) as teams_count,
-        COUNT(CASE WHEN p.submitted_at IS NOT NULL THEN 1 END) as submitted_count,
+        COUNT(DISTINCT t.id) as teams_count,
+        COUNT(DISTINCT p.team_id) as submitted_count,
         COUNT(DISTINCT CASE WHEN e.id IS NOT NULL THEN t.id END) as evaluated_count
       FROM teams t
       LEFT JOIN projects p ON t.id = p.team_id

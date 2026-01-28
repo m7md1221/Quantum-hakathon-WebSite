@@ -24,7 +24,10 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 }
+});
 
 // Upload project
 router.post('/upload', authenticate, authorize(['team']), upload.single('project'), async (req, res) => {

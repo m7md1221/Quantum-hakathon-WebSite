@@ -1,12 +1,18 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 
 const router = express.Router();
+
+// Ensure uploads directory exists robustly
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 require('dotenv').config(); // مهم جدًا على Render
 cloudinary.config({
@@ -19,7 +25,7 @@ cloudinary.config({
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_'));

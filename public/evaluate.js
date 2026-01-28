@@ -255,7 +255,7 @@ async function downloadProject() {
   const originalText = downloadBtn.innerHTML;
 
   try {
-    downloadBtn.innerHTML = '⌛ Downloading...';
+    downloadBtn.innerHTML = '⌛ Preparing...';
     downloadBtn.disabled = true;
 
     const response = await fetch(`/api/judge/projects/${teamId}`, {
@@ -264,18 +264,15 @@ async function downloadProject() {
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      throw new Error(data.message || 'Download failed');
+      throw new Error(data.message || 'Failed to generate download link');
     }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `project-team-${teamId}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
+    const { signedUrl } = await response.json();
+
+    // Redirect browser to the signed HTTPS URL
+    // This handles large files efficiently and avoids Mixed Content errors
+    window.location.href = signedUrl;
+
   } catch (error) {
     console.error('Download error:', error);
     alert(`Download failed: ${error.message}`);

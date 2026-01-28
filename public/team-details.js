@@ -155,7 +155,7 @@ function displayTeamDetails(data) {
 }
 
 async function downloadProject(teamId) {
-  console.log('Downloading project for team ID:', teamId);
+  console.log('Generating secure download link for team ID:', teamId);
   const token = localStorage.getItem('token');
   try {
     const response = await fetch(`/api/admin/projects/${teamId}`, {
@@ -164,19 +164,16 @@ async function downloadProject(teamId) {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Project not found');
+      throw new Error(errorData.message || 'Failed to generate download link');
     }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `team-${teamId}-project.zip`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
+    const { signedUrl } = await response.json();
+
+    // Redirect browser to the signed HTTPS URL
+    window.location.href = signedUrl;
+
   } catch (err) {
+    console.error('Download Error:', err);
     alert(err.message);
   }
 }

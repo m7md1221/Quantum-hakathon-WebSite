@@ -144,15 +144,14 @@ router.get('/projects/:teamId', authenticate, authorize(['admin']), async (req, 
       const signedUrl = cloudinary.url(publicId, {
         sign_url: true,
         resource_type: 'raw',
-        secure: true, // <--- Added explicitly
+        secure: true,
         expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour
       });
 
-      return res.redirect(signedUrl);
+      return res.json({ signedUrl });
     } catch (err) {
       console.error('Signed URL Error:', err);
-      // Fallback: Redirect to original URL
-      res.redirect(filePath);
+      res.status(400).json({ message: 'Error generating secure download link' });
     }
   } catch (error) {
     console.error(error);

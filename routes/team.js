@@ -9,7 +9,7 @@ const router = express.Router();
 // Configure multer for ZIP uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+cb(null, path.join(__dirname, '..', 'uploads'));
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -46,7 +46,8 @@ const deadline = new Date('2026-02-01T23:59:59'); // أي تاريخ مستقب�
       return res.status(400).json({ message: 'Project already submitted' });
     }
 
-    const filePath = req.file.path;
+const filePath = path.relative(__dirname, req.file.path);
+console.log("Saved file path:", req.file.path);
 
     await pool.query('INSERT INTO projects (team_id, file_path) VALUES ($1, $2)', [teamId, filePath]);
 

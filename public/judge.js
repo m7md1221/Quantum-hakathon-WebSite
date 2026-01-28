@@ -29,6 +29,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
+    // Get judge profile (name + hall)
+    const profileResponse = await fetch('/api/auth/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (profileResponse.ok) {
+      const profile = await profileResponse.json();
+      document.getElementById('judge-name').textContent = profile.name;
+    }
+  } catch (error) {
+    console.error('Error loading profile:', error);
+  }
+
+  try {
     // Get hall info
     const hallResponse = await fetch('/api/judge/teams', {
       headers: { 'Authorization': `Bearer ${token}` }

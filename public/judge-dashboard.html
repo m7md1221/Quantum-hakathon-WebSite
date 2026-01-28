@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Judge Dashboard - Quantum Hackathon</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
     <div class="header">
       <h1>Judge Dashboard</h1>
+      <p id="judge-info" style="font-size: 1.2rem; margin-top: 10px; font-weight: 500; color: var(--primary-color);">
+        Welcome, <span id="judge-name">Loading...</span>
+      </p>
       <p>Evaluate teams in your assigned hall</p>
     </div>
 
@@ -29,4 +34,5 @@
   </div>
   <script src="judge.js"></script>
 </body>
+
 </html>

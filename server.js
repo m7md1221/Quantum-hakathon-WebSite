@@ -28,6 +28,12 @@ app.use('/api/team', teamRoutes);
 app.use('/api/judge', judgeRoutes);
 app.use('/api/admin', adminRoutes);
 
+app.get('/api/ping', (req, res) => {
+  res.json({ message: 'pong', time: new Date().toISOString() });
+});
+
+console.log('✅ Registered core /api routes');
+
 // 404 handler for API routes (before static files)
 app.use('/api', (req, res) => {
   console.error(`[404] ${req.method} ${req.path} - Route not found`);

@@ -85,6 +85,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (team) {
         document.getElementById('team-name').textContent = `Evaluating: ${team.name}`;
 
+        // Populate team number if available
+        if (team.team_number) {
+          const numSpan = document.getElementById('team-number');
+          const numContainer = document.getElementById('team-number-container');
+          if (numSpan && numContainer) {
+            numSpan.textContent = team.team_number;
+            numContainer.style.display = 'block';
+          }
+        }
+
         // Handle download button visibility and logic
         const downloadBtn = document.getElementById('download-project-btn');
         if (team.submitted_at) {

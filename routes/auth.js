@@ -3,7 +3,25 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../db');
 
+const { authenticate } = require('../middleware/authMiddleware');
+
 const router = express.Router();
+console.log('✅ Auth route file loaded');
+
+// Get current user profile
+router.get('/me', authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, name, email, role, hall FROM users WHERE id = $1',
+      [req.user.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // Login
 router.post('/login', async (req, res) => {

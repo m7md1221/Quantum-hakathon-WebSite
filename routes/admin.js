@@ -120,10 +120,10 @@ router.get('/projects/:teamId', authenticate, authorize(['admin']), async (req, 
 
     if (result.rows.length === 0) return res.status(404).json({ message: 'Project not found' });
 
-    const filePath = result.rows[0].file_path;
-    if (!fs.existsSync(filePath)) return res.status(404).json({ message: 'File not found on server' });
+    const fileUrl = result.rows[0].file_path;
 
-    res.download(filePath);
+    // Redirect to Cloudinary URL
+    res.redirect(fileUrl);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

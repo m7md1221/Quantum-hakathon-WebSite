@@ -342,14 +342,10 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.status(404).json({ message: 'No project submission found for this team' });
     }
 
-    const filePath = projectResult.rows[0].file_path;
+    const fileUrl = projectResult.rows[0].file_path;
 
-    if (!fs.existsSync(filePath)) {
-      console.error('File not found on disk:', filePath);
-      return res.status(404).json({ message: 'Project file not found on server' });
-    }
-
-    res.download(filePath);
+    // Redirect to Cloudinary URL
+    res.redirect(fileUrl);
   } catch (error) {
     console.error('Error in judge project download:', error);
     res.status(500).json({ message: 'Server error' });

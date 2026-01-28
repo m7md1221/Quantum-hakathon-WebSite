@@ -66,7 +66,7 @@ function updateButtonStates(fieldName, score) {
   const minusBtn = document.querySelector(`.score-btn.minus[data-field="${fieldName}"]`);
   const plusBtn = document.querySelector(`.score-btn.plus[data-field="${fieldName}"]`);
   const maxScore = getMaxScore(fieldName);
-  
+
   if (minusBtn) minusBtn.disabled = score <= 0;
   if (plusBtn) plusBtn.disabled = score >= maxScore;
 }
@@ -84,6 +84,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const team = teams.find(t => t.id == teamId);
       if (team) {
         document.getElementById('team-name').textContent = `Evaluating: ${team.name}`;
+
+        // Handle download button visibility and logic
+        const downloadBtn = document.getElementById('download-project-btn');
+        if (team.submitted_at) {
+          downloadBtn.style.display = 'block';
+          downloadBtn.addEventListener('click', () => downloadProject());
+        }
       }
     }
 
@@ -242,3 +249,38 @@ document.getElementById('evaluationForm').addEventListener('submit', (e) => {
     openConfirmModal();
   }
 });
+
+async function downloadProject() {
+  const downloadBtn = document.getElementById('download-project-btn');
+  const originalText = downloadBtn.innerHTML;
+
+  try {
+    downloadBtn.innerHTML = '⌛ Downloading...';
+    downloadBtn.disabled = true;
+
+    const response = await fetch(`/api/judge/projects/${teamId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.message || 'Download failed');
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `project-team-${teamId}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  } catch (error) {
+    console.error('Download error:', error);
+    alert(`Download failed: ${error.message}`);
+  } finally {
+    downloadBtn.innerHTML = originalText;
+    downloadBtn.disabled = false;
+  }
+}

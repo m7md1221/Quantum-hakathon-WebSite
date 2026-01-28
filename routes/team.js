@@ -29,7 +29,7 @@ const upload = multer({
 
 // Upload project
 router.post('/upload', authenticate, authorize(['team']), upload.single('project'), async (req, res) => {
-  const deadline = new Date('2026-01-25T23:59:59'); // Example deadline
+const deadline = new Date('2026-02-01T23:59:59'); // أي تاريخ مستقبلي
   if (new Date() > deadline) {
     return res.status(400).json({ message: 'Submission deadline has passed' });
   }

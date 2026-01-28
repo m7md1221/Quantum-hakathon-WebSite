@@ -127,16 +127,16 @@ async function loadTeams() {
     }
 
     loadingDiv.style.display = 'none';
-    
+
     // Clear container and ensure it's visible, but we won't use grid directly on it anymore
     // We will append hall sections to it.
-    teamsContainer.style.display = 'block'; 
+    teamsContainer.style.display = 'block';
     teamsContainer.className = ''; // Remove grid class from main container
     teamsContainer.innerHTML = '';
 
     // Group teams by Hall
     const teamsByHall = { 'A': [], 'B': [], 'C': [], 'D': [] };
-    
+
     teams.forEach(team => {
       const hall = team.hall || 'A'; // Default to A just in case
       if (teamsByHall[hall]) {
@@ -187,38 +187,38 @@ async function loadTeams() {
       // Content Container
       const content = document.createElement('div');
       content.className = 'hall-content';
-      
+
       // Create wrapper for grid
       const contentWrapper = document.createElement('div');
       contentWrapper.className = 'hall-teams-grid';
 
       // Render Cards
       if (hallTeams.length === 0) {
-          contentWrapper.innerHTML = '<p class="hall-empty-message">لا توجد فرق في هذه القاعة</p>';
+        contentWrapper.innerHTML = '<p class="hall-empty-message">لا توجد فرق في هذه القاعة</p>';
       } else {
-          hallTeams.forEach((team) => {
-              const globalIndex = teams.findIndex(t => t.id === team.id);
-              const isWinner = globalIndex < 5 && parseFloat(team.average_score) > 0;
+        hallTeams.forEach((team) => {
+          const globalIndex = teams.findIndex(t => t.id === team.id);
+          const isWinner = globalIndex < 5 && parseFloat(team.average_score) > 0;
 
-              const teamCard = createTeamCard(team, isWinner, globalIndex + 1);
-              contentWrapper.appendChild(teamCard);
-          });
+          const teamCard = createTeamCard(team, isWinner, globalIndex + 1);
+          contentWrapper.appendChild(teamCard);
+        });
       }
 
       content.appendChild(contentWrapper);
 
       // Event Listener for Toggle
       header.addEventListener('click', () => {
-          const isOpen = content.classList.contains('open');
-          
-          // Close all others
-          document.querySelectorAll('.hall-content').forEach(c => c.classList.remove('open'));
-          document.querySelectorAll('.hall-header').forEach(h => h.classList.remove('active'));
+        const isOpen = content.classList.contains('open');
 
-          if (!isOpen) {
-              content.classList.add('open');
-              header.classList.add('active');
-          }
+        // Close all others
+        document.querySelectorAll('.hall-content').forEach(c => c.classList.remove('open'));
+        document.querySelectorAll('.hall-header').forEach(h => h.classList.remove('active'));
+
+        if (!isOpen) {
+          content.classList.add('open');
+          header.classList.add('active');
+        }
       });
 
       hallSection.appendChild(header);
@@ -235,7 +235,7 @@ async function loadTeams() {
 function createTeamCard(team, isWinner, rank) {
   const teamCard = document.createElement('div');
   teamCard.className = 'team-card';
-  
+
   if (isWinner) {
     teamCard.style.borderLeft = '4px solid #d4af37';
     teamCard.style.background = 'linear-gradient(135deg, #fffef5 0%, #fff 100%)';
@@ -244,7 +244,7 @@ function createTeamCard(team, isWinner, rank) {
   const avgScore = parseFloat(team.average_score) || 0;
   const evalCount = parseInt(team.evaluation_count) || 0;
   const avgScoreOutOf100 = (avgScore * 10).toFixed(1);
-  
+
   const rankBadge = isWinner ? getRankBadge(rank) : '';
 
   teamCard.innerHTML = `
@@ -278,7 +278,7 @@ function getRankBadge(rank) {
     4: { text: '4th', color: '#2563eb' },
     5: { text: '5th', color: '#2563eb' }
   };
-  
+
   const badge = badges[rank];
   return `
     <div style="position: absolute; top: -8px; right: -8px; background: ${badge.color}; color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
@@ -325,14 +325,14 @@ async function loadJudges() {
       judgesByHall[judge.hall].push(judge);
     });
 
-  Object.keys(judgesByHall).sort().forEach(hall => {
-  const hallSection = document.createElement('div');
-  hallSection.className = 'hall-section';
+    Object.keys(judgesByHall).sort().forEach(hall => {
+      const hallSection = document.createElement('div');
+      hallSection.className = 'hall-section';
 
-  // Header
-  const header = document.createElement('div');
-  header.className = 'hall-header';
-  header.innerHTML = `
+      // Header
+      const header = document.createElement('div');
+      header.className = 'hall-header';
+      header.innerHTML = `
     <div class="hall-header-content">
       <div class="hall-title-section">
         <h3 class="hall-title">القاعة ${hall}</h3>
@@ -351,22 +351,22 @@ async function loadJudges() {
     </div>
   `;
 
-  // Content
-  const content = document.createElement('div');
-  content.className = 'hall-content';
+      // Content
+      const content = document.createElement('div');
+      content.className = 'hall-content';
 
-  const judgesGrid = document.createElement('div');
-  judgesGrid.className = 'grid grid-3';
-  judgesGrid.style.gap = '15px';
+      const judgesGrid = document.createElement('div');
+      judgesGrid.className = 'grid grid-3';
+      judgesGrid.style.gap = '15px';
 
-  judgesByHall[hall].forEach(judge => {
-    const judgeCard = document.createElement('div');
-    judgeCard.className = 'judge-card';
-    judgeCard.style.padding = '20px';
+      judgesByHall[hall].forEach(judge => {
+        const judgeCard = document.createElement('div');
+        judgeCard.className = 'judge-card';
+        judgeCard.style.padding = '20px';
 
-    const deleteBtnId = `delete-btn-${judge.id}`;
+        const deleteBtnId = `delete-btn-${judge.id}`;
 
-    judgeCard.innerHTML = `
+        judgeCard.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
         <div>
           <h3 style="margin:0;color:var(--primary-color);">${judge.name}</h3>
@@ -379,52 +379,51 @@ async function loadJudges() {
         </span>
       </div>
 
-      ${
-        judge.evaluation_count > 0
-          ? `<button id="${deleteBtnId}" class="btn btn-block btn-danger">
-               حذف جميع التقييمات
+      ${judge.evaluation_count > 0
+            ? `<button id="${deleteBtnId}" class="btn btn-block btn-danger">
+              🗑️ حذف جميع التقييمات
             </button>`
-          : `<button disabled class="btn btn-block btn-secondary">
+            : `<button disabled class="btn btn-block btn-secondary">
               لا توجد تقييمات
             </button>`
-      }
+          }
     `;
 
-    if (judge.evaluation_count > 0) {
-      judgeCard.querySelector(`#${deleteBtnId}`)
-        .addEventListener('click', () => {
-          deleteAllJudgeEvaluations(
-            judge.id,
-            judge.name,
-            judge.evaluation_count
-          );
-        });
-    }
+        if (judge.evaluation_count > 0) {
+          judgeCard.querySelector(`#${deleteBtnId}`)
+            .addEventListener('click', () => {
+              deleteAllJudgeEvaluations(
+                judge.id,
+                judge.name,
+                judge.evaluation_count
+              );
+            });
+        }
 
-    judgesGrid.appendChild(judgeCard);
-  });
+        judgesGrid.appendChild(judgeCard);
+      });
 
-  content.appendChild(judgesGrid);
+      content.appendChild(judgesGrid);
 
-  // Toggle behavior (زي Teams)
-  header.addEventListener('click', () => {
-    const isOpen = content.classList.contains('open');
+      // Toggle behavior (زي Teams)
+      header.addEventListener('click', () => {
+        const isOpen = content.classList.contains('open');
 
-    document.querySelectorAll('#judges-container .hall-content')
-      .forEach(c => c.classList.remove('open'));
-    document.querySelectorAll('#judges-container .hall-header')
-      .forEach(h => h.classList.remove('active'));
+        document.querySelectorAll('#judges-container .hall-content')
+          .forEach(c => c.classList.remove('open'));
+        document.querySelectorAll('#judges-container .hall-header')
+          .forEach(h => h.classList.remove('active'));
 
-    if (!isOpen) {
-      content.classList.add('open');
-      header.classList.add('active');
-    }
-  });
+        if (!isOpen) {
+          content.classList.add('open');
+          header.classList.add('active');
+        }
+      });
 
-  hallSection.appendChild(header);
-  hallSection.appendChild(content);
-  judgesContainer.appendChild(hallSection);
-});
+      hallSection.appendChild(header);
+      hallSection.appendChild(content);
+      judgesContainer.appendChild(hallSection);
+    });
 
 
   } catch (error) {
@@ -445,10 +444,10 @@ async function deleteAllJudgeEvaluations(judgeId, judgeName, evaluationCount) {
 
   try {
     console.log('Deleting all evaluations for judge:', { judgeId, judgeName, evaluationCount });
-    
+
     const response = await fetch(`/api/admin/judges/${judgeId}/evaluations`, {
       method: 'DELETE',
-      headers: { 
+      headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
@@ -459,7 +458,7 @@ async function deleteAllJudgeEvaluations(judgeId, judgeName, evaluationCount) {
 
     let data;
     const contentType = response.headers.get('content-type');
-    
+
     if (contentType && contentType.includes('application/json')) {
       try {
         data = await response.json();

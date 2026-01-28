@@ -184,7 +184,13 @@
 
     <div class="card" style="max-width: 700px;">
       <form id="evaluationForm">
-        <h3 style="margin-bottom: 20px; color: var(--primary-color);">Evaluation Criteria</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="margin: 0; color: var(--primary-color);">Evaluation Criteria</h3>
+          <button type="button" id="download-project-btn" class="btn btn-secondary"
+            style="display: none; padding: 8px 15px; font-size: 0.85rem;">
+            📥 Download Project
+          </button>
+        </div>
         <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 0.9rem;"></p>
 
         <!-- Problem & Importance (15%) -->
@@ -196,9 +202,12 @@
             </small>
           </label>
           <div class="score-control">
-            <button type="button" class="score-btn minus" data-field="problem_importance" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="problem_importance-display" min="0" max="15" value="0" aria-label="Problem & Importance score">
-            <button type="button" class="score-btn plus" data-field="problem_importance" aria-label="Increase score">+</button>
+            <button type="button" class="score-btn minus" data-field="problem_importance"
+              aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="problem_importance-display" min="0" max="15" value="0"
+              aria-label="Problem & Importance score">
+            <button type="button" class="score-btn plus" data-field="problem_importance"
+              aria-label="Increase score">+</button>
             <input type="hidden" id="problem_importance" name="problem_importance" value="0" required>
           </div>
         </div>
@@ -212,9 +221,12 @@
             </small>
           </label>
           <div class="score-control">
-            <button type="button" class="score-btn minus" data-field="ai_quantum_use" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="ai_quantum_use-display" min="0" max="15" value="0" aria-label="AI/Quantum Use score">
-            <button type="button" class="score-btn plus" data-field="ai_quantum_use" aria-label="Increase score">+</button>
+            <button type="button" class="score-btn minus" data-field="ai_quantum_use"
+              aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="ai_quantum_use-display" min="0" max="15" value="0"
+              aria-label="AI/Quantum Use score">
+            <button type="button" class="score-btn plus" data-field="ai_quantum_use"
+              aria-label="Increase score">+</button>
             <input type="hidden" id="ai_quantum_use" name="ai_quantum_use" value="0" required>
           </div>
         </div>
@@ -229,7 +241,8 @@
           </label>
           <div class="score-control">
             <button type="button" class="score-btn minus" data-field="sdgs" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="sdgs-display" min="0" max="10" value="0" aria-label="SDGs score">
+            <input type="number" class="score-display" id="sdgs-display" min="0" max="10" value="0"
+              aria-label="SDGs score">
             <button type="button" class="score-btn plus" data-field="sdgs" aria-label="Increase score">+</button>
             <input type="hidden" id="sdgs" name="sdgs" value="0" required>
           </div>
@@ -245,7 +258,8 @@
           </label>
           <div class="score-control">
             <button type="button" class="score-btn minus" data-field="innovation" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="innovation-display" min="0" max="15" value="0" aria-label="Innovation score">
+            <input type="number" class="score-display" id="innovation-display" min="0" max="15" value="0"
+              aria-label="Innovation score">
             <button type="button" class="score-btn plus" data-field="innovation" aria-label="Increase score">+</button>
             <input type="hidden" id="innovation" name="innovation" value="0" required>
           </div>
@@ -260,9 +274,12 @@
             </small>
           </label>
           <div class="score-control">
-            <button type="button" class="score-btn minus" data-field="social_impact" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="social_impact-display" min="0" max="15" value="0" aria-label="Social Impact score">
-            <button type="button" class="score-btn plus" data-field="social_impact" aria-label="Increase score">+</button>
+            <button type="button" class="score-btn minus" data-field="social_impact"
+              aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="social_impact-display" min="0" max="15" value="0"
+              aria-label="Social Impact score">
+            <button type="button" class="score-btn plus" data-field="social_impact"
+              aria-label="Increase score">+</button>
             <input type="hidden" id="social_impact" name="social_impact" value="0" required>
           </div>
         </div>
@@ -276,9 +293,12 @@
             </small>
           </label>
           <div class="score-control">
-            <button type="button" class="score-btn minus" data-field="code_quality" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="code_quality-display" min="0" max="10" value="0" aria-label="Code Quality score">
-            <button type="button" class="score-btn plus" data-field="code_quality" aria-label="Increase score">+</button>
+            <button type="button" class="score-btn minus" data-field="code_quality"
+              aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="code_quality-display" min="0" max="10" value="0"
+              aria-label="Code Quality score">
+            <button type="button" class="score-btn plus" data-field="code_quality"
+              aria-label="Increase score">+</button>
             <input type="hidden" id="code_quality" name="code_quality" value="0" required>
           </div>
         </div>
@@ -292,8 +312,10 @@
             </small>
           </label>
           <div class="score-control">
-            <button type="button" class="score-btn minus" data-field="performance" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="performance-display" min="0" max="10" value="0" aria-label="Performance score">
+            <button type="button" class="score-btn minus" data-field="performance"
+              aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="performance-display" min="0" max="10" value="0"
+              aria-label="Performance score">
             <button type="button" class="score-btn plus" data-field="performance" aria-label="Increase score">+</button>
             <input type="hidden" id="performance" name="performance" value="0" required>
           </div>
@@ -308,9 +330,12 @@
             </small>
           </label>
           <div class="score-control">
-            <button type="button" class="score-btn minus" data-field="presentation" aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="presentation-display" min="0" max="10" value="0" aria-label="Presentation score">
-            <button type="button" class="score-btn plus" data-field="presentation" aria-label="Increase score">+</button>
+            <button type="button" class="score-btn minus" data-field="presentation"
+              aria-label="Decrease score">−</button>
+            <input type="number" class="score-display" id="presentation-display" min="0" max="10" value="0"
+              aria-label="Presentation score">
+            <button type="button" class="score-btn plus" data-field="presentation"
+              aria-label="Increase score">+</button>
             <input type="hidden" id="presentation" name="presentation" value="0" required>
           </div>
         </div>
@@ -331,11 +356,11 @@
   <script src="evaluate.js"></script>
   <script>
     // Score control functionality - handles +/- button clicks
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const scoreButtons = document.querySelectorAll('.score-btn');
 
       scoreButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
           // Get field name from button's data attribute
           const fieldName = this.getAttribute('data-field');
           if (!fieldName) return;
@@ -348,7 +373,7 @@
           // Determine if this is a plus or minus button
           const isPlus = this.classList.contains('plus');
           const isMinus = this.classList.contains('minus');
-          
+
           // Get current score and max score for this criterion
           let currentScore = parseFloat(hiddenInput.value) || 0;
           const maxScore = getMaxScore(fieldName);
@@ -388,15 +413,15 @@
       fields.forEach(field => {
         const hiddenInput = document.getElementById(field);
         const displayInput = document.getElementById(field + '-display');
-        
+
         if (hiddenInput) {
           const score = parseFloat(hiddenInput.value) || 0;
-          
+
           // Sync display input with hidden input value
           if (displayInput) {
             displayInput.value = score;
           }
-          
+
           // Update button states
           if (typeof updateButtonStates === 'function') {
             updateButtonStates(field, score);
@@ -407,10 +432,10 @@
   </script>
   <script>
     // Handle manual input in score display fields
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       document.querySelectorAll('.score-display').forEach(input => {
         // Handle input event (while typing)
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
           const fieldName = this.id.replace('-display', '');
           const hiddenInput = document.getElementById(fieldName);
           if (!hiddenInput) return;
@@ -442,7 +467,7 @@
         });
 
         // Handle blur event (when field loses focus) - final validation
-        input.addEventListener('blur', function() {
+        input.addEventListener('blur', function () {
           const fieldName = this.id.replace('-display', '');
           const hiddenInput = document.getElementById(fieldName);
           if (!hiddenInput) return;
@@ -469,7 +494,7 @@
         });
 
         // Prevent non-numeric characters (except minus sign at start)
-        input.addEventListener('keydown', function(e) {
+        input.addEventListener('keydown', function (e) {
           // Allow: backspace, delete, tab, escape, enter, decimal point, minus
           if ([46, 8, 9, 27, 13, 110, 189, 190].indexOf(e.keyCode) !== -1 ||
             // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
@@ -492,4 +517,4 @@
 
 </body>
 
-</html> 
+</html>

@@ -39,10 +39,19 @@ function displayTeamDetails(data) {
   // Team info
   document.getElementById('team-name').textContent = team.name;
   document.getElementById('team-hall').textContent = team.hall;
-  document.getElementById('team-status').innerHTML = team.submitted_at 
-    ? '<span style="color: var(--success-color); font-weight: 600;">Submitted</span>' 
+  document.getElementById('team-status').innerHTML = team.submitted_at
+    ? '<span style="color: var(--success-color); font-weight: 600;">Submitted</span>'
     : '<span style="color: var(--warning-color); font-weight: 600;">Pending</span>';
   document.getElementById('submitted-at').textContent = team.submitted_at ? new Date(team.submitted_at).toLocaleString() : 'N/A';
+
+  // Project download button
+  const downloadBtn = document.getElementById('download-btn');
+  if (team.submitted_at) {
+    downloadBtn.style.display = 'block';
+    downloadBtn.onclick = () => downloadProject(team.id);
+  } else {
+    downloadBtn.style.display = 'none';
+  }
 
   // Calculate average score (only from actual evaluations)
   const evaluatedScores = evaluations.filter(e => e.total_score !== null && e.evaluation_id !== null);
@@ -57,21 +66,21 @@ function displayTeamDetails(data) {
 
   // Filter only judges who actually evaluated
   const actualEvaluations = evaluations.filter(e => e.evaluation_id !== null);
-  
+
   if (actualEvaluations.length === 0) {
     evaluationsList.innerHTML = '<p>No evaluations yet.</p>';
   } else {
-    actualEvaluations.forEach(eval => {
+    evaluations.filter(e => e.evaluation_id !== null).forEach(evaluation => {
       const evalDiv = document.createElement('div');
       evalDiv.className = 'evaluation-item';
       // Convert to /100 scale
-      const score = eval.total_score ? (parseFloat(eval.total_score) * 10).toFixed(1) : 'N/A';
+      const score = evaluation.total_score ? (parseFloat(evaluation.total_score) * 10).toFixed(1) : 'N/A';
       evalDiv.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: var(--card-bg);">
           <div>
-            <strong>${eval.judge_name}</strong>
+            <strong>${evaluation.judge_name}</strong>
             <br>
-            <small style="color: var(--text-secondary);">Hall ${eval.judge_hall}</small>
+            <small style="color: var(--text-secondary);">Hall ${evaluation.judge_hall}</small>
           </div>
           <div style="display: flex; align-items: center; gap: 15px;">
             <div style="text-align: right;">
@@ -82,8 +91,8 @@ function displayTeamDetails(data) {
             <button 
               class="btn btn-danger delete-eval-btn" 
               style="padding: 8px 16px; font-size: 0.9rem;"
-              data-evaluation-id="${eval.evaluation_id}"
-              data-judge-name="${eval.judge_name}"
+              data-evaluation-id="${evaluation.evaluation_id}"
+              data-judge-name="${evaluation.judge_name}"
               data-team-id="${teamId}"
               title="حذف تقييم هذا الحكم">
                حذف التقييم
@@ -93,10 +102,10 @@ function displayTeamDetails(data) {
       `;
       evaluationsList.appendChild(evalDiv);
     });
-    
+
     // Add event listeners to delete buttons
     document.querySelectorAll('.delete-eval-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const evaluationId = this.getAttribute('data-evaluation-id');
         const judgeName = this.getAttribute('data-judge-name');
         const teamId = this.getAttribute('data-team-id');
@@ -145,6 +154,33 @@ function displayTeamDetails(data) {
   }
 }
 
+async function downloadProject(teamId) {
+  console.log('Downloading project for team ID:', teamId);
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`/api/admin/projects/${teamId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Project not found');
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `team-${teamId}-project.zip`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
 async function deleteEvaluation(evaluationId, judgeName, teamId) {
   if (!evaluationId || !judgeName) {
     alert('❌ معلومات غير صحيحة');
@@ -157,10 +193,10 @@ async function deleteEvaluation(evaluationId, judgeName, teamId) {
 
   try {
     console.log('Deleting evaluation:', { evaluationId, judgeName, teamId });
-    
+
     const response = await fetch(`/api/admin/evaluations/${evaluationId}`, {
       method: 'DELETE',
-      headers: { 
+      headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
@@ -171,7 +207,7 @@ async function deleteEvaluation(evaluationId, judgeName, teamId) {
 
     let data;
     const contentType = response.headers.get('content-type');
-    
+
     if (contentType && contentType.includes('application/json')) {
       try {
         data = await response.json();

@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
 
@@ -77,35 +78,55 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
 // Get results (average of judge's total scores)
 router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
   try {
-   const resultsResult = await pool.query(`
-  SELECT
-    t.id,
-    u.team_number,
-    u.name,
-    t.hall,
-    AVG(judge_total) as average_score
-  FROM (
-    SELECT
-      t.id,
-      e.judge_id,
-      SUM(es.score * c.weight / 100) as judge_total
-    FROM teams t
-    JOIN evaluations e ON t.id = e.team_id
-    JOIN evaluation_scores es ON e.id = es.evaluation_id
-    JOIN criteria c ON es.criterion_key = c.key
-    GROUP BY t.id, e.judge_id
-  ) judge_scores
-  JOIN teams t ON judge_scores.id = t.id
-  JOIN users u ON t.user_id = u.id
-  GROUP BY t.id, u.team_number, u.name, t.hall
-  ORDER BY average_score DESC
-`);
-
+    const resultsResult = await pool.query(`
+      SELECT
+        t.id,
+        u.team_number,
+        u.name,
+        t.hall,
+        AVG(judge_total) as average_score
+      FROM (
+        SELECT
+          t.id,
+          e.judge_id,
+          SUM(es.score * c.weight / 100) as judge_total
+        FROM teams t
+        JOIN evaluations e ON t.id = e.team_id
+        JOIN evaluation_scores es ON e.id = es.evaluation_id
+        JOIN criteria c ON es.criterion_key = c.key
+        GROUP BY t.id, e.judge_id
+      ) judge_scores
+      JOIN teams t ON judge_scores.id = t.id
+      JOIN users u ON t.user_id = u.id
+      GROUP BY t.id, u.team_number, u.name, t.hall
+      ORDER BY average_score DESC
+    `);
 
     res.json(resultsResult.rows);
   } catch (error) {
     console.error('Error in /results:', error);
     res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+});
+
+// Download project file by teamId (Admin version)
+router.get('/projects/:teamId', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const teamId = req.params.teamId;
+    const result = await pool.query(
+      'SELECT file_path FROM projects WHERE team_id = $1',
+      [teamId]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Project not found' });
+
+    const filePath = result.rows[0].file_path;
+    if (!fs.existsSync(filePath)) return res.status(404).json({ message: 'File not found on server' });
+
+    res.download(filePath);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

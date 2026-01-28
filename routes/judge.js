@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
 
@@ -8,7 +9,7 @@ const router = express.Router();
 function getMaxScoreForCriterion(criterionKey) {
   const max15Criteria = ['problem_importance', 'ai_quantum_use', 'innovation', 'social_impact'];
   const max10Criteria = ['sdgs', 'code_quality', 'performance', 'presentation'];
-  
+
   if (max15Criteria.includes(criterionKey)) {
     return 15;
   } else if (max10Criteria.includes(criterionKey)) {
@@ -21,7 +22,7 @@ function getMaxScoreForCriterion(criterionKey) {
 router.get('/team-evaluation', authenticate, authorize(['judge']), async (req, res) => {
   try {
     const { teamId } = req.query;
-    
+
     if (!teamId) {
       return res.status(400).json({ message: 'teamId is required' });
     }
@@ -301,6 +302,57 @@ router.post('/finalize-evaluation', authenticate, authorize(['judge']), async (r
     res.status(500).json({ message: error.message || 'Server error' });
   } finally {
     if (client) client.release();
+  }
+});
+
+// Download project file by teamId (restricted to judge's hall)
+router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    // Get judge info
+    const judgeResult = await pool.query(
+      'SELECT id, hall FROM judges WHERE user_id = $1',
+      [req.user.id]
+    );
+
+    if (judgeResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Judge not found' });
+    }
+
+    const judgeHall = judgeResult.rows[0].hall;
+
+    // Check if team is in judge's hall
+    const teamResult = await pool.query('SELECT hall FROM teams WHERE id = $1', [teamId]);
+    if (teamResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+
+    if (teamResult.rows[0].hall !== judgeHall) {
+      return res.status(403).json({ message: 'You can only download projects for teams in your hall' });
+    }
+
+    // Get project file path
+    const projectResult = await pool.query(
+      'SELECT file_path FROM projects WHERE team_id = $1',
+      [teamId]
+    );
+
+    if (projectResult.rows.length === 0) {
+      return res.status(404).json({ message: 'No project submission found for this team' });
+    }
+
+    const filePath = projectResult.rows[0].file_path;
+
+    if (!fs.existsSync(filePath)) {
+      console.error('File not found on disk:', filePath);
+      return res.status(404).json({ message: 'Project file not found on server' });
+    }
+
+    res.download(filePath);
+  } catch (error) {
+    console.error('Error in judge project download:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

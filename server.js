@@ -31,10 +31,10 @@ app.use('/api/admin', adminRoutes);
 // 404 handler for API routes (before static files)
 app.use('/api', (req, res) => {
   console.error(`[404] ${req.method} ${req.path} - Route not found`);
-  res.status(404).json({ 
-    error: 'Route not found', 
-    method: req.method, 
-    path: req.path 
+  res.status(404).json({
+    error: 'Route not found',
+    method: req.method,
+    path: req.path
   });
 });
 
@@ -69,6 +69,21 @@ console.log('================================\n');
 // Serve frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// GLOBAL ERROR HANDLER
+app.use((err, req, res, next) => {
+  console.error('[Global Error]', err);
+
+  // Handle Multer errors specifically if needed
+  if (err instanceof require('multer').MulterError) {
+    return res.status(400).json({ message: 'File upload error: ' + err.message });
+  }
+
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+    error: process.env.NODE_ENV === 'production' ? {} : err
+  });
 });
 
 app.listen(PORT, () => {

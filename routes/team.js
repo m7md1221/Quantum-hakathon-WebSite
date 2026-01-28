@@ -19,8 +19,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'quantum_projects',
-    format: async (req, file) => 'zip',
-    public_id: (req, file) => Date.now() + '-' + file.originalname,
+    resource_type: 'raw', // <--- مهم جدًا لرفع ملفات ZIP
+    public_id: (req, file) => Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_'),
   },
 });
 
@@ -29,19 +29,35 @@ const upload = multer({ storage });
 // Upload project
 router.post('/upload', authenticate, authorize(['team']), upload.single('project'), async (req, res) => {
   try {
-    console.log("File upload info:", req.file); // تأكد Multer استلم الملف
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    console.log("File upload info:", req.file);
     const fileUrl = req.file.path;
 
-    // خزنه في DB
-    await pool.query('INSERT INTO projects (team_id, file_path) VALUES ($1, $2)', [req.user.id, fileUrl]);
+    // Get the actual team ID (NOT user ID)
+    const teamResult = await pool.query('SELECT id FROM teams WHERE user_id = $1', [req.user.id]);
+
+    if (teamResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Team record not found for this user' });
+    }
+
+    const teamId = teamResult.rows[0].id;
+
+    // Save to DB with UPSERT logic (using team_id as the unique key)
+    await pool.query(`
+      INSERT INTO projects (team_id, file_path) 
+      VALUES ($1, $2)
+      ON CONFLICT (team_id) DO UPDATE SET file_path = EXCLUDED.file_path, submitted_at = NOW()
+    `, [teamId, fileUrl]);
 
     res.json({ message: 'Project uploaded successfully', fileUrl });
   } catch (error) {
-    console.error("Upload error:", error); // <-- هاد مهم
-    res.status(500).json({ 
-      message: 'Server error', 
-      error: error.message,     // <-- حوّل الخطأ لرسالة نصية
-      stack: error.stack       // <-- لإظهار تفاصيل الأخطاء لو تحب
+    console.error("Upload error details:", error);
+    res.status(500).json({
+      message: 'Upload failed: ' + (error.message || 'Server error'),
+      error: error.message
     });
   }
 });

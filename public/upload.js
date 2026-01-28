@@ -25,19 +25,26 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
       body: formData
     });
 
-    const data = await response.json();
+    // Parse data safely
+    let data;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+      data = { message: 'Server error: ' + (text.substring(0, 50) || 'Unknown error') };
+    }
 
     if (response.ok) {
-      message.innerHTML = `<div class="message success">${data.message}</div>`;
-      // Redirect after success
-      setTimeout(() => {
-        window.location.href = 'team-dashboard.html';
-      }, 2000);
+      message.innerHTML = `<div class="message success">${data.message || 'Project uploaded successfully'}</div>`;
+      setTimeout(() => { window.location.href = 'team-dashboard.html'; }, 2000);
     } else {
-      message.innerHTML = `<div class="message error">${data.message}</div>`;
+      const errorMsg = data.message || 'Upload failed';
+      message.innerHTML = `<div class="message error">${typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg)}</div>`;
     }
   } catch (error) {
-    message.innerHTML = `<div class="message error">An error occurred during upload</div>`;
+    console.error('Upload catch error:', error);
+    message.innerHTML = `<div class="message error">An error occurred during upload: ${error.message}</div>`;
   } finally {
     submitBtn.textContent = originalText;
     submitBtn.disabled = false;

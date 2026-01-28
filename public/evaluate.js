@@ -174,7 +174,8 @@ function openConfirmModal() {
 
   fields.forEach(field => {
     const value = document.getElementById(field.id)?.value || 0;
-    summaryHtml += `<p>${field.label}: <span>${value}</span></p>`;
+    const maxScore = getMaxScore(field.id);
+    summaryHtml += `<p>${field.label}: <span>${value} / ${maxScore}</span></p>`;
   });
 
   summaryHtml += '</div>';

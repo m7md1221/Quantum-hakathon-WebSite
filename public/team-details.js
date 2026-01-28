@@ -56,7 +56,7 @@ function displayTeamDetails(data) {
   // Calculate average score (only from actual evaluations)
   const evaluatedScores = evaluations.filter(e => e.total_score !== null && e.evaluation_id !== null);
   const averageScore = evaluatedScores.length > 0
-    ? ((evaluatedScores.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluatedScores.length) * 10).toFixed(1)
+    ? (evaluatedScores.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluatedScores.length).toFixed(1)
     : 'N/A';
   document.getElementById('average-score').textContent = averageScore !== 'N/A' ? `${averageScore}/100` : 'N/A';
 
@@ -73,8 +73,8 @@ function displayTeamDetails(data) {
     evaluations.filter(e => e.evaluation_id !== null).forEach(evaluation => {
       const evalDiv = document.createElement('div');
       evalDiv.className = 'evaluation-item';
-      // Convert to /100 scale
-      const score = evaluation.total_score ? (parseFloat(evaluation.total_score) * 10).toFixed(1) : 'N/A';
+      // Already on /100 scale from backend
+      const score = evaluation.total_score ? parseFloat(evaluation.total_score).toFixed(1) : 'N/A';
       evalDiv.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: var(--card-bg);">
           <div>
@@ -143,7 +143,7 @@ function displayTeamDetails(data) {
             <div style="background: var(--background); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
               <div style="font-weight: 600;">${score.judge_name}</div>
               <div style="color: var(--success-color); font-weight: bold;">
-                ${parseFloat(score.score).toFixed(1)}/10 (${score.weight}%)
+                ${parseFloat(score.score).toFixed(1)}/${parseFloat(score.max_score).toFixed(1)} (${score.weight}%)
               </div>
             </div>
           `).join('')}

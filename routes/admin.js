@@ -45,7 +45,7 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
       const judgeScoresResult = await pool.query(`
         SELECT 
           e.judge_id,
-          SUM(es.score * c.weight / 100) as judge_total
+          SUM(es.score * c.weight / c.max_score) as judge_total
         FROM evaluations e
         JOIN evaluation_scores es ON e.id = es.evaluation_id
         JOIN criteria c ON es.criterion_key = c.key
@@ -97,7 +97,7 @@ router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
         SELECT
           t.id,
           e.judge_id,
-          SUM(es.score * c.weight / 100) as judge_total
+          SUM(es.score * c.weight / c.max_score) as judge_total
         FROM teams t
         JOIN evaluations e ON t.id = e.team_id
         JOIN evaluation_scores es ON e.id = es.evaluation_id
@@ -192,7 +192,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
         ju.name as judge_name,
         j.hall as judge_hall,
         e.id as evaluation_id,
-        COALESCE(SUM(es.score * c.weight / 100), 0) as total_score
+        COALESCE(SUM(es.score * c.weight / c.max_score), 0) as total_score
       FROM judges j
       JOIN users ju ON j.user_id = ju.id
       LEFT JOIN evaluations e ON j.id = e.judge_id AND e.team_id = $1
@@ -209,7 +209,8 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
         ju.name as judge_name,
         c.name as criterion_name,
         es.score,
-        c.weight
+        c.weight::FLOAT as weight,
+        c.max_score::FLOAT as max_score
       FROM judges j
       JOIN users ju ON j.user_id = ju.id
       LEFT JOIN evaluations e ON j.id = e.judge_id AND e.team_id = $1
@@ -239,7 +240,12 @@ router.get('/stats', authenticate, authorize(['admin']), async (req, res) => {
         (SELECT COUNT(DISTINCT t.id) FROM teams t JOIN projects p ON t.id = p.team_id) as submitted_teams,
         (SELECT COUNT(DISTINCT team_id) FROM evaluations) as evaluated_teams,
         (SELECT COUNT(*) FROM judges) as total_judges,
-        (SELECT AVG(score) FROM evaluation_scores) as average_score
+        (SELECT AVG(total) FROM (
+          SELECT SUM(es.score * c.weight / c.max_score) as total 
+          FROM evaluation_scores es
+          JOIN criteria c ON es.criterion_key = c.key
+          GROUP BY es.evaluation_id
+        ) as team_totals) as average_score
     `);
 
     const hallStats = await pool.query(`

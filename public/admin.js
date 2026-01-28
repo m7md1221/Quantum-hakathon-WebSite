@@ -243,7 +243,7 @@ function createTeamCard(team, isWinner, rank) {
 
   const avgScore = parseFloat(team.average_score) || 0;
   const evalCount = parseInt(team.evaluation_count) || 0;
-  const avgScoreOutOf100 = (avgScore * 10).toFixed(1);
+  const avgScoreOutOf100 = avgScore.toFixed(1);
 
   const rankBadge = isWinner ? getRankBadge(rank) : '';
 

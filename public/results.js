@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       results.forEach((result, index) => {
         const li = document.createElement('li');
         li.className = index < 5 ? 'winner' : '';
-        
-        // Convert to /100 scale
-        const scoreOutOf100 = result.average_score ? (parseFloat(result.average_score) * 10).toFixed(1) : 'N/A';
-console.log(results); // شوف إذا team_number رجع صح
+
+        // Already on /100 scale
+        const scoreOutOf100 = result.average_score ? parseFloat(result.average_score).toFixed(1) : 'N/A';
+        console.log(results); // شوف إذا team_number رجع صح
 
         li.innerHTML = `
           <div class="rank" style="min-width: 50px; text-align: center;">
@@ -72,7 +72,7 @@ function exportToCSV() {
       index + 1,
       result.team_number,
       result.hall,
-      result.average_score ? (parseFloat(result.average_score) * 10).toFixed(1) : 'N/A'
+      result.average_score ? parseFloat(result.average_score).toFixed(1) : 'N/A'
     ])
   ];
 

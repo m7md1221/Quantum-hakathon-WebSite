@@ -13,17 +13,21 @@ cloudinary.config({
 
 const router = express.Router();
 
+// Scoring configuration
+const CRITERIA_CONFIG = {
+  problem_importance: { max: 15, weight: 15, name: 'Problem & Importance' },
+  ai_quantum_use: { max: 15, weight: 15, name: 'Use of AI / Quantum Computing' },
+  sdgs: { max: 10, weight: 10, name: 'UN Sustainable Development Goals (SDGs)' },
+  innovation: { max: 15, weight: 15, name: 'Innovation & Creativity' },
+  social_impact: { max: 15, weight: 15, name: 'Social Impact' },
+  code_quality: { max: 10, weight: 10, name: 'Code Quality & Extensibility' },
+  performance: { max: 10, weight: 10, name: 'Performance & Result Quality' },
+  presentation: { max: 10, weight: 10, name: 'Presentation & Teamwork' }
+};
+
 // Get maximum score for a criterion based on its field name
 function getMaxScoreForCriterion(criterionKey) {
-  const max15Criteria = ['problem_importance', 'ai_quantum_use', 'innovation', 'social_impact'];
-  const max10Criteria = ['sdgs', 'code_quality', 'performance', 'presentation'];
-
-  if (max15Criteria.includes(criterionKey)) {
-    return 15;
-  } else if (max10Criteria.includes(criterionKey)) {
-    return 10;
-  }
-  return 10; // Default fallback
+  return CRITERIA_CONFIG[criterionKey]?.max || 10;
 }
 
 // Get evaluation scores for a specific team (for current judge)

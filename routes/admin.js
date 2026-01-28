@@ -172,7 +172,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
 
     // Get team info
     const teamResult = await pool.query(`
-      SELECT t.id, u.name, t.hall, p.submitted_at
+      SELECT t.id, u.name, u.team_number, t.hall, p.submitted_at
       FROM teams t
       JOIN users u ON t.user_id = u.id
       LEFT JOIN projects p ON t.id = p.team_id

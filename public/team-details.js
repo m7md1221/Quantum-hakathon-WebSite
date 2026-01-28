@@ -38,6 +38,16 @@ function displayTeamDetails(data) {
 
   // Team info
   document.getElementById('team-name').textContent = team.name;
+
+  if (team.team_number) {
+    const numSpan = document.getElementById('team-num');
+    const numContainer = document.getElementById('team-number-container');
+    if (numSpan && numContainer) {
+      numSpan.textContent = team.team_number;
+      numContainer.style.display = 'block';
+    }
+  }
+
   document.getElementById('team-hall').textContent = team.hall;
   document.getElementById('team-status').innerHTML = team.submitted_at
     ? '<span style="color: var(--success-color); font-weight: 600;">Submitted</span>'

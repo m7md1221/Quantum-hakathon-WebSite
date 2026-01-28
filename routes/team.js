@@ -40,9 +40,10 @@ router.post('/upload', authenticate, authorize(['team']), upload.single('project
     }
 
     localPath = req.file.path;
-    console.log("Starting manual Cloudinary upload for:", localPath);
+    console.log("Team ID session:", req.user.id);
+    console.log("Uploading file to Cloudinary:", req.file.originalname);
 
-    // Manual upload to Cloudinary for better reliability with raw files
+    // Explicitly upload as 'raw' to avoid '0 B storage' issues or type mismatches
     const uploadResult = await cloudinary.uploader.upload(localPath, {
       folder: 'quantum_projects',
       resource_type: 'raw',
@@ -50,39 +51,44 @@ router.post('/upload', authenticate, authorize(['team']), upload.single('project
       unique_filename: true
     });
 
-    console.log("Cloudinary upload successful:", uploadResult.secure_url);
+    console.log("Upload Success. URL:", uploadResult.secure_url);
     const fileUrl = uploadResult.secure_url;
 
-    // Get the actual team ID (NOT user ID)
+    // Fetch team record
     const teamResult = await pool.query('SELECT id FROM teams WHERE user_id = $1', [req.user.id]);
-
     if (teamResult.rows.length === 0) {
-      return res.status(404).json({ message: 'Team record not found for this user' });
+      if (localPath && fs.existsSync(localPath)) fs.unlinkSync(localPath);
+      return res.status(404).json({ message: 'Team registration not found' });
     }
-
     const teamId = teamResult.rows[0].id;
 
-    // Save to DB with UPSERT logic
-    await pool.query(`
-      INSERT INTO projects (team_id, file_path) 
-      VALUES ($1, $2)
-      ON CONFLICT (team_id) DO UPDATE SET 
-        file_path = EXCLUDED.file_path, 
-        submitted_at = NOW()
-    `, [teamId, fileUrl]);
+    // Use a robust update/insert check instead of relying on ON CONFLICT
+    const projectCheck = await pool.query('SELECT id FROM projects WHERE team_id = $1', [teamId]);
 
-    // Cleanup local file
+    if (projectCheck.rows.length > 0) {
+      await pool.query(
+        'UPDATE projects SET file_path = $1, submitted_at = NOW() WHERE team_id = $2',
+        [fileUrl, teamId]
+      );
+    } else {
+      await pool.query(
+        'INSERT INTO projects (team_id, file_path) VALUES ($1, $2)',
+        [teamId, fileUrl]
+      );
+    }
+
+    // Always cleanup local file
     if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
 
     res.json({ message: 'Project uploaded successfully', fileUrl });
   } catch (error) {
-    console.error("Upload error details:", error);
-    // Cleanup local file on error
-    if (localPath && fs.existsSync(localPath)) fs.unlinkSync(localPath);
-
+    console.error("Critical Upload Error:", error);
+    if (localPath && fs.existsSync(localPath)) {
+      try { fs.unlinkSync(localPath); } catch (err) { }
+    }
     res.status(500).json({
       message: 'Upload failed: ' + (error.message || 'Server error'),
-      error: error.message
+      details: error.message
     });
   }
 });

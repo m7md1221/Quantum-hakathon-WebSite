@@ -354,10 +354,15 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
 
     // Extract public_id from Cloudinary URL and sign it
     try {
-      const uploadPart = filePath.split('/upload/')[1];
-      if (!uploadPart) throw new Error('Invalid URL');
+      if (!filePath.includes('/upload/')) {
+        return res.status(400).json({
+          message: 'This project file was not successfully uploaded to Cloudinary. Please ask the team to re-upload their project.'
+        });
+      }
 
+      const uploadPart = filePath.split('/upload/')[1];
       const parts = uploadPart.split('/');
+      // Skip version (v123/) if it exists
       const publicId = (parts[0].startsWith('v') && parts.length > 1)
         ? parts.slice(1).join('/')
         : uploadPart;
@@ -372,7 +377,7 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.json({ signedUrl });
     } catch (err) {
       console.error('Signed URL Error:', err);
-      res.status(400).json({ message: 'Error generating secure download link' });
+      res.status(400).json({ message: 'Error generating secure download link: ' + err.message });
     }
   } catch (error) {
     console.error('Error in judge project download:', error);

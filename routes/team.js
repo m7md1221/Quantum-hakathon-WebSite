@@ -1,99 +1,86 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
 
 const router = express.Router();
 
-// Ensure uploads directory exists robustly
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// GitHub URL Validation Function
+function validateGitHubUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  
+  // Must start with https://github.com/
+  if (!trimmed.startsWith('https://github.com/')) return false;
+  
+  // Basic URL validation - check if it's a valid GitHub URL
+  try {
+    const urlObj = new URL(trimmed);
+    if (urlObj.hostname !== 'github.com') return false;
+    if (urlObj.pathname.length <= 1) return false; // Must have owner/repo
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-require('dotenv').config(); // مهم جدًا على Render
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true
-});
+// GitHub URL Sanitization Function (remove trailing slashes, etc)
+function sanitizeGitHubUrl(url) {
+  const trimmed = url.trim();
+  // Remove trailing slash if present
+  return trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed;
+}
 
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_'));
-  }
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit
-});
-
-// Upload project
-router.post('/upload', authenticate, authorize(['team']), upload.single('project'), async (req, res) => {
-  let localPath = null;
+// Submit GitHub Repository URL
+router.post('/submit', authenticate, authorize(['team']), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+    const { github_url } = req.body;
+
+    // Validate input
+    if (!github_url) {
+      return res.status(400).json({ message: 'GitHub URL is required' });
     }
 
-    localPath = req.file.path;
-    console.log("Team ID session:", req.user.id);
-    console.log("Uploading file to Cloudinary:", req.file.originalname);
+    if (!validateGitHubUrl(github_url)) {
+      return res.status(400).json({ 
+        message: 'Invalid GitHub URL. Must start with https://github.com/' 
+      });
+    }
 
-    // Explicitly upload as 'raw' to avoid '0 B storage' issues or type mismatches
-    const uploadResult = await cloudinary.uploader.upload(localPath, {
-      folder: 'quantum_projects',
-      resource_type: 'raw',
-      use_filename: true,
-      unique_filename: true
-    });
+    const sanitizedUrl = sanitizeGitHubUrl(github_url);
 
-    console.log("Upload Success. URL:", uploadResult.secure_url);
-    const fileUrl = uploadResult.secure_url;
-
-    // Fetch team record
+    // Get team record
     const teamResult = await pool.query('SELECT id FROM teams WHERE user_id = $1', [req.user.id]);
     if (teamResult.rows.length === 0) {
-      if (localPath && fs.existsSync(localPath)) fs.unlinkSync(localPath);
       return res.status(404).json({ message: 'Team registration not found' });
     }
     const teamId = teamResult.rows[0].id;
 
-    // Use a robust update/insert check instead of relying on ON CONFLICT
+    // Check if project already submitted
     const projectCheck = await pool.query('SELECT id FROM projects WHERE team_id = $1', [teamId]);
 
     if (projectCheck.rows.length > 0) {
+      // Update existing submission
       await pool.query(
-        'UPDATE projects SET file_path = $1, submitted_at = NOW() WHERE team_id = $2',
-        [fileUrl, teamId]
+        'UPDATE projects SET github_url = $1, submitted_at = NOW() WHERE team_id = $2',
+        [sanitizedUrl, teamId]
       );
     } else {
+      // Insert new submission
       await pool.query(
-        'INSERT INTO projects (team_id, file_path) VALUES ($1, $2)',
-        [teamId, fileUrl]
+        'INSERT INTO projects (team_id, github_url) VALUES ($1, $2)',
+        [teamId, sanitizedUrl]
       );
     }
 
-    // Always cleanup local file
-    if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
-
-    res.json({ message: 'Project uploaded successfully', fileUrl });
+    console.log(`[Team ${teamId}] Submitted GitHub URL: ${sanitizedUrl}`);
+    res.json({ 
+      message: 'Project submitted successfully',
+      github_url: sanitizedUrl 
+    });
   } catch (error) {
-    console.error("Critical Upload Error:", error);
-    if (localPath && fs.existsSync(localPath)) {
-      try { fs.unlinkSync(localPath); } catch (err) { }
-    }
+    console.error("Critical Submit Error:", error);
     res.status(500).json({
-      message: 'Upload failed: ' + (error.message || 'Server error'),
+      message: 'Submission failed: ' + (error.message || 'Server error'),
       details: error.message
     });
   }

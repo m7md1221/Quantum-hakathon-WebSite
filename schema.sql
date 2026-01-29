@@ -28,8 +28,7 @@ CREATE TABLE judges (
 CREATE TABLE projects (
   id SERIAL PRIMARY KEY,
   team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
-  file_path VARCHAR(500) NOT NULL,
-  public_id VARCHAR(255),
+  github_url VARCHAR(500) NOT NULL,
   submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(team_id)
 );

@@ -54,11 +54,11 @@ function displayTeamDetails(data) {
     : '<span style="color: var(--warning-color); font-weight: 600;">Pending</span>';
   document.getElementById('submitted-at').textContent = team.submitted_at ? new Date(team.submitted_at).toLocaleString() : 'N/A';
 
-  // Project download button
+  // Project GitHub button
   const downloadBtn = document.getElementById('download-btn');
   if (team.submitted_at) {
     downloadBtn.style.display = 'block';
-    downloadBtn.onclick = () => downloadProject(team.id);
+    downloadBtn.onclick = () => openProjectRepository(team.id);
   } else {
     downloadBtn.style.display = 'none';
   }
@@ -164,8 +164,8 @@ function displayTeamDetails(data) {
   }
 }
 
-async function downloadProject(teamId) {
-  console.log('Generating secure download link for team ID:', teamId);
+async function openProjectRepository(teamId) {
+  console.log('Opening project repository for team ID:', teamId);
   const token = localStorage.getItem('token');
   try {
     const response = await fetch(`/api/admin/projects/${teamId}`, {
@@ -174,23 +174,20 @@ async function downloadProject(teamId) {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Failed to generate download link');
+      throw new Error(errorData.message || 'Failed to get project URL');
     }
 
-    const { signedUrl } = await response.json();
+    const { github_url } = await response.json();
 
-    // Trigger download using a hidden anchor tag for better cross-browser support
-    const a = document.createElement('a');
-    a.href = signedUrl;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-    }, 100);
+    if (!github_url) {
+      throw new Error('Project URL not available');
+    }
+
+    // Open GitHub repository in a new tab
+    window.open(github_url, '_blank');
 
   } catch (err) {
-    console.error('Download Error:', err);
+    console.error('Error opening project:', err);
     alert(err.message);
   }
 }

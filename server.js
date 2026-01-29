@@ -81,11 +81,6 @@ app.get('/', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('[Global Error]', err);
 
-  // Handle Multer errors specifically if needed
-  if (err instanceof require('multer').MulterError) {
-    return res.status(400).json({ message: 'File upload error: ' + err.message });
-  }
-
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
     error: process.env.NODE_ENV === 'production' ? {} : err

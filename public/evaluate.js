@@ -95,11 +95,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
         }
 
-        // Handle download button visibility and logic
-        const downloadBtn = document.getElementById('download-project-btn');
+        // Handle GitHub button visibility and logic
+        const githubBtn = document.getElementById('download-project-btn');
         if (team.submitted_at) {
-          downloadBtn.style.display = 'block';
-          downloadBtn.addEventListener('click', () => downloadProject());
+          githubBtn.style.display = 'block';
+          githubBtn.addEventListener('click', () => openProjectRepository());
         }
       }
     }
@@ -261,13 +261,13 @@ document.getElementById('evaluationForm').addEventListener('submit', (e) => {
   }
 });
 
-async function downloadProject() {
-  const downloadBtn = document.getElementById('download-project-btn');
-  const originalText = downloadBtn.innerHTML;
+async function openProjectRepository() {
+  const githubBtn = document.getElementById('download-project-btn');
+  const originalText = githubBtn.innerHTML;
 
   try {
-    downloadBtn.innerHTML = '⌛ Preparing...';
-    downloadBtn.disabled = true;
+    githubBtn.innerHTML = '⌛ Loading...';
+    githubBtn.disabled = true;
 
     const response = await fetch(`/api/judge/projects/${teamId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
@@ -275,29 +275,23 @@ async function downloadProject() {
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      throw new Error(data.message || 'Failed to generate download link');
+      throw new Error(data.message || 'Failed to get project URL');
     }
 
-    const { signedUrl } = await response.json();
+    const { github_url } = await response.json();
 
-    // Trigger download using a hidden anchor tag for better cross-browser support
-    const a = document.createElement('a');
-    a.href = signedUrl;
-    // Cloudinary signed URLs for raw files should automatically trigger download, 
-    // but we can hint at it. The 'download' attribute might be ignored for cross-origin,
-    // but the signed URL usually carries the correct headers.
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-    }, 100);
+    if (!github_url) {
+      throw new Error('Project URL not available');
+    }
+
+    // Open GitHub repository in a new tab
+    window.open(github_url, '_blank');
 
   } catch (error) {
-    console.error('Download error:', error);
-    alert(`Download failed: ${error.message}`);
+    console.error('Error opening project:', error);
+    alert(`Failed to open project: ${error.message}`);
   } finally {
-    downloadBtn.innerHTML = originalText;
-    downloadBtn.disabled = false;
+    githubBtn.innerHTML = originalText;
+    githubBtn.disabled = false;
   }
 }

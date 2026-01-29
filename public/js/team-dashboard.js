@@ -41,7 +41,7 @@ function displayStatus(status) {
             <div class="status-item">
                 <p><strong>Status:</strong> <span class="badge badge-pending">Not Submitted</span></p>
                 <p><strong>Hall:</strong> ${status.hall}</p>
-                <p>Please upload your project ZIP file to complete submission.</p>
+                <p>Please submit your GitHub repository to complete submission.</p>
             </div>
         `;
     }

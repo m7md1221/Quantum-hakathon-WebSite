@@ -3,27 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload Project - Quantum Hackathon</title>
+  <title>Submit Project - Quantum Hackathon</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Upload Project</h1>
-      <p>Submit your ZIP file (deadline: January 25, 2026)</p>
+      <h1>Submit Project</h1>
+      <p>Share your GitHub Repository (deadline: January 25, 2026)</p>
     </div>
 
     <div class="card">
-      <form id="uploadForm" enctype="multipart/form-data">
+      <form id="submitForm">
         <div class="form-group">
-          <label for="project">Select ZIP File</label>
-          <input type="file" id="project" accept=".zip" required>
+          <label for="github_url">GitHub Repository URL</label>
+          <input 
+            type="url" 
+            id="github_url" 
+            placeholder="https://github.com/username/project-name" 
+            required
+          >
           <small style="color: var(--text-secondary); display: block; margin-top: 5px;">
-            Only ZIP files are accepted. Maximum file size: 100MB
+            Must start with https://github.com/. Example: https://github.com/myteam/quantum-solver
           </small>
+          <div id="validation-message" style="display: none; margin-top: 8px; padding: 8px; border-radius: 4px;"></div>
         </div>
 
-        <button type="submit" class="btn btn-block btn-success">Upload Project</button>
+        <button type="submit" class="btn btn-block btn-success">Submit Project</button>
       </form>
 
       <div id="message"></div>

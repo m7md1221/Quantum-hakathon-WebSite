@@ -1,15 +1,6 @@
 const express = require('express');
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true // <--- Ensures all URLs are HTTPS
-});
 
 const router = express.Router();
 
@@ -331,7 +322,7 @@ router.post('/finalize-evaluation', authenticate, authorize(['judge']), async (r
   }
 });
 
-// Download project file by teamId (restricted to judge's hall)
+// Get project GitHub URL by teamId (restricted to judge's hall)
 router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, res) => {
   try {
     const { teamId } = req.params;
@@ -355,12 +346,12 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
     }
 
     if (teamResult.rows[0].hall !== judgeHall) {
-      return res.status(403).json({ message: 'You can only download projects for teams in your hall' });
+      return res.status(403).json({ message: 'You can only view projects for teams in your hall' });
     }
 
-    // Get project file info
+    // Get project GitHub URL
     const projectResult = await pool.query(
-      'SELECT file_path FROM projects WHERE team_id = $1',
+      'SELECT github_url FROM projects WHERE team_id = $1',
       [teamId]
     );
 
@@ -368,37 +359,14 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.status(404).json({ message: 'No project submission found for this team' });
     }
 
-    const filePath = projectResult.rows[0].file_path;
+    const githubUrl = projectResult.rows[0].github_url;
 
-    // Extract public_id from Cloudinary URL and sign it
-    try {
-      if (!filePath.includes('/upload/')) {
-        return res.status(400).json({
-          message: 'This project file was not successfully uploaded to Cloudinary. Please ask the team to re-upload their project.'
-        });
-      }
-
-      const uploadPart = filePath.split('/upload/')[1];
-      const parts = uploadPart.split('/');
-      // Skip version (v123/) if it exists
-      const publicId = (parts[0].startsWith('v') && parts.length > 1)
-        ? parts.slice(1).join('/')
-        : uploadPart;
-
-      const signedUrl = cloudinary.url(publicId, {
-        sign_url: true,
-        resource_type: 'raw',
-        secure: true,
-        expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour
-      });
-
-      return res.json({ signedUrl });
-    } catch (err) {
-      console.error('Signed URL Error:', err);
-      res.status(400).json({ message: 'Error generating secure download link: ' + err.message });
-    }
+    res.json({ 
+      github_url: githubUrl,
+      status: 'success'
+    });
   } catch (error) {
-    console.error('Error in judge project download:', error);
+    console.error('Error fetching project URL:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

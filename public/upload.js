@@ -1,7 +1,14 @@
 const token = localStorage.getItem('token');
+const SUBMISSION_DEADLINE = '2026-02-15T23:59:59';
 
 if (!token) {
   window.location.href = 'login.html';
+}
+
+function isDeadlinePassed() {
+  const deadline = new Date(SUBMISSION_DEADLINE);
+  const now = new Date();
+  return now > deadline;
 }
 
 // GitHub URL Validation
@@ -50,6 +57,13 @@ document.getElementById('github_url').addEventListener('input', (e) => {
 // Form submission
 document.getElementById('submitForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  
+  // التحقق من الـ deadline
+  if (isDeadlinePassed()) {
+    const message = document.getElementById('message');
+    message.innerHTML = `<div class="message error">❌ Submission period has ended. No more uploads allowed.</div>`;
+    return;
+  }
   
   const githubUrl = document.getElementById('github_url').value;
   const message = document.getElementById('message');

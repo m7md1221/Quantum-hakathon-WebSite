@@ -399,4 +399,190 @@ router.delete('/judges/:judgeId/evaluations', authenticate, authorize(['admin'])
   }
 });
 
+// Update evaluation score for a criterion (Admin only)
+router.put('/evaluation-scores/:scoreId', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const { scoreId } = req.params;
+    const { score, adminNote } = req.body;
+
+    // Validate input
+    if (!scoreId || isNaN(parseInt(scoreId))) {
+      return res.status(400).json({ message: 'Invalid score ID' });
+    }
+
+    if (score === undefined || isNaN(parseFloat(score))) {
+      return res.status(400).json({ message: 'Invalid score value' });
+    }
+
+    const numScore = parseFloat(score);
+
+    // Check if score exists and get criterion max_score
+    const scoreCheck = await pool.query(
+      `SELECT es.id, es.evaluation_id, c.max_score
+       FROM evaluation_scores es
+       JOIN criteria c ON es.criterion_key = c.key
+       WHERE es.id = $1`,
+      [parseInt(scoreId)]
+    );
+
+    if (scoreCheck.rows.length === 0) {
+      return res.status(404).json({ message: 'Score not found' });
+    }
+
+    const maxScore = parseFloat(scoreCheck.rows[0].max_score) || 10;
+    if (numScore < 0 || numScore > maxScore) {
+      return res.status(400).json({ message: `Score must be between 0 and ${maxScore}` });
+    }
+
+    const evaluationId = scoreCheck.rows[0].evaluation_id;
+
+    // Update the score with admin note
+    const note = adminNote ? `تم التعديل من الادمن: ${adminNote}` : 'تم التعديل من الادمن';
+    const updateResult = await pool.query(
+      `UPDATE evaluation_scores 
+       SET score = $1, admin_note = $2
+       WHERE id = $3 
+       RETURNING *`,
+      [numScore, note, parseInt(scoreId)]
+    );
+
+    // Get the updated evaluation scores to recalculate average
+    const updatedScoresResult = await pool.query(
+      `SELECT 
+        es.id,
+        es.criterion_key,
+        es.score,
+        c.weight
+      FROM evaluation_scores es
+      JOIN criteria c ON es.criterion_key = c.key
+      WHERE es.evaluation_id = $1`,
+      [evaluationId]
+    );
+
+    // Calculate new total for this evaluation
+    let totalScore = 0;
+    if (updatedScoresResult.rows.length > 0) {
+      totalScore = updatedScoresResult.rows.reduce((sum, row) => {
+        return sum + (parseFloat(row.score) * parseFloat(row.weight) / 100);
+      }, 0);
+    }
+
+    res.json({
+      message: 'Score updated successfully',
+      score: updateResult.rows[0],
+      newTotalForEvaluation: totalScore
+    });
+  } catch (error) {
+    console.error('Error updating evaluation score:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+});
+
+// Get team details with evaluations (for admin to edit scores)
+router.get('/team-evaluations/:teamId', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    // Get team info
+    const teamResult = await pool.query(
+      `SELECT t.id, u.name, u.team_number, t.hall 
+       FROM teams t
+       JOIN users u ON t.user_id = u.id
+       WHERE t.id = $1`,
+      [teamId]
+    );
+
+    if (teamResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+
+    const team = teamResult.rows[0];
+
+    // Get all evaluations with their total scores
+    const evaluationsWithTotals = await pool.query(
+      `SELECT
+        e.id as evaluation_id,
+        j.id as judge_id,
+        ju.name as judge_name,
+        j.hall as judge_hall,
+        COALESCE(SUM(es.score * c.weight / c.max_score), 0) as total_score
+      FROM evaluations e
+      JOIN judges j ON e.judge_id = j.id
+      JOIN users ju ON j.user_id = ju.id
+      LEFT JOIN evaluation_scores es ON e.id = es.evaluation_id
+      LEFT JOIN criteria c ON es.criterion_key = c.key
+      WHERE e.team_id = $1
+      GROUP BY e.id, j.id, ju.name, j.hall
+      ORDER BY ju.name`,
+      [teamId]
+    );
+
+    // Get all evaluation scores details
+    const evaluationsResult = await pool.query(
+      `SELECT
+        e.id as evaluation_id,
+        j.id as judge_id,
+        ju.name as judge_name,
+        j.hall as judge_hall,
+        es.id as score_id,
+        es.criterion_key,
+        c.name as criterion_name,
+        es.score,
+        c.weight,
+        c.max_score,
+        es.admin_note
+      FROM evaluations e
+      JOIN judges j ON e.judge_id = j.id
+      JOIN users ju ON j.user_id = ju.id
+      LEFT JOIN evaluation_scores es ON e.id = es.evaluation_id
+      LEFT JOIN criteria c ON es.criterion_key = c.key
+      WHERE e.team_id = $1
+      ORDER BY ju.name, c.name`,
+      [teamId]
+    );
+
+    // Group by evaluation and judge with total scores
+    const evaluationsByJudge = {};
+    
+    // First, create map of evaluation totals
+    const evaluationTotals = {};
+    evaluationsWithTotals.rows.forEach(row => {
+      evaluationTotals[row.evaluation_id] = parseFloat(row.total_score || 0);
+    });
+    
+    evaluationsResult.rows.forEach(row => {
+      const key = `${row.evaluation_id}-${row.judge_id}`;
+      if (!evaluationsByJudge[key]) {
+        evaluationsByJudge[key] = {
+          evaluation_id: row.evaluation_id,
+          judge_id: row.judge_id,
+          judge_name: row.judge_name,
+          judge_hall: row.judge_hall,
+          total_score: evaluationTotals[row.evaluation_id] || 0,
+          scores: []
+        };
+      }
+      if (row.score_id) {
+        evaluationsByJudge[key].scores.push({
+          score_id: row.score_id,
+          criterion_key: row.criterion_key,
+          criterion_name: row.criterion_name,
+          score: row.score,
+          weight: row.weight,
+          max_score: row.max_score,
+          admin_note: row.admin_note
+        });
+      }
+    });
+
+    res.json({
+      team,
+      evaluations: Object.values(evaluationsByJudge)
+    });
+  } catch (error) {
+    console.error('Error fetching team evaluations:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+});
+
 module.exports = router;

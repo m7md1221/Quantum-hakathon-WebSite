@@ -5,6 +5,8 @@ const { processRepoForTeam } = require('../services/cleanCode');
 
 const router = express.Router();
 
+const SUBMISSION_DEADLINE = new Date('2026-02-15T23:59:59');
+
 // GitHub URL Validation Function
 function validateGitHubUrl(url) {
   if (!url || typeof url !== 'string') return false;
@@ -31,9 +33,20 @@ function sanitizeGitHubUrl(url) {
   return trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed;
 }
 
+function isDeadlinePassed() {
+  return new Date() > SUBMISSION_DEADLINE;
+}
+
 // Submit GitHub Repository URL
 router.post('/submit', authenticate, authorize(['team']), async (req, res) => {
   try {
+    // التحقق من الـ deadline
+    if (isDeadlinePassed()) {
+      return res.status(403).json({ 
+        message: 'Submission period has ended. No more uploads allowed.' 
+      });
+    }
+
     const { github_url } = req.body;
 
     // Validate input
@@ -111,7 +124,8 @@ router.get('/status', authenticate, authorize(['team']), async (req, res) => {
     res.json({
       hall,
       submitted: projectResult.rows.length > 0,
-      submittedAt: projectResult.rows[0]?.submitted_at
+      submittedAt: projectResult.rows[0]?.submitted_at,
+      deadline: SUBMISSION_DEADLINE.toISOString()
     });
   } catch (error) {
     console.error(error);

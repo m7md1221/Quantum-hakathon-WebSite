@@ -6,27 +6,47 @@
   <title>Team Dashboard - Quantum Hackathon</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <div class="container">
-    <div class="header">
+<body class="team-body">
+  <div class="container team-dashboard">
+    <div class="header team-header">
+      <div class="header-tag">Team Portal</div>
       <h1>Team Dashboard</h1>
-      <p>Manage your project submission</p>
+      <p>Manage your project submission and track your status</p>
     </div>
 
-    <div class="grid grid-2">
-      <div class="card">
-        <h2>Submission Status</h2>
-        <div id="status">
+    <div class="grid grid-2 team-grid">
+      <div class="card status-card">
+        <div class="card-title">
+          <h2>Submission Status</h2>
+          <span class="card-subtitle">Latest upload and evaluation</span>
+        </div>
+        <div id="status" class="status-content">
           <p>Loading...</p>
+        </div>
+        <div id="deadline-status" class="deadline-section">
+          <div class="deadline-container">
+            <div class="deadline-icon">📅</div>
+            <div class="deadline-content">
+              <h3>Submission Deadline</h3>
+              <p id="deadline-display" class="deadline-date">Loading...</p>
+              <p id="deadline-status-text" class="deadline-status-text"></p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="card">
-        <h2>Quick Actions</h2>
-        <a href="upload-project.html" class="btn btn-block btn-success" style="margin-bottom: 10px;">
-          Upload Project
-        </a>
-        <button id="logout" class="btn btn-block btn-secondary">Logout</button>
+      <div class="card actions-card">
+        <div class="card-title">
+          <h2>Quick Actions</h2>
+          <span class="card-subtitle">Upload or sign out</span>
+        </div>
+        <div class="actions-list">
+          <a href="upload-project.html" class="btn btn-block btn-success">
+            Upload Project
+          </a>
+          <button id="logout" class="btn btn-block btn-secondary">Logout</button>
+        </div>
+        <div class="actions-note">Please verify your submission details before the deadline.</div>
       </div>
     </div>
   </div>

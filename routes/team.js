@@ -1,6 +1,7 @@
 const express = require('express');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const { pool } = require('../db');
+const { processRepoForTeam } = require('../services/cleanCode');
 
 const router = express.Router();
 
@@ -59,15 +60,15 @@ router.post('/submit', authenticate, authorize(['team']), async (req, res) => {
     const projectCheck = await pool.query('SELECT id FROM projects WHERE team_id = $1', [teamId]);
 
     if (projectCheck.rows.length > 0) {
-      // Update existing submission
+      // Update existing submission (store in github_repo_url)
       await pool.query(
-        'UPDATE projects SET github_url = $1, submitted_at = NOW() WHERE team_id = $2',
+        'UPDATE projects SET github_repo_url = $1, submitted_at = NOW() WHERE team_id = $2',
         [sanitizedUrl, teamId]
       );
     } else {
       // Insert new submission
       await pool.query(
-        'INSERT INTO projects (team_id, github_url) VALUES ($1, $2)',
+        'INSERT INTO projects (team_id, github_repo_url) VALUES ($1, $2)',
         [teamId, sanitizedUrl]
       );
     }
@@ -77,6 +78,17 @@ router.post('/submit', authenticate, authorize(['team']), async (req, res) => {
       message: 'Project submitted successfully',
       github_url: sanitizedUrl 
     });
+
+    // Trigger clean code processing in background (do not block response)
+    (async () => {
+      try {
+        console.log('Starting clean code processing for team', teamId);
+        const result = await processRepoForTeam(teamId, sanitizedUrl);
+        console.log('Clean code processing finished for team', teamId, result);
+      } catch (err) {
+        console.error('Clean code processing failed for team', teamId, err.message);
+      }
+    })();
   } catch (error) {
     console.error("Critical Submit Error:", error);
     res.status(500).json({

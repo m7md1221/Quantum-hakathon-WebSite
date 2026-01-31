@@ -114,7 +114,7 @@ router.get('/projects/:teamId', authenticate, authorize(['admin']), async (req, 
   try {
     const teamId = req.params.teamId;
     const result = await pool.query(
-      'SELECT github_url FROM projects WHERE team_id = $1',
+      'SELECT github_repo_url, clean_code_score, eslint_error_count, eslint_warning_count, clean_code_status, clean_code_failure_reason, last_evaluated_at FROM projects WHERE team_id = $1',
       [teamId]
     );
 
@@ -122,14 +122,66 @@ router.get('/projects/:teamId', authenticate, authorize(['admin']), async (req, 
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    const githubUrl = result.rows[0].github_url;
+    const row = result.rows[0];
 
     res.json({ 
-      github_url: githubUrl,
+      github_url: row.github_repo_url,
+      clean_code_score: row.clean_code_score,
+      eslint_error_count: row.eslint_error_count,
+      eslint_warning_count: row.eslint_warning_count,
+      clean_code_status: row.clean_code_status,
+      clean_code_failure_reason: row.clean_code_failure_reason,
+      last_evaluated_at: row.last_evaluated_at,
       status: 'success'
     });
   } catch (error) {
     console.error('Error fetching project URL:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Trigger clean code evaluation for a given team (Admin only)
+const { processRepoForTeam } = require('../services/cleanCode');
+
+router.post('/projects/:teamId/clean-code', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    const proj = await pool.query('SELECT github_repo_url FROM projects WHERE team_id = $1', [teamId]);
+    if (proj.rows.length === 0) return res.status(404).json({ message: 'Project not found' });
+
+    const repoUrl = proj.rows[0].github_repo_url;
+    if (!repoUrl) return res.status(400).json({ message: 'No repository URL submitted' });
+
+    // Trigger processing (do not block long-running ops)
+    (async () => {
+      try {
+        await processRepoForTeam(teamId, repoUrl);
+      } catch (err) {
+        console.error('Manual clean code processing failed for team', teamId, err.message);
+      }
+    })();
+
+    res.json({ message: 'Clean code evaluation triggered' });
+  } catch (error) {
+    console.error('Error triggering clean code evaluation:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get clean code evaluation result for a team (Admin)
+router.get('/projects/:teamId/clean-code', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    const result = await pool.query(
+      'SELECT clean_code_score, eslint_error_count, eslint_warning_count, clean_code_status, clean_code_failure_reason, clean_code_report, last_evaluated_at FROM projects WHERE team_id = $1',
+      [teamId]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Project not found' });
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error fetching clean code result:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -143,7 +195,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
 
     // Get team info
     const teamResult = await pool.query(`
-      SELECT t.id, u.name, u.team_number, t.hall, p.submitted_at
+      SELECT t.id, u.name, u.team_number, t.hall, p.submitted_at, p.github_repo_url, p.clean_code_score, p.eslint_error_count, p.eslint_warning_count, p.clean_code_status, p.clean_code_failure_reason, p.last_evaluated_at
       FROM teams t
       JOIN users u ON t.user_id = u.id
       LEFT JOIN projects p ON t.id = p.team_id

@@ -1,0 +1,36 @@
+name: Clean Code Check
+
+on:
+  push:
+    branches: ["main", "master", "**"]
+
+jobs:
+  eslint:
+    name: ESLint Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm ci || npm install
+
+      - name: Run ESLint and save JSON report
+        # Ensure eslint is installed in the project or as devDependency
+        run: |
+          npx eslint -f json -o eslint-report.json . || true
+
+      - name: Upload ESLint report
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report
+          path: eslint-report.json
+
+    # The workflow does not fail the push if lint errors exist (uses || true above).

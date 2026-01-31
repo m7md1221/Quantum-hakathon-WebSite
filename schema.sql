@@ -28,7 +28,9 @@ CREATE TABLE judges (
 CREATE TABLE projects (
   id SERIAL PRIMARY KEY,
   team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
-  github_url VARCHAR(500) NOT NULL,
+  github_repo_url TEXT NOT NULL,
+  clean_code_score INTEGER,
+  clean_code_report JSON,
   submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(team_id)
 );

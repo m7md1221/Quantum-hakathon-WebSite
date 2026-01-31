@@ -33,7 +33,6 @@ function syncScoresFromDisplays() {
     'sdgs',
     'innovation',
     'social_impact',
-    'code_quality',
     'performance',
     'presentation'
   ];
@@ -59,6 +58,17 @@ function syncScoresFromDisplays() {
       updateButtonStates(fieldName, value);
     }
   });
+
+  // Special handling for code_quality (auto-populated from Clean Code)
+  const codeQualityDisplay = document.getElementById('code_quality-display');
+  const codeQualityInput = document.getElementById('code_quality');
+  if (codeQualityDisplay && codeQualityInput) {
+    const displayText = codeQualityDisplay.textContent; // e.g., "7/10"
+    const scoreValue = parseInt(displayText.split('/')[0]); // Extract "7"
+    if (!isNaN(scoreValue)) {
+      codeQualityInput.value = scoreValue;
+    }
+  }
 }
 
 // Helper function to update button states based on current score
@@ -100,6 +110,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (team.submitted_at) {
           githubBtn.style.display = 'block';
           githubBtn.addEventListener('click', () => openProjectRepository());
+          
+          // Load Clean Code score
+          loadCleanCodeScore();
         }
       }
     }
@@ -196,6 +209,7 @@ function openConfirmModal() {
 // Confirm and submit final evaluation
 async function confirmFinalEvaluation() {
   // Final safety sync before POST (handles cases where blur didn't fire)
+  // This now includes special handling for code_quality
   syncScoresFromDisplays();
 
   const formData = new FormData(document.getElementById('evaluationForm'));
@@ -260,6 +274,77 @@ document.getElementById('evaluationForm').addEventListener('submit', (e) => {
     openConfirmModal();
   }
 });
+
+async function loadCleanCodeScore() {
+  try {
+    const response = await fetch(`/api/judge/projects/${teamId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      console.error('Failed to load clean code score');
+      return;
+    }
+
+    const data = await response.json();
+    
+    // Update UI elements
+    const scoreEl = document.getElementById('clean-code-score');
+    const errorsEl = document.getElementById('clean-code-errors');
+    const warningsEl = document.getElementById('clean-code-warnings');
+    const statusEl = document.getElementById('clean-code-status');
+    const messageEl = document.getElementById('clean-code-message');
+    const codeQualityDisplay = document.getElementById('code_quality-display');
+    const codeQualityInput = document.getElementById('code_quality');
+
+    if (data.clean_code_score !== null && data.clean_code_score !== undefined) {
+      scoreEl.textContent = data.clean_code_score + '/100';
+      scoreEl.style.color = data.clean_code_score >= 70 ? '#059669' : data.clean_code_score >= 50 ? '#f59e0b' : '#dc2626';
+      errorsEl.textContent = data.eslint_error_count ?? 0;
+      warningsEl.textContent = data.eslint_warning_count ?? 0;
+      statusEl.textContent = '✅ Evaluated';
+      statusEl.style.color = '#059669';
+      
+      // Convert 100-point score to 10-point scale
+      const scoreOutOf10 = Math.round((data.clean_code_score / 100) * 10);
+      codeQualityDisplay.textContent = scoreOutOf10 + '/10';
+      codeQualityInput.value = scoreOutOf10;
+      
+      if (data.last_evaluated_at) {
+        const date = new Date(data.last_evaluated_at);
+        messageEl.textContent = `Last evaluated: ${date.toLocaleString()}`;
+        messageEl.style.display = 'block';
+      }
+    } else {
+      scoreEl.textContent = 'N/A';
+      scoreEl.style.color = '#6b7280';
+      errorsEl.textContent = '-';
+      warningsEl.textContent = '-';
+      codeQualityDisplay.textContent = '0/10';
+      codeQualityInput.value = 0;
+      
+      if (data.clean_code_status === 'pending') {
+        statusEl.textContent = '⏳ Pending';
+        statusEl.style.color = '#f59e0b';
+        messageEl.textContent = 'Evaluation in progress...';
+        messageEl.style.display = 'block';
+      } else if (data.clean_code_status === 'failed') {
+        statusEl.textContent = '❌ Failed';
+        statusEl.style.color = '#dc2626';
+        messageEl.textContent = data.clean_code_failure_reason || 'Evaluation failed';
+        messageEl.style.display = 'block';
+        messageEl.style.color = '#dc2626';
+      } else {
+        statusEl.textContent = '⏸️ Not Run';
+        statusEl.style.color = '#6b7280';
+        messageEl.textContent = 'No ESLint report found. Make sure GitHub Actions workflow is configured.';
+        messageEl.style.display = 'block';
+      }
+    }
+  } catch (error) {
+    console.error('Error loading clean code score:', error);
+  }
+}
 
 async function openProjectRepository() {
   const githubBtn = document.getElementById('download-project-btn');

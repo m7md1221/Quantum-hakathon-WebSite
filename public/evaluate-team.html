@@ -288,23 +288,55 @@
           </div>
         </div>
 
-        <!-- Code Quality & Extensibility (10%) -->
-        <div class="form-group">
-          <label for="code_quality">
-            Code Quality & Extensibility <span style="color: var(--primary-color); font-weight: 600;">(10%)</span>
-            <small style="display: block; color: var(--text-secondary);">
-              How clean, maintainable, and extensible is the code?
-            </small>
-          </label>
-          <div class="score-control">
-            <button type="button" class="score-btn minus" data-field="code_quality"
-              aria-label="Decrease score">−</button>
-            <input type="number" class="score-display" id="code_quality-display" min="0" max="10" value="0"
-              aria-label="Code Quality score">
-            <button type="button" class="score-btn plus" data-field="code_quality"
-              aria-label="Increase score">+</button>
-            <input type="hidden" id="code_quality" name="code_quality" value="0" required>
+        <!-- Automated Code Evaluation (Clean Code + Code Quality Combined) -->
+        <div class="form-group" style="background: #f8fafc; padding: 18px; border-radius: 8px; border: 2px solid #cbd5e1;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <div>
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1rem; font-weight: 700; color: #1e293b;">  Code Quality & Extensibility (Automated)</span>
+              </label>
+              <small style="display: block; color: #64748b; margin-top: 4px; font-size: 0.8rem;"> How clean, maintainable, and extensible is the code?</small>
+            </div>
           </div>
+          
+          <!-- Compact Grid Layout -->
+          <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; padding: 12px; background: #ffffff; border-radius: 6px; border: 1px solid #e2e8f0;">
+            <!-- Clean Code Score -->
+            <div style="text-align: center;">
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 4px;">Score</div>
+              <div id="clean-code-score" style="font-size: 1.3rem; font-weight: 700; color: #059669;">-</div>
+            </div>
+            
+            <!-- Errors -->
+            <div style="text-align: center;">
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 4px;">Errors</div>
+              <div id="clean-code-errors" style="font-size: 1.3rem; font-weight: 700; color: #dc2626;">-</div>
+            </div>
+            
+            <!-- Warnings -->
+            <div style="text-align: center;">
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 4px;">Warnings</div>
+              <div id="clean-code-warnings" style="font-size: 1.3rem; font-weight: 700; color: #f59e0b;">-</div>
+            </div>
+            
+            <!-- Status -->
+            <div style="text-align: center;">
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 4px;">Status</div>
+              <div id="clean-code-status" style="font-size: 0.75rem; font-weight: 600; color: #64748b;">-</div>
+            </div>
+            
+            <!-- Separator -->
+            <div style="border-left: 1px solid #e2e8f0;"></div>
+            
+            <!-- Code Quality Score -->
+            <div style="text-align: center;">
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 4px;">Code Quality</div>
+              <div id="code_quality-display" style="font-size: 1.3rem; font-weight: 700; color: #4f46e5;">-/10</div>
+            </div>
+          </div>
+          
+          <div id="clean-code-message" style="margin-top: 10px; padding: 8px 12px; background: #f1f5f9; border-radius: 6px; border-left: 3px solid #cbd5e1; font-size: 0.8rem; color: #64748b; display: none;"></div>
+          <input type="hidden" id="code_quality" name="code_quality" value="0" required>
         </div>
 
         <!-- Performance & Result Quality (10%) -->

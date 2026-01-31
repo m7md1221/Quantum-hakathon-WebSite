@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ? `<p><strong>Submitted:</strong> ${new Date(team.submitted_at).toLocaleDateString()}</p>`
             : ''
           }
+          ${team.clean_code_score !== null && team.clean_code_score !== undefined ? `<p><strong>Clean Code:</strong> ${team.clean_code_score}/100</p>` : ''}
          <button
   onclick="evaluateTeam(${team.id})"
   class="btn btn-block ${isEvaluated ? 'btn-secondary' : 'btn-success'}"

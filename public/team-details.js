@@ -31,6 +31,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function displayTeamDetails(data) {
   const { team, evaluations, detailedScores } = data;
+  const project = data.team.github_repo_url ? {
+    github_repo_url: data.team.github_repo_url,
+    clean_code_score: data.team.clean_code_score,
+    eslint_error_count: data.team.eslint_error_count,
+    eslint_warning_count: data.team.eslint_warning_count,
+    clean_code_status: data.team.clean_code_status,
+    clean_code_failure_reason: data.team.clean_code_failure_reason,
+    last_evaluated_at: data.team.last_evaluated_at
+  } : null;
 
   // Hide loading, show content
   document.getElementById('loading').style.display = 'none';
@@ -59,6 +68,15 @@ function displayTeamDetails(data) {
   if (team.submitted_at) {
     downloadBtn.style.display = 'block';
     downloadBtn.onclick = () => openProjectRepository(team.id);
+    // Show clean code info if available
+    const cleanScoreEl = document.getElementById('clean-code-score');
+    const cleanErrorsEl = document.getElementById('clean-errors');
+    const cleanWarningsEl = document.getElementById('clean-warnings');
+    if (project) {
+      cleanScoreEl.textContent = project.clean_code_score !== null ? project.clean_code_score + '/100' : 'N/A';
+      cleanErrorsEl.textContent = project.eslint_error_count ?? '-';
+      cleanWarningsEl.textContent = project.eslint_warning_count ?? '-';
+    }
   } else {
     downloadBtn.style.display = 'none';
   }

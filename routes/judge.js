@@ -109,6 +109,8 @@ router.get('/teams', authenticate, authorize(['judge']), async (req, res) => {
         u.name,
         t.hall,
         p.submitted_at,
+        p.clean_code_score,
+        p.clean_code_status,
         EXISTS (
           SELECT 1
           FROM evaluations e
@@ -349,9 +351,9 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.status(403).json({ message: 'You can only view projects for teams in your hall' });
     }
 
-    // Get project GitHub URL
+    // Get project GitHub URL and clean code info
     const projectResult = await pool.query(
-      'SELECT github_url FROM projects WHERE team_id = $1',
+      'SELECT github_repo_url, clean_code_score, eslint_error_count, eslint_warning_count, clean_code_status, clean_code_failure_reason, last_evaluated_at FROM projects WHERE team_id = $1',
       [teamId]
     );
 
@@ -359,10 +361,16 @@ router.get('/projects/:teamId', authenticate, authorize(['judge']), async (req, 
       return res.status(404).json({ message: 'No project submission found for this team' });
     }
 
-    const githubUrl = projectResult.rows[0].github_url;
+    const row = projectResult.rows[0];
 
     res.json({ 
-      github_url: githubUrl,
+      github_url: row.github_repo_url,
+      clean_code_score: row.clean_code_score,
+      eslint_error_count: row.eslint_error_count,
+      eslint_warning_count: row.eslint_warning_count,
+      clean_code_status: row.clean_code_status,
+      clean_code_failure_reason: row.clean_code_failure_reason,
+      last_evaluated_at: row.last_evaluated_at,
       status: 'success'
     });
   } catch (error) {

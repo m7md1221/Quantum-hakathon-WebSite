@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div style="flex: 1;">
     <strong class="team-number">الفريق رقم ${result.team_number}</strong><br>
     <span class="team-name">${result.name}</span>
-            <br>
+            ${result.institution_name ? `<div style="margin-top: 4px; color: #666; font-size: 0.9rem;">${result.institution_name}</div>` : ''}
             <small style="color: var(--text-secondary);">Hall ${result.hall}</small>
           </div>
           <div class="score" style="font-size: 1.1rem;">${scoreOutOf100 !== 'N/A' ? scoreOutOf100 + '/100' : 'N/A'}</div>

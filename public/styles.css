@@ -29,6 +29,29 @@ body {
     line-height: 1.6;
 }
 
+/* Admin summary responsive layout */
+.admin-summary-grid {
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    .admin-summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-summary-overview {
+        border-right: none !important;
+        border-bottom: 1px solid #e5e7eb;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-summary-overview,
+    .admin-summary-actions {
+        padding: 20px !important;
+    }
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;

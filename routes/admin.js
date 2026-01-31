@@ -83,6 +83,7 @@ router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
         t.id,
         u.team_number,
         u.name,
+        u.institution_name,
         t.hall,
         AVG(judge_total) as average_score
       FROM (
@@ -98,7 +99,7 @@ router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
       ) judge_scores
       JOIN teams t ON judge_scores.id = t.id
       JOIN users u ON t.user_id = u.id
-      GROUP BY t.id, u.team_number, u.name, t.hall
+      GROUP BY t.id, u.team_number, u.name, u.institution_name, t.hall
       ORDER BY average_score DESC
     `);
 
@@ -195,7 +196,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
 
     // Get team info
     const teamResult = await pool.query(`
-      SELECT t.id, u.name, u.team_number, t.hall, p.submitted_at, p.github_repo_url, p.clean_code_score, p.eslint_error_count, p.eslint_warning_count, p.clean_code_status, p.clean_code_failure_reason, p.last_evaluated_at
+      SELECT t.id, u.name, u.team_number, u.institution_name, t.hall, p.submitted_at, p.github_repo_url, p.clean_code_score, p.eslint_error_count, p.eslint_warning_count, p.clean_code_status, p.clean_code_failure_reason, p.last_evaluated_at
       FROM teams t
       JOIN users u ON t.user_id = u.id
       LEFT JOIN projects p ON t.id = p.team_id
@@ -301,12 +302,13 @@ router.get('/judges', authenticate, authorize(['admin']), async (req, res) => {
       SELECT
         j.id,
         u.name,
+        u.institution_name,
         j.hall,
         COUNT(e.id) as evaluation_count
       FROM judges j
       JOIN users u ON j.user_id = u.id
       LEFT JOIN evaluations e ON j.id = e.judge_id
-      GROUP BY j.id, u.name, j.hall
+      GROUP BY j.id, u.name, u.institution_name, j.hall
       ORDER BY j.hall, u.name
     `);
 

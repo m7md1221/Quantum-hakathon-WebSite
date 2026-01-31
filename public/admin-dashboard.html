@@ -13,23 +13,27 @@
       <p>Quantum Hackathon Management System</p>
     </div>
 
-    <div class="grid grid-2">
-      <div class="card">
-        <h2>Overview</h2>
-        <div id="stats">
-          <p>Loading statistics...</p>
+    <div class="card admin-summary" style="padding: 0; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+      <div class="admin-summary-grid" style="display: grid; grid-template-columns: 3fr 1fr; gap: 0; align-items: stretch;">
+        <div class="admin-summary-overview" style="padding: 30px; border-right: 1px solid #e5e7eb;">
+          <h2 style="margin: 0 0 25px 0; color: #1f2937; font-size: 1.5rem; font-weight: 700;">Overview</h2>
+          <div id="stats">
+            <p>Loading statistics...</p>
+          </div>
+          <button id="refresh-btn" class="btn btn-secondary" style="margin-top: 20px; padding: 10px 20px; background: #eef2f7; color: #374151; border: 1px solid #d7dce3; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            Refresh Data
+          </button>
         </div>
-        <button id="refresh-btn" class="btn btn-secondary" style="margin-top: 15px;">
-          Refresh Data
-        </button>
-      </div>
 
-      <div class="card">
-        <h2>Quick Actions</h2>
-        <a href="results.html" class="btn btn-block btn-success" style="margin-bottom: 10px;">
-          View Final Results
-        </a>
-        <button id="logout" class="btn btn-block btn-secondary">Logout</button>
+        <div class="admin-summary-actions" style="display: flex; flex-direction: column; justify-content: space-between; padding: 30px; background: linear-gradient(135deg, #f7f9fc 0%, #eef2f7 100%);">
+          <div>
+            <h3 style="margin: 0 0 20px 0; color: #334155; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Quick Actions</h3>
+            <a href="results.html" style="text-decoration: none; display: block; text-align: center; padding: 12px 16px; margin-bottom: 12px; border-radius: 8px; background: #f8fafc; color: #1f2937; font-weight: 600; transition: all 0.2s; box-shadow: 0 1px 2px rgba(31, 41, 55, 0.08); border: 1px solid #cbd5e1; cursor: pointer;">
+              View Final Results
+            </a>
+          </div>
+          <button id="logout" style="text-align: center; padding: 12px 16px; border-radius: 8px; background: #fff5f5; color: #7f1d1d; font-weight: 600; border: 1px solid #fecaca; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(127, 29, 29, 0.08);">Logout</button>
+        </div>
       </div>
     </div>
 

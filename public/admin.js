@@ -373,6 +373,7 @@ async function loadJudges() {
           <p style="margin:0;color:var(--text-secondary);font-size:0.85rem;">
             Hall ${judge.hall}
           </p>
+          ${judge.institution_name ? `<p style="margin:5px 0 0 0;color:#666;font-size:0.85rem;margin-left:5px;">${judge.institution_name}</p>` : ''}
         </div>
         <span class="status-badge ${judge.evaluation_count > 0 ? 'status-evaluated' : 'status-pending'}">
           ${judge.evaluation_count} تقييم

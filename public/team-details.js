@@ -47,6 +47,13 @@ function displayTeamDetails(data) {
 
   // Team info
   document.getElementById('team-name').textContent = team.name;
+  
+  // Display institution name if available
+  if (team.institution_name) {
+    document.getElementById('team-institution').textContent = team.institution_name;
+  } else {
+    document.getElementById('team-institution').textContent = '';
+  }
 
   if (team.team_number) {
     const numSpan = document.getElementById('team-num');

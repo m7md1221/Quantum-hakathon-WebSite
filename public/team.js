@@ -4,7 +4,7 @@ if (!token) {
   window.location.href = 'login.html';
 }
 
-let SUBMISSION_DEADLINE = '2026-02-15T23:59:59';
+let SUBMISSION_DEADLINE = '2026-02-08T06:00:00';
 
 function isDeadlinePassed() {
   const deadline = new Date(SUBMISSION_DEADLINE);
@@ -55,8 +55,36 @@ function updateDeadlineDisplay() {
     
     const remaining = getTimeRemaining();
     if (remaining) {
-      statusText.innerHTML = `<strong style="color: #059669;">✓ Time Remaining: ${remaining.days}d ${remaining.hours}h ${remaining.minutes}m</strong>`;
+      statusText.innerHTML = `<strong style="color: #02724f;">✓ Time Remaining: ${remaining.days}d ${remaining.hours}h ${remaining.minutes}m</strong>`;
     }
+  }
+}
+
+function updateUploadButton(isSubmitted) {
+  const uploadBtn = document.getElementById('upload-btn');
+  if (!uploadBtn) return;
+  
+  const deadlinePassed = isDeadlinePassed();
+  
+  if (deadlinePassed) {
+    // بعد الديد لاين - تعطيل الزر
+    uploadBtn.classList.remove('btn-success');
+    uploadBtn.classList.add('btn-disabled');
+    uploadBtn.style.pointerEvents = 'none';
+    uploadBtn.style.opacity = '0.5';
+    uploadBtn.title = 'Submission period has ended';
+    uploadBtn.textContent = isSubmitted ? 'Edit Submission (Closed)' : 'Upload Project (Closed)';
+  } else if (isSubmitted) {
+    // قبل الديد لاين وتم التسليم - تغيير النص لـ Edit
+    uploadBtn.classList.remove('btn-success');
+    uploadBtn.classList.add('btn-primary');
+    uploadBtn.textContent = 'Edit Submission';
+    uploadBtn.title = 'Update your project submission';
+  } else {
+    // قبل الديد لاين ولم يتم التسليم
+    uploadBtn.classList.add('btn-success');
+    uploadBtn.textContent = 'Upload Project';
+    uploadBtn.title = 'Submit your project';
   }
 }
 
@@ -90,6 +118,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         ` : ''}
       `;
+      
+      // تحديث زر الرفع
+      updateUploadButton(data.submitted);
     } else {
       document.getElementById('status').innerHTML = `
         <div class="message error">${data.message}</div>
@@ -97,17 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     updateDeadlineDisplay();
-    
-    if (isDeadlinePassed()) {
-      const uploadBtn = document.querySelector('a[href="upload-project.html"]');
-      if (uploadBtn) {
-        uploadBtn.classList.add('btn-disabled');
-        uploadBtn.style.pointerEvents = 'none';
-        uploadBtn.style.opacity = '0.5';
-        uploadBtn.title = 'Submission period has ended';
-        uploadBtn.textContent = 'Upload Project (Closed)';
-      }
-    }
   } catch (error) {
     document.getElementById('status').innerHTML = `
       <div class="message error">An error occurred while loading status</div>

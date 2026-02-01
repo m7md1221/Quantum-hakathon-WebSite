@@ -51,22 +51,22 @@ function displayStats(data) {
   const { overall } = data;
 
   statsDiv.innerHTML = `
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-      <div class="stat-item" style="text-align: center; padding: 15px; background: var(--background); border-radius: 8px;">
-        <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary-color);">${overall.total_teams || 0}</div>
-        <div style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Total Teams</div>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+      <div class="stat-item" style="text-align: center; padding: 10px; background: var(--background); border-radius: 8px;">
+        <div style="font-size: 1.8rem; font-weight: 700; color: var(--primary-color);">${overall.total_teams || 0}</div>
+        <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Teams</div>
       </div>
-      <div class="stat-item" style="text-align: center; padding: 15px; background: var(--background); border-radius: 8px;">
-        <div style="font-size: 2.5rem; font-weight: 700; color: var(--success-color);">${overall.submitted_teams || 0}</div>
-        <div style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Submitted</div>
+      <div class="stat-item" style="text-align: center; padding: 10px; background: var(--background); border-radius: 8px;">
+        <div style="font-size: 1.8rem; font-weight: 700; color: var(--success-color);">${overall.submitted_teams || 0}</div>
+        <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Submitted</div>
       </div>
-      <div class="stat-item" style="text-align: center; padding: 15px; background: var(--background); border-radius: 8px;">
-        <div style="font-size: 2.5rem; font-weight: 700; color: var(--warning-color);">${overall.evaluated_teams || 0}</div>
-        <div style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Evaluated</div>
+      <div class="stat-item" style="text-align: center; padding: 10px; background: var(--background); border-radius: 8px;">
+        <div style="font-size: 1.8rem; font-weight: 700; color: var(--warning-color);">${overall.evaluated_teams || 0}</div>
+        <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Evaluated</div>
       </div>
-      <div class="stat-item" style="text-align: center; padding: 15px; background: var(--background); border-radius: 8px;">
-        <div style="font-size: 2.5rem; font-weight: 700; color: var(--info-color);">${overall.total_judges || 0}</div>
-        <div style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Judges</div>
+      <div class="stat-item" style="text-align: center; padding: 10px; background: var(--background); border-radius: 8px;">
+        <div style="font-size: 1.8rem; font-weight: 700; color: var(--info-color);">${overall.total_judges || 0}</div>
+        <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Judges</div>
       </div>
     </div>
   `;

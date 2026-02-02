@@ -1,8 +1,6 @@
 -- Migration: Add clean code columns to projects
 -- Run this against the database if needed
 
-BEGIN;
-
 ALTER TABLE projects
   RENAME COLUMN IF EXISTS github_url TO github_repo_url;
 
@@ -26,7 +24,5 @@ ALTER TABLE projects
 
 ALTER TABLE projects
   ADD COLUMN IF NOT EXISTS clean_code_failure_reason TEXT;
-
-COMMIT;
 
 -- This migration is idempotent and safe to run multiple times.

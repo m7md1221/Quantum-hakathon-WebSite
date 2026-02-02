@@ -14,7 +14,7 @@ router.delete('/test-delete', (req, res) => {
 // Get all teams with scores
 router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
   try {
-    // First get basic team info
+    // Get all teams with calculated scores in one optimized query
     const teamsResult = await pool.query(`
       SELECT
         t.id,
@@ -22,52 +22,33 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
         u.name,
         t.hall,
         p.submitted_at,
-        (SELECT COUNT(*) FROM evaluations WHERE team_id = t.id) as evaluation_count
+        (SELECT COUNT(*) FROM evaluations WHERE team_id = t.id) as evaluation_count,
+        COALESCE(SUM(es.score * c.weight / 10.0), 0) as total_score,
+        CASE 
+          WHEN COUNT(DISTINCT e.judge_id) > 0 THEN COALESCE(SUM(es.score * c.weight / 10.0), 0) / COUNT(DISTINCT e.judge_id)
+          ELSE 0
+        END as average_score
       FROM teams t
       JOIN users u ON t.user_id = u.id
       LEFT JOIN projects p ON t.id = p.team_id
-       GROUP BY t.id, u.team_number, t.hall, p.submitted_at , u.name
+      LEFT JOIN evaluations e ON t.id = e.team_id
+      LEFT JOIN evaluation_scores es ON e.id = es.evaluation_id
+      LEFT JOIN criteria c ON es.criterion_key = c.key
+      GROUP BY t.id, u.team_number, u.name, t.hall, p.submitted_at
+      ORDER BY average_score DESC
     `);
 
-    // For each team, calculate scores
-    const teams = await Promise.all(teamsResult.rows.map(async (team) => {
-      const teamId = parseInt(team.id);
-
-      // Get judge totals for this team
-      const judgeScoresResult = await pool.query(`
-        SELECT 
-          e.judge_id,
-          SUM(es.score * c.weight / c.max_score) as judge_total
-        FROM evaluations e
-        JOIN evaluation_scores es ON e.id = es.evaluation_id
-        JOIN criteria c ON es.criterion_key = c.key
-        WHERE e.team_id = $1
-        GROUP BY e.judge_id
-      `, [teamId]);
-
-      let totalScore = 0;
-      let averageScore = 0;
-
-      if (judgeScoresResult.rows.length > 0) {
-        const judgeTotals = judgeScoresResult.rows.map(r => parseFloat(r.judge_total) || 0);
-        totalScore = judgeTotals.reduce((sum, score) => sum + score, 0);
-        averageScore = totalScore / judgeTotals.length;
-      }
-
-      return {
-        id: teamId,
-        team_number: team.team_number,
-        name: team.name,
-        hall: team.hall,
-        submitted_at: team.submitted_at,
-        evaluation_count: parseInt(team.evaluation_count) || 0,
-        total_score: totalScore,
-        average_score: averageScore
-      };
+    // Format the results
+    const teams = teamsResult.rows.map(team => ({
+      id: team.id,
+      team_number: team.team_number,
+      name: team.name,
+      hall: team.hall,
+      submitted_at: team.submitted_at,
+      evaluation_count: parseInt(team.evaluation_count) || 0,
+      total_score: parseFloat(team.total_score) || 0,
+      average_score: parseFloat(team.average_score) || 0
     }));
-
-    // Sort by average score DESC
-    teams.sort((a, b) => b.average_score - a.average_score);
 
     res.json(teams);
   } catch (error) {
@@ -83,14 +64,14 @@ router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
         t.id,
         u.team_number,
         u.name,
-        u.institution_name,
+        u.team_institution as institution_name,
         t.hall,
         AVG(judge_total) as average_score
       FROM (
         SELECT
           t.id,
           e.judge_id,
-          SUM(es.score * c.weight / c.max_score) as judge_total
+          SUM(es.score * c.weight / 10) as judge_total
         FROM teams t
         JOIN evaluations e ON t.id = e.team_id
         JOIN evaluation_scores es ON e.id = es.evaluation_id
@@ -99,7 +80,7 @@ router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
       ) judge_scores
       JOIN teams t ON judge_scores.id = t.id
       JOIN users u ON t.user_id = u.id
-      GROUP BY t.id, u.team_number, u.name, u.institution_name, t.hall
+      GROUP BY t.id, u.team_number, u.name, u.team_institution, t.hall
       ORDER BY average_score DESC
     `);
 
@@ -196,7 +177,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
 
     // Get team info
     const teamResult = await pool.query(`
-      SELECT t.id, u.name, u.team_number, u.institution_name, t.hall, p.submitted_at, p.github_repo_url, p.clean_code_score, p.eslint_error_count, p.eslint_warning_count, p.clean_code_status, p.clean_code_failure_reason, p.last_evaluated_at
+      SELECT t.id, u.name, u.team_number, u.team_institution as team_institution, t.hall, p.submitted_at, p.github_repo_url, p.clean_code_score, p.eslint_error_count, p.eslint_warning_count, p.clean_code_status, p.clean_code_failure_reason, p.last_evaluated_at
       FROM teams t
       JOIN users u ON t.user_id = u.id
       LEFT JOIN projects p ON t.id = p.team_id
@@ -216,7 +197,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
         ju.name as judge_name,
         j.hall as judge_hall,
         e.id as evaluation_id,
-        COALESCE(SUM(es.score * c.weight / c.max_score), 0) as total_score
+        COALESCE(SUM(es.score * c.weight / 10), 0) as total_score
       FROM judges j
       JOIN users ju ON j.user_id = ju.id
       LEFT JOIN evaluations e ON j.id = e.judge_id AND e.team_id = $1
@@ -234,7 +215,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
         c.name as criterion_name,
         es.score,
         c.weight::FLOAT as weight,
-        c.max_score::FLOAT as max_score
+        10::FLOAT as max_score
       FROM judges j
       JOIN users ju ON j.user_id = ju.id
       LEFT JOIN evaluations e ON j.id = e.judge_id AND e.team_id = $1
@@ -265,7 +246,7 @@ router.get('/stats', authenticate, authorize(['admin']), async (req, res) => {
         (SELECT COUNT(DISTINCT team_id) FROM evaluations) as evaluated_teams,
         (SELECT COUNT(*) FROM judges) as total_judges,
         (SELECT AVG(total) FROM (
-          SELECT SUM(es.score * c.weight / c.max_score) as total 
+          SELECT SUM(es.score * c.weight / 10) as total 
           FROM evaluation_scores es
           JOIN criteria c ON es.criterion_key = c.key
           GROUP BY es.evaluation_id
@@ -302,13 +283,13 @@ router.get('/judges', authenticate, authorize(['admin']), async (req, res) => {
       SELECT
         j.id,
         u.name,
-        u.institution_name,
+        u.team_institution as institution_name,
         j.hall,
         COUNT(e.id) as evaluation_count
       FROM judges j
       JOIN users u ON j.user_id = u.id
       LEFT JOIN evaluations e ON j.id = e.judge_id
-      GROUP BY j.id, u.name, u.institution_name, j.hall
+      GROUP BY j.id, u.name, u.team_institution, j.hall
       ORDER BY j.hall, u.name
     `);
 
@@ -420,9 +401,8 @@ router.put('/evaluation-scores/:scoreId', authenticate, authorize(['admin']), as
 
     // Check if score exists and get criterion max_score
     const scoreCheck = await pool.query(
-      `SELECT es.id, es.evaluation_id, c.max_score
+      `SELECT es.id, es.evaluation_id, 10 as max_score
        FROM evaluation_scores es
-       JOIN criteria c ON es.criterion_key = c.key
        WHERE es.id = $1`,
       [parseInt(scoreId)]
     );
@@ -507,7 +487,7 @@ router.get('/team-evaluations/:teamId', authenticate, authorize(['admin']), asyn
         j.id as judge_id,
         ju.name as judge_name,
         j.hall as judge_hall,
-        COALESCE(SUM(es.score * c.weight / c.max_score), 0) as total_score
+        COALESCE(SUM(es.score * c.weight / 10), 0) as total_score
       FROM evaluations e
       JOIN judges j ON e.judge_id = j.id
       JOIN users ju ON j.user_id = ju.id
@@ -531,7 +511,7 @@ router.get('/team-evaluations/:teamId', authenticate, authorize(['admin']), asyn
         c.name as criterion_name,
         es.score,
         c.weight,
-        c.max_score,
+        10 as max_score,
         es.admin_note
       FROM evaluations e
       JOIN judges j ON e.judge_id = j.id

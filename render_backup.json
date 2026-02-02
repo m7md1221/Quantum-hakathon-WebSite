@@ -1,0 +1,1936 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin User",
+      "email": "admin@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "admin",
+      "hall": null,
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 2,
+      "name": "Judge A1",
+      "email": "judge_a1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "A",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 3,
+      "name": "Judge A2",
+      "email": "judge_a2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "A",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 4,
+      "name": "Judge A3",
+      "email": "judge_a3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "A",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 5,
+      "name": "Judge A4",
+      "email": "judge_a4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "A",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 6,
+      "name": "Judge A5",
+      "email": "judge_a5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "A",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 7,
+      "name": "Judge B1",
+      "email": "judge_b1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "B",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 8,
+      "name": "Judge B2",
+      "email": "judge_b2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "B",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 9,
+      "name": "Judge B3",
+      "email": "judge_b3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "B",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 10,
+      "name": "Judge B4",
+      "email": "judge_b4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "B",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 11,
+      "name": "Judge B5",
+      "email": "judge_b5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "B",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 12,
+      "name": "Judge C1",
+      "email": "judge_c1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "C",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 13,
+      "name": "Judge C2",
+      "email": "judge_c2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "C",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 14,
+      "name": "Judge C3",
+      "email": "judge_c3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "C",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 15,
+      "name": "Judge C4",
+      "email": "judge_c4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "C",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 16,
+      "name": "Judge C5",
+      "email": "judge_c5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "C",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 17,
+      "name": "Judge D1",
+      "email": "judge_d1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "D",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 18,
+      "name": "Judge D2",
+      "email": "judge_d2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "D",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 19,
+      "name": "Judge D3",
+      "email": "judge_d3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "D",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 20,
+      "name": "Judge D4",
+      "email": "judge_d4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "D",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 21,
+      "name": "Judge D5",
+      "email": "judge_d5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "judge",
+      "hall": "D",
+      "team_number": null,
+      "institution_name": null
+    },
+    {
+      "id": 22,
+      "name": "Team A1",
+      "email": "team_a1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 1,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 23,
+      "name": "Team A2",
+      "email": "team_a2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 2,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 24,
+      "name": "Team A3",
+      "email": "team_a3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 3,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 25,
+      "name": "Team A4",
+      "email": "team_a4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 4,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 26,
+      "name": "Team A5",
+      "email": "team_a5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 5,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 27,
+      "name": "Team A6",
+      "email": "team_a6@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 6,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 28,
+      "name": "Team A7",
+      "email": "team_a7@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 7,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 29,
+      "name": "Team A8",
+      "email": "team_a8@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 8,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 30,
+      "name": "Team A9",
+      "email": "team_a9@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 9,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 31,
+      "name": "Team A10",
+      "email": "team_a10@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 10,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 32,
+      "name": "Team A11",
+      "email": "team_a11@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 11,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 33,
+      "name": "Team A12",
+      "email": "team_a12@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 12,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 34,
+      "name": "Team A13",
+      "email": "team_a13@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 13,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 35,
+      "name": "Team A14",
+      "email": "team_a14@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 14,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 36,
+      "name": "Team A15",
+      "email": "team_a15@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 15,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 37,
+      "name": "Team A16",
+      "email": "team_a16@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 16,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 38,
+      "name": "Team A17",
+      "email": "team_a17@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 17,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 39,
+      "name": "Team A18",
+      "email": "team_a18@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 18,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 40,
+      "name": "Team A19",
+      "email": "team_a19@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 19,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 41,
+      "name": "Team A20",
+      "email": "team_a20@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "A",
+      "team_number": 20,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 42,
+      "name": "Team B1",
+      "email": "team_b1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 21,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 43,
+      "name": "Team B2",
+      "email": "team_b2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 22,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 44,
+      "name": "Team B3",
+      "email": "team_b3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 23,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 45,
+      "name": "Team B4",
+      "email": "team_b4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 24,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 46,
+      "name": "Team B5",
+      "email": "team_b5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 25,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 47,
+      "name": "Team B6",
+      "email": "team_b6@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 26,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 48,
+      "name": "Team B7",
+      "email": "team_b7@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 27,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 49,
+      "name": "Team B8",
+      "email": "team_b8@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 28,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 50,
+      "name": "Team B9",
+      "email": "team_b9@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 29,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 51,
+      "name": "Team B10",
+      "email": "team_b10@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 30,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 52,
+      "name": "Team B11",
+      "email": "team_b11@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 31,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 53,
+      "name": "Team B12",
+      "email": "team_b12@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 32,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 54,
+      "name": "Team B13",
+      "email": "team_b13@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 33,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 55,
+      "name": "Team B14",
+      "email": "team_b14@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 34,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 56,
+      "name": "Team B15",
+      "email": "team_b15@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 35,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 57,
+      "name": "Team B16",
+      "email": "team_b16@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 36,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 58,
+      "name": "Team B17",
+      "email": "team_b17@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 37,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 59,
+      "name": "Team B18",
+      "email": "team_b18@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 38,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 60,
+      "name": "Team B19",
+      "email": "team_b19@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 39,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 61,
+      "name": "Team B20",
+      "email": "team_b20@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "B",
+      "team_number": 40,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 62,
+      "name": "Team C1",
+      "email": "team_c1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 41,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 63,
+      "name": "Team C2",
+      "email": "team_c2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 42,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 64,
+      "name": "Team C3",
+      "email": "team_c3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 43,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 65,
+      "name": "Team C4",
+      "email": "team_c4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 44,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 66,
+      "name": "Team C5",
+      "email": "team_c5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 45,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 67,
+      "name": "Team C6",
+      "email": "team_c6@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 46,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 68,
+      "name": "Team C7",
+      "email": "team_c7@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 47,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 69,
+      "name": "Team C8",
+      "email": "team_c8@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 48,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 70,
+      "name": "Team C9",
+      "email": "team_c9@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 49,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 71,
+      "name": "Team C10",
+      "email": "team_c10@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 50,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 72,
+      "name": "Team C11",
+      "email": "team_c11@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 51,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 73,
+      "name": "Team C12",
+      "email": "team_c12@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 52,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 74,
+      "name": "Team C13",
+      "email": "team_c13@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 53,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 75,
+      "name": "Team C14",
+      "email": "team_c14@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 54,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 76,
+      "name": "Team C15",
+      "email": "team_c15@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 55,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 77,
+      "name": "Team C16",
+      "email": "team_c16@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 56,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 78,
+      "name": "Team C17",
+      "email": "team_c17@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 57,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 79,
+      "name": "Team C18",
+      "email": "team_c18@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 58,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 80,
+      "name": "Team C19",
+      "email": "team_c19@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 59,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 81,
+      "name": "Team C20",
+      "email": "team_c20@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "C",
+      "team_number": 60,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 82,
+      "name": "Team D1",
+      "email": "team_d1@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 61,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 83,
+      "name": "Team D2",
+      "email": "team_d2@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 62,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 84,
+      "name": "Team D3",
+      "email": "team_d3@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 63,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 85,
+      "name": "Team D4",
+      "email": "team_d4@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 64,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 86,
+      "name": "Team D5",
+      "email": "team_d5@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 65,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 87,
+      "name": "Team D6",
+      "email": "team_d6@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 66,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 88,
+      "name": "Team D7",
+      "email": "team_d7@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 67,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 89,
+      "name": "Team D8",
+      "email": "team_d8@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 68,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 90,
+      "name": "Team D9",
+      "email": "team_d9@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 69,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 91,
+      "name": "Team D10",
+      "email": "team_d10@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 70,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 92,
+      "name": "Team D11",
+      "email": "team_d11@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 71,
+      "institution_name": "جامعة الأردن"
+    },
+    {
+      "id": 93,
+      "name": "Team D12",
+      "email": "team_d12@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 72,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 94,
+      "name": "Team D13",
+      "email": "team_d13@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 73,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 95,
+      "name": "Team D14",
+      "email": "team_d14@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 74,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 96,
+      "name": "Team D15",
+      "email": "team_d15@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 75,
+      "institution_name": "جامعة بغداد"
+    },
+    {
+      "id": 97,
+      "name": "Team D16",
+      "email": "team_d16@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 76,
+      "institution_name": "جامعة الملك فيصل"
+    },
+    {
+      "id": 98,
+      "name": "Team D17",
+      "email": "team_d17@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 77,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 99,
+      "name": "Team D18",
+      "email": "team_d18@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 78,
+      "institution_name": "جامعة التكنولوجيا"
+    },
+    {
+      "id": 100,
+      "name": "Team D19",
+      "email": "team_d19@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 79,
+      "institution_name": "جامعة القاهرة"
+    },
+    {
+      "id": 101,
+      "name": "Team D20",
+      "email": "team_d20@khakathon.com",
+      "password": "$2a$10$3/r8NR66WdDyrqnqUlNHI.lTdCnwJZF8jvtg3x3fjxCNtbVY28LjK",
+      "role": "team",
+      "hall": "D",
+      "team_number": 80,
+      "institution_name": "جامعة بغداد"
+    }
+  ],
+  "teams": [
+    {
+      "id": 1,
+      "user_id": 22,
+      "hall": "A"
+    },
+    {
+      "id": 2,
+      "user_id": 23,
+      "hall": "A"
+    },
+    {
+      "id": 3,
+      "user_id": 24,
+      "hall": "A"
+    },
+    {
+      "id": 4,
+      "user_id": 25,
+      "hall": "A"
+    },
+    {
+      "id": 5,
+      "user_id": 26,
+      "hall": "A"
+    },
+    {
+      "id": 6,
+      "user_id": 27,
+      "hall": "A"
+    },
+    {
+      "id": 7,
+      "user_id": 28,
+      "hall": "A"
+    },
+    {
+      "id": 8,
+      "user_id": 29,
+      "hall": "A"
+    },
+    {
+      "id": 9,
+      "user_id": 30,
+      "hall": "A"
+    },
+    {
+      "id": 10,
+      "user_id": 31,
+      "hall": "A"
+    },
+    {
+      "id": 11,
+      "user_id": 32,
+      "hall": "A"
+    },
+    {
+      "id": 12,
+      "user_id": 33,
+      "hall": "A"
+    },
+    {
+      "id": 13,
+      "user_id": 34,
+      "hall": "A"
+    },
+    {
+      "id": 14,
+      "user_id": 35,
+      "hall": "A"
+    },
+    {
+      "id": 15,
+      "user_id": 36,
+      "hall": "A"
+    },
+    {
+      "id": 16,
+      "user_id": 37,
+      "hall": "A"
+    },
+    {
+      "id": 17,
+      "user_id": 38,
+      "hall": "A"
+    },
+    {
+      "id": 18,
+      "user_id": 39,
+      "hall": "A"
+    },
+    {
+      "id": 19,
+      "user_id": 40,
+      "hall": "A"
+    },
+    {
+      "id": 20,
+      "user_id": 41,
+      "hall": "A"
+    },
+    {
+      "id": 21,
+      "user_id": 42,
+      "hall": "B"
+    },
+    {
+      "id": 22,
+      "user_id": 43,
+      "hall": "B"
+    },
+    {
+      "id": 23,
+      "user_id": 44,
+      "hall": "B"
+    },
+    {
+      "id": 24,
+      "user_id": 45,
+      "hall": "B"
+    },
+    {
+      "id": 25,
+      "user_id": 46,
+      "hall": "B"
+    },
+    {
+      "id": 26,
+      "user_id": 47,
+      "hall": "B"
+    },
+    {
+      "id": 27,
+      "user_id": 48,
+      "hall": "B"
+    },
+    {
+      "id": 28,
+      "user_id": 49,
+      "hall": "B"
+    },
+    {
+      "id": 29,
+      "user_id": 50,
+      "hall": "B"
+    },
+    {
+      "id": 30,
+      "user_id": 51,
+      "hall": "B"
+    },
+    {
+      "id": 31,
+      "user_id": 52,
+      "hall": "B"
+    },
+    {
+      "id": 32,
+      "user_id": 53,
+      "hall": "B"
+    },
+    {
+      "id": 33,
+      "user_id": 54,
+      "hall": "B"
+    },
+    {
+      "id": 34,
+      "user_id": 55,
+      "hall": "B"
+    },
+    {
+      "id": 35,
+      "user_id": 56,
+      "hall": "B"
+    },
+    {
+      "id": 36,
+      "user_id": 57,
+      "hall": "B"
+    },
+    {
+      "id": 37,
+      "user_id": 58,
+      "hall": "B"
+    },
+    {
+      "id": 38,
+      "user_id": 59,
+      "hall": "B"
+    },
+    {
+      "id": 39,
+      "user_id": 60,
+      "hall": "B"
+    },
+    {
+      "id": 40,
+      "user_id": 61,
+      "hall": "B"
+    },
+    {
+      "id": 41,
+      "user_id": 62,
+      "hall": "C"
+    },
+    {
+      "id": 42,
+      "user_id": 63,
+      "hall": "C"
+    },
+    {
+      "id": 43,
+      "user_id": 64,
+      "hall": "C"
+    },
+    {
+      "id": 44,
+      "user_id": 65,
+      "hall": "C"
+    },
+    {
+      "id": 45,
+      "user_id": 66,
+      "hall": "C"
+    },
+    {
+      "id": 46,
+      "user_id": 67,
+      "hall": "C"
+    },
+    {
+      "id": 47,
+      "user_id": 68,
+      "hall": "C"
+    },
+    {
+      "id": 48,
+      "user_id": 69,
+      "hall": "C"
+    },
+    {
+      "id": 49,
+      "user_id": 70,
+      "hall": "C"
+    },
+    {
+      "id": 50,
+      "user_id": 71,
+      "hall": "C"
+    },
+    {
+      "id": 51,
+      "user_id": 72,
+      "hall": "C"
+    },
+    {
+      "id": 52,
+      "user_id": 73,
+      "hall": "C"
+    },
+    {
+      "id": 53,
+      "user_id": 74,
+      "hall": "C"
+    },
+    {
+      "id": 54,
+      "user_id": 75,
+      "hall": "C"
+    },
+    {
+      "id": 55,
+      "user_id": 76,
+      "hall": "C"
+    },
+    {
+      "id": 56,
+      "user_id": 77,
+      "hall": "C"
+    },
+    {
+      "id": 57,
+      "user_id": 78,
+      "hall": "C"
+    },
+    {
+      "id": 58,
+      "user_id": 79,
+      "hall": "C"
+    },
+    {
+      "id": 59,
+      "user_id": 80,
+      "hall": "C"
+    },
+    {
+      "id": 60,
+      "user_id": 81,
+      "hall": "C"
+    },
+    {
+      "id": 61,
+      "user_id": 82,
+      "hall": "D"
+    },
+    {
+      "id": 62,
+      "user_id": 83,
+      "hall": "D"
+    },
+    {
+      "id": 63,
+      "user_id": 84,
+      "hall": "D"
+    },
+    {
+      "id": 64,
+      "user_id": 85,
+      "hall": "D"
+    },
+    {
+      "id": 65,
+      "user_id": 86,
+      "hall": "D"
+    },
+    {
+      "id": 66,
+      "user_id": 87,
+      "hall": "D"
+    },
+    {
+      "id": 67,
+      "user_id": 88,
+      "hall": "D"
+    },
+    {
+      "id": 68,
+      "user_id": 89,
+      "hall": "D"
+    },
+    {
+      "id": 69,
+      "user_id": 90,
+      "hall": "D"
+    },
+    {
+      "id": 70,
+      "user_id": 91,
+      "hall": "D"
+    },
+    {
+      "id": 71,
+      "user_id": 92,
+      "hall": "D"
+    },
+    {
+      "id": 72,
+      "user_id": 93,
+      "hall": "D"
+    },
+    {
+      "id": 73,
+      "user_id": 94,
+      "hall": "D"
+    },
+    {
+      "id": 74,
+      "user_id": 95,
+      "hall": "D"
+    },
+    {
+      "id": 75,
+      "user_id": 96,
+      "hall": "D"
+    },
+    {
+      "id": 76,
+      "user_id": 97,
+      "hall": "D"
+    },
+    {
+      "id": 77,
+      "user_id": 98,
+      "hall": "D"
+    },
+    {
+      "id": 78,
+      "user_id": 99,
+      "hall": "D"
+    },
+    {
+      "id": 79,
+      "user_id": 100,
+      "hall": "D"
+    },
+    {
+      "id": 80,
+      "user_id": 101,
+      "hall": "D"
+    }
+  ],
+  "judges": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "hall": "A"
+    },
+    {
+      "id": 2,
+      "user_id": 3,
+      "hall": "A"
+    },
+    {
+      "id": 3,
+      "user_id": 4,
+      "hall": "A"
+    },
+    {
+      "id": 4,
+      "user_id": 5,
+      "hall": "A"
+    },
+    {
+      "id": 5,
+      "user_id": 6,
+      "hall": "A"
+    },
+    {
+      "id": 6,
+      "user_id": 7,
+      "hall": "B"
+    },
+    {
+      "id": 7,
+      "user_id": 8,
+      "hall": "B"
+    },
+    {
+      "id": 8,
+      "user_id": 9,
+      "hall": "B"
+    },
+    {
+      "id": 9,
+      "user_id": 10,
+      "hall": "B"
+    },
+    {
+      "id": 10,
+      "user_id": 11,
+      "hall": "B"
+    },
+    {
+      "id": 11,
+      "user_id": 12,
+      "hall": "C"
+    },
+    {
+      "id": 12,
+      "user_id": 13,
+      "hall": "C"
+    },
+    {
+      "id": 13,
+      "user_id": 14,
+      "hall": "C"
+    },
+    {
+      "id": 14,
+      "user_id": 15,
+      "hall": "C"
+    },
+    {
+      "id": 15,
+      "user_id": 16,
+      "hall": "C"
+    },
+    {
+      "id": 16,
+      "user_id": 17,
+      "hall": "D"
+    },
+    {
+      "id": 17,
+      "user_id": 18,
+      "hall": "D"
+    },
+    {
+      "id": 18,
+      "user_id": 19,
+      "hall": "D"
+    },
+    {
+      "id": 19,
+      "user_id": 20,
+      "hall": "D"
+    },
+    {
+      "id": 20,
+      "user_id": 21,
+      "hall": "D"
+    }
+  ],
+  "projects": [],
+  "evaluations": [
+    {
+      "id": 1,
+      "judge_id": 1,
+      "team_id": 20
+    },
+    {
+      "id": 2,
+      "judge_id": 1,
+      "team_id": 1
+    },
+    {
+      "id": 14,
+      "judge_id": 2,
+      "team_id": 1
+    },
+    {
+      "id": 15,
+      "judge_id": 1,
+      "team_id": 11
+    },
+    {
+      "id": 16,
+      "judge_id": 1,
+      "team_id": 10
+    },
+    {
+      "id": 17,
+      "judge_id": 1,
+      "team_id": 18
+    },
+    {
+      "id": 19,
+      "judge_id": 1,
+      "team_id": 13
+    }
+  ],
+  "evaluation_scores": [
+    {
+      "id": 1,
+      "evaluation_id": 2,
+      "criterion_key": "problem_importance",
+      "score": "9.00"
+    },
+    {
+      "id": 2,
+      "evaluation_id": 2,
+      "criterion_key": "ai_quantum_use",
+      "score": "9.00"
+    },
+    {
+      "id": 3,
+      "evaluation_id": 2,
+      "criterion_key": "sdgs",
+      "score": "9.00"
+    },
+    {
+      "id": 4,
+      "evaluation_id": 2,
+      "criterion_key": "innovation",
+      "score": "9.00"
+    },
+    {
+      "id": 5,
+      "evaluation_id": 2,
+      "criterion_key": "social_impact",
+      "score": "9.00"
+    },
+    {
+      "id": 6,
+      "evaluation_id": 2,
+      "criterion_key": "code_quality",
+      "score": "9.00"
+    },
+    {
+      "id": 7,
+      "evaluation_id": 2,
+      "criterion_key": "performance",
+      "score": "9.00"
+    },
+    {
+      "id": 8,
+      "evaluation_id": 2,
+      "criterion_key": "presentation",
+      "score": "9.00"
+    },
+    {
+      "id": 49,
+      "evaluation_id": 1,
+      "criterion_key": "problem_importance",
+      "score": "10.00"
+    },
+    {
+      "id": 50,
+      "evaluation_id": 1,
+      "criterion_key": "ai_quantum_use",
+      "score": "9.00"
+    },
+    {
+      "id": 51,
+      "evaluation_id": 1,
+      "criterion_key": "sdgs",
+      "score": "10.00"
+    },
+    {
+      "id": 52,
+      "evaluation_id": 1,
+      "criterion_key": "innovation",
+      "score": "10.00"
+    },
+    {
+      "id": 53,
+      "evaluation_id": 1,
+      "criterion_key": "social_impact",
+      "score": "10.00"
+    },
+    {
+      "id": 54,
+      "evaluation_id": 1,
+      "criterion_key": "code_quality",
+      "score": "9.00"
+    },
+    {
+      "id": 55,
+      "evaluation_id": 1,
+      "criterion_key": "performance",
+      "score": "8.00"
+    },
+    {
+      "id": 56,
+      "evaluation_id": 1,
+      "criterion_key": "presentation",
+      "score": "7.00"
+    },
+    {
+      "id": 73,
+      "evaluation_id": 14,
+      "criterion_key": "problem_importance",
+      "score": "8.00"
+    },
+    {
+      "id": 74,
+      "evaluation_id": 14,
+      "criterion_key": "ai_quantum_use",
+      "score": "8.00"
+    },
+    {
+      "id": 75,
+      "evaluation_id": 14,
+      "criterion_key": "sdgs",
+      "score": "8.00"
+    },
+    {
+      "id": 76,
+      "evaluation_id": 14,
+      "criterion_key": "innovation",
+      "score": "8.00"
+    },
+    {
+      "id": 77,
+      "evaluation_id": 14,
+      "criterion_key": "social_impact",
+      "score": "8.00"
+    },
+    {
+      "id": 78,
+      "evaluation_id": 14,
+      "criterion_key": "code_quality",
+      "score": "8.00"
+    },
+    {
+      "id": 79,
+      "evaluation_id": 14,
+      "criterion_key": "performance",
+      "score": "8.00"
+    },
+    {
+      "id": 80,
+      "evaluation_id": 14,
+      "criterion_key": "presentation",
+      "score": "8.00"
+    },
+    {
+      "id": 81,
+      "evaluation_id": 15,
+      "criterion_key": "problem_importance",
+      "score": "9.00"
+    },
+    {
+      "id": 82,
+      "evaluation_id": 15,
+      "criterion_key": "ai_quantum_use",
+      "score": "9.00"
+    },
+    {
+      "id": 83,
+      "evaluation_id": 15,
+      "criterion_key": "sdgs",
+      "score": "8.00"
+    },
+    {
+      "id": 84,
+      "evaluation_id": 15,
+      "criterion_key": "innovation",
+      "score": "9.00"
+    },
+    {
+      "id": 85,
+      "evaluation_id": 15,
+      "criterion_key": "social_impact",
+      "score": "8.00"
+    },
+    {
+      "id": 86,
+      "evaluation_id": 15,
+      "criterion_key": "code_quality",
+      "score": "9.00"
+    },
+    {
+      "id": 87,
+      "evaluation_id": 15,
+      "criterion_key": "performance",
+      "score": "8.00"
+    },
+    {
+      "id": 88,
+      "evaluation_id": 15,
+      "criterion_key": "presentation",
+      "score": "9.00"
+    },
+    {
+      "id": 89,
+      "evaluation_id": 16,
+      "criterion_key": "problem_importance",
+      "score": "0.00"
+    },
+    {
+      "id": 90,
+      "evaluation_id": 16,
+      "criterion_key": "ai_quantum_use",
+      "score": "0.00"
+    },
+    {
+      "id": 91,
+      "evaluation_id": 16,
+      "criterion_key": "sdgs",
+      "score": "0.00"
+    },
+    {
+      "id": 92,
+      "evaluation_id": 16,
+      "criterion_key": "innovation",
+      "score": "0.00"
+    },
+    {
+      "id": 93,
+      "evaluation_id": 16,
+      "criterion_key": "social_impact",
+      "score": "0.00"
+    },
+    {
+      "id": 94,
+      "evaluation_id": 16,
+      "criterion_key": "code_quality",
+      "score": "0.00"
+    },
+    {
+      "id": 95,
+      "evaluation_id": 16,
+      "criterion_key": "performance",
+      "score": "0.00"
+    },
+    {
+      "id": 96,
+      "evaluation_id": 16,
+      "criterion_key": "presentation",
+      "score": "0.00"
+    },
+    {
+      "id": 97,
+      "evaluation_id": 17,
+      "criterion_key": "problem_importance",
+      "score": "2.00"
+    },
+    {
+      "id": 98,
+      "evaluation_id": 17,
+      "criterion_key": "ai_quantum_use",
+      "score": "2.00"
+    },
+    {
+      "id": 99,
+      "evaluation_id": 17,
+      "criterion_key": "sdgs",
+      "score": "2.00"
+    },
+    {
+      "id": 100,
+      "evaluation_id": 17,
+      "criterion_key": "innovation",
+      "score": "2.00"
+    },
+    {
+      "id": 101,
+      "evaluation_id": 17,
+      "criterion_key": "social_impact",
+      "score": "2.00"
+    },
+    {
+      "id": 102,
+      "evaluation_id": 17,
+      "criterion_key": "code_quality",
+      "score": "2.00"
+    },
+    {
+      "id": 103,
+      "evaluation_id": 17,
+      "criterion_key": "performance",
+      "score": "2.00"
+    },
+    {
+      "id": 104,
+      "evaluation_id": 17,
+      "criterion_key": "presentation",
+      "score": "2.00"
+    },
+    {
+      "id": 113,
+      "evaluation_id": 19,
+      "criterion_key": "problem_importance",
+      "score": "3.00"
+    },
+    {
+      "id": 114,
+      "evaluation_id": 19,
+      "criterion_key": "ai_quantum_use",
+      "score": "3.00"
+    },
+    {
+      "id": 115,
+      "evaluation_id": 19,
+      "criterion_key": "sdgs",
+      "score": "2.00"
+    },
+    {
+      "id": 116,
+      "evaluation_id": 19,
+      "criterion_key": "innovation",
+      "score": "2.00"
+    },
+    {
+      "id": 117,
+      "evaluation_id": 19,
+      "criterion_key": "social_impact",
+      "score": "5.00"
+    },
+    {
+      "id": 118,
+      "evaluation_id": 19,
+      "criterion_key": "code_quality",
+      "score": "8.00"
+    },
+    {
+      "id": 119,
+      "evaluation_id": 19,
+      "criterion_key": "performance",
+      "score": "7.00"
+    },
+    {
+      "id": 120,
+      "evaluation_id": 19,
+      "criterion_key": "presentation",
+      "score": "9.00"
+    }
+  ],
+  "criteria": [
+    {
+      "key": "ai_quantum_use",
+      "name": "Use of AI / Quantum Computing",
+      "weight": "15.00"
+    },
+    {
+      "key": "code_quality",
+      "name": "Code Quality & Extensibility",
+      "weight": "10.00"
+    },
+    {
+      "key": "innovation",
+      "name": "Innovation & Creativity",
+      "weight": "15.00"
+    },
+    {
+      "key": "performance",
+      "name": "Performance & Result Quality",
+      "weight": "10.00"
+    },
+    {
+      "key": "presentation",
+      "name": "Presentation & Teamwork",
+      "weight": "10.00"
+    },
+    {
+      "key": "problem_importance",
+      "name": "Problem & Importance",
+      "weight": "15.00"
+    },
+    {
+      "key": "sdgs",
+      "name": "UN Sustainable Development Goals (SDGs)",
+      "weight": "10.00"
+    },
+    {
+      "key": "social_impact",
+      "name": "Social Impact",
+      "weight": "15.00"
+    }
+  ]
+}

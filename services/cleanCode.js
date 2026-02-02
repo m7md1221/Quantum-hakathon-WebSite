@@ -296,7 +296,7 @@ async function lintAllCode(owner, repo, token, eslintArtifactReport = null) {
       });
     }
 
-    let combinedScore = 70;
+    let combinedScore = 0;
     let totalErrors = 0;
     let totalWarnings = 0;
 

@@ -205,14 +205,6 @@ document.getElementById('editScoreForm')?.addEventListener('submit', async (e) =
   }
 });
 
-// Helper function to get auth headers (from auth.js or admin.js)
-function getAuthHeaders() {
-  const token = localStorage.getItem('token');
-  return {
-    'Authorization': `Bearer ${token}`
-  };
-}
-
 // Load teams when page loads
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {

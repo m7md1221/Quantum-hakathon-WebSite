@@ -49,10 +49,14 @@ function displayTeamDetails(data) {
   document.getElementById('team-name').textContent = team.name;
   
   // Display institution name if available
-  if (team.institution_name) {
-    document.getElementById('team-institution').textContent = team.institution_name;
-  } else {
-    document.getElementById('team-institution').textContent = '';
+  const institutionEl = document.getElementById('team-institution');
+  console.log('🔍 Team object:', team);
+  console.log('🔍 Institution element:', institutionEl);
+  console.log('🔍 team.team_institution:', team.team_institution);
+  if (institutionEl) {
+    const institutionName = team.team_institution || team.institution_name || 'غير متوفر';
+    console.log('🔍 Final institution name:', institutionName);
+    institutionEl.textContent = institutionName;
   }
 
   if (team.team_number) {

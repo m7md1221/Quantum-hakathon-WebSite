@@ -1,6 +1,6 @@
 // Evaluate Team functionality
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = window.location.origin + '/api';
 
 // Get team ID and name from URL parameters
 function getUrlParams() {

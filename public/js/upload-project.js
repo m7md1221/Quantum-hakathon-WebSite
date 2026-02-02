@@ -1,6 +1,6 @@
 // Upload Project functionality
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = window.location.origin + '/api';
 
 if (document.getElementById('uploadForm')) {
     document.getElementById('uploadForm').addEventListener('submit', async (e) => {

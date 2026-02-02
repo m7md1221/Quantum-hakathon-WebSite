@@ -1,6 +1,6 @@
 // Admin Score Editing Functionality
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = window.location.origin + '/api';
 let allTeams = [];
 let currentEditingScore = null;
 let currentMaxScore = 10;

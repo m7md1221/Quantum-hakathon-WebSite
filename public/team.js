@@ -1,7 +1,7 @@
 const token = localStorage.getItem('token');
 
 if (!token) {
-  window.location.href = 'login.html';
+  goTo('login.html');
 }
 
 let SUBMISSION_DEADLINE = '2026-02-08T06:00:00';
@@ -138,5 +138,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 document.getElementById('logout').addEventListener('click', () => {
   localStorage.clear();
-  window.location.href = 'login.html';
+  goTo('login.html');
 });

@@ -1,7 +1,7 @@
 const token = localStorage.getItem('token');
 
 if (!token) {
-  window.location.href = 'login.html';
+  goTo('login.html');
 }
 
 let resultsData = []; // Store results for export

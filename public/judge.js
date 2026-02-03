@@ -1,7 +1,7 @@
 const token = localStorage.getItem('token');
 
 if (!token) {
-  window.location.href = 'login.html';
+  goTo('login.html');
 }
 
 // Global teams variable
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const isValidToken = await validateToken();
   if (!isValidToken) {
     localStorage.clear();
-    window.location.href = 'login.html';
+    goTo('login.html');
     return;
   }
 
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Handle authentication errors
       if (hallResponse.status === 401) {
         localStorage.clear();
-        window.location.href = 'login.html';
+        goTo('login.html');
         return;
       }
 
@@ -138,11 +138,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 function evaluateTeam(teamId) {
   const team = teams.find(t => t.id === teamId);
   const mode = team.evaluated ? 'view' : 'edit';
-  window.location.href = `evaluate-team.html?teamId=${teamId}&mode=${mode}`;
+  goTo(`evaluate-team.html?teamId=${teamId}&mode=${mode}`);
 }
 
 
 document.getElementById('logout').addEventListener('click', () => {
   localStorage.clear();
-  window.location.href = 'login.html';
+  goTo('login.html');
 });

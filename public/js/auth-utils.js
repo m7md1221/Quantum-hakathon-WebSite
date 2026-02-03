@@ -18,7 +18,7 @@ function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('hall');
-    window.location.href = 'login.html';
+    goTo('login.html');
 }
 
 /**
@@ -47,6 +47,6 @@ function getUserHall() {
  */
 function ensureAuthenticated() {
     if (!isAuthenticated()) {
-        window.location.href = 'login.html';
+        goTo('login.html');
     }
 }

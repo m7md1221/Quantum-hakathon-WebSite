@@ -3,7 +3,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const teamId = urlParams.get('teamId');
 
 if (!token || !teamId) {
-  window.location.href = 'login.html';
+  goTo('login.html');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

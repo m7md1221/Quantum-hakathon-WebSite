@@ -2,7 +2,7 @@ const token = localStorage.getItem('token');
 const SUBMISSION_DEADLINE = '2026-02-15T23:59:59';
 
 if (!token) {
-  window.location.href = 'login.html';
+  goTo('login.html');
 }
 
 function isDeadlinePassed() {
@@ -103,7 +103,7 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
       message.innerHTML = `<div class="message success">✅ ${data.message || 'Project submitted successfully'}</div>`;
       console.log('Project submission successful:', data);
       setTimeout(() => { 
-        window.location.href = 'team-dashboard.html'; 
+        goTo('team-dashboard.html'); 
       }, 2000);
     } else {
       const errorMsg = data.message || 'Submission failed';

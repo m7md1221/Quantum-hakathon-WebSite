@@ -3,7 +3,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const teamId = urlParams.get('teamId');
 
 if (!token || !teamId) {
-  window.location.href = 'login.html';
+  goTo('login.html');
 }
 const mode = urlParams.get('mode'); // edit | view
 
@@ -248,7 +248,7 @@ async function confirmFinalEvaluation() {
 
     if (response.ok) {
       // نجاح → رجوع للدashboard
-      window.location.href = 'judge-dashboard.html';
+      goTo('judge-dashboard.html');
     } else {
       alert(data.message || 'Submission failed');
       submitBtn.textContent = originalText;

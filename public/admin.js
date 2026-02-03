@@ -1,7 +1,7 @@
 const token = localStorage.getItem('token');
 
 if (!token) {
-  window.location.href = 'login.html';
+  goTo('login.html');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -31,7 +31,7 @@ async function loadStats() {
     if (!response.ok) {
       if (response.status === 401) {
         localStorage.clear();
-        window.location.href = 'login.html';
+        goTo('login.html');
         return;
       }
       throw new Error('Failed to load stats');
@@ -112,7 +112,7 @@ async function loadTeams() {
     if (!response.ok) {
       if (response.status === 401) {
         localStorage.clear();
-        window.location.href = 'login.html';
+        goTo('login.html');
         return;
       }
       throw new Error('Failed to load teams');
@@ -298,7 +298,7 @@ async function loadJudges() {
     if (!response.ok) {
       if (response.status === 401) {
         localStorage.clear();
-        window.location.href = 'login.html';
+        goTo('login.html');
         return;
       }
       throw new Error('Failed to load judges');

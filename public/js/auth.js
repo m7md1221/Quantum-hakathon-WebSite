@@ -43,29 +43,29 @@ function getAuthHeaders() {
 function redirectByRole(role) {
     switch(role) {
         case 'team':
-            window.location.href = 'team-dashboard.html';
+            goTo('team-dashboard.html');
             break;
         case 'judge':
-            window.location.href = 'judge-dashboard.html';
+            goTo('judge-dashboard.html');
             break;
         case 'admin':
-            window.location.href = 'admin-dashboard.html';
+            goTo('admin-dashboard.html');
             break;
         default:
-            window.location.href = 'login.html';
+            goTo('login.html');
     }
 }
 
 // Logout function
 function logout() {
     clearAuth();
-    window.location.href = 'login.html';
+    goTo('login.html');
 }
 
 // Check authentication on page load
 function checkAuth() {
     if (!isAuthenticated() && !window.location.pathname.includes('login.html')) {
-        window.location.href = 'login.html';
+        goTo('login.html');
         return false;
     }
     return true;

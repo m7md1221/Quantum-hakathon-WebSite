@@ -71,7 +71,7 @@ if (document.getElementById('evaluateForm')) {
             
             // Redirect to dashboard after 2 seconds
             setTimeout(() => {
-                window.location.href = 'judge-dashboard.html';
+                goTo('judge-dashboard.html');
             }, 2000);
         } catch (error) {
             console.error('Evaluate error:', error);

@@ -19,16 +19,18 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
       // Redirect based on role
       if (data.role === 'admin') {
-        window.location.href = 'admin-dashboard.html';
+        goTo('admin-dashboard.html');
       } else if (data.role === 'judge') {
-        window.location.href = 'judge-dashboard.html';
+        goTo('judge-dashboard.html');
       } else if (data.role === 'team') {
-        window.location.href = 'team-dashboard.html';
+        goTo('team-dashboard.html');
       }
     } else {
-      message.textContent = data.message;
+      message.textContent = data.message || 'تعذر تسجيل الدخول. يرجى التحقق من البريد الإلكتروني وكلمة المرور.';
+      message.className = 'message error';
     }
   } catch (error) {
-    message.textContent = 'An error occurred';
+    message.textContent = 'حدث خطأ غير متوقع. يرجى المحاولة لاحقًا.';
+    message.className = 'message error';
   }
 });

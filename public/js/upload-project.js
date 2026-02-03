@@ -67,7 +67,7 @@ if (document.getElementById('uploadForm')) {
             
             // Redirect to dashboard after 2 seconds
             setTimeout(() => {
-                window.location.href = 'team-dashboard.html';
+                goTo('team-dashboard.html');
             }, 2000);
         } catch (error) {
             console.error('Upload error:', error);

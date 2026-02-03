@@ -107,6 +107,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const data = await response.json();
     if (response.ok) {
+      // Update team name and number in header
+      const teamNameDisplay = document.getElementById('team-name-display');
+      const teamSubtitle = document.getElementById('team-subtitle');
+      if (teamNameDisplay && data.team_number) {
+        teamNameDisplay.textContent = `Team #${data.team_number}`;
+        if (data.name) {
+          teamSubtitle.textContent = data.name;
+        }
+      }
+      
       // تحديث الـ deadline من الـ backend إذا توفر
       if (data.deadline) {
         SUBMISSION_DEADLINE = data.deadline;

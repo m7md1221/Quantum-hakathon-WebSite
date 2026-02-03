@@ -115,16 +115,25 @@ router.post('/submit', authenticate, authorize(['team']), async (req, res) => {
 // Get team status
 router.get('/status', authenticate, authorize(['team']), async (req, res) => {
   try {
-    const teamResult = await pool.query('SELECT hall FROM teams WHERE user_id = $1', [req.user.id]);
+    const teamResult = await pool.query(`
+      SELECT t.hall, u.team_number, u.name 
+      FROM teams t
+      JOIN users u ON t.user_id = u.id
+      WHERE t.user_id = $1
+    `, [req.user.id]);
+    
     if (teamResult.rows.length === 0) return res.status(404).json({ message: 'Team not found' });
 
-    const hall = teamResult.rows[0].hall;
-    const projectResult = await pool.query('SELECT submitted_at FROM projects WHERE team_id = (SELECT id FROM teams WHERE user_id = $1)', [req.user.id]);
+    const { hall, team_number, name } = teamResult.rows[0];
+    const projectResult = await pool.query('SELECT submitted_at, github_repo_url FROM projects WHERE team_id = (SELECT id FROM teams WHERE user_id = $1)', [req.user.id]);
 
     res.json({
       hall,
+      team_number,
+      name,
       submitted: projectResult.rows.length > 0,
       submittedAt: projectResult.rows[0]?.submitted_at,
+      githubUrl: projectResult.rows[0]?.github_repo_url,
       deadline: SUBMISSION_DEADLINE.toISOString()
     });
   } catch (error) {

@@ -5,6 +5,40 @@ if (!token) {
   goTo('login.html');
 }
 
+// Load current submission if exists
+async function loadCurrentSubmission() {
+  try {
+    const response = await fetch('/api/team/status', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.submitted && data.githubUrl) {
+        const currentSubmissionDiv = document.getElementById('current-submission');
+        const githubUrlInput = document.getElementById('github_url');
+        
+        currentSubmissionDiv.innerHTML = `
+          <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+            <p style="margin: 0 0 10px 0; color: #1e40af; font-weight: 600;">📌 Current Submission:</p>
+            <a href="${data.githubUrl}" target="_blank" rel="noopener" style="color: #2563eb; text-decoration: underline; word-break: break-all;">${data.githubUrl}</a>
+            <p style="margin: 10px 0 0 0; color: #64748b; font-size: 13px;">Submitted: ${new Date(data.submittedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+          </div>
+        `;
+        
+        // Pre-fill the input with current URL
+        githubUrlInput.value = data.githubUrl;
+        githubUrlInput.dispatchEvent(new Event('input')); // Trigger validation
+      }
+    }
+  } catch (error) {
+    console.error('Error loading current submission:', error);
+  }
+}
+
+// Call on page load
+loadCurrentSubmission();
+
 function isDeadlinePassed() {
   const deadline = new Date(SUBMISSION_DEADLINE);
   const now = new Date();

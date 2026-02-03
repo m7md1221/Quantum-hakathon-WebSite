@@ -220,6 +220,27 @@ body.page-exit {
     right: 20px;
     bottom: calc(20px + env(safe-area-inset-bottom));
     z-index: 1000;
+    animation: supportFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s backwards;
+}
+
+@keyframes supportFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes gentlePulse {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15), 0 0 0 1px rgba(102, 126, 234, 0.1);
+    }
+    50% {
+        box-shadow: 0 2px 12px rgba(102, 126, 234, 0.25), 0 0 0 2px rgba(102, 126, 234, 0.15);
+    }
 }
 
 .support-button {
@@ -243,6 +264,7 @@ body.page-exit {
     height: 50px;
     justify-content: center;
     backdrop-filter: blur(10px);
+    animation: gentlePulse 3s ease-in-out infinite;
 }
 
 .support-button:hover {
@@ -254,6 +276,11 @@ body.page-exit {
     width: auto;
     padding: 14px 24px;
     gap: 10px;
+    animation: none;
+}
+
+.support-button:active {
+    transform: translateY(-1px) scale(0.98);
 }
 
 .support-button svg {

@@ -4,6 +4,17 @@ if (!token) {
   goTo('login.html');
 }
 
+// Map hall letters to full names
+function getHallName(hallLetter) {
+  const hallNames = {
+    'A': 'Intelligence',
+    'B': 'Neural',
+    'C': 'Qubit',
+    'D': 'Quantum Core'
+  };
+  return hallNames[hallLetter] || `Hall ${hallLetter}`;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   await loadStats();
   await loadTeams();
@@ -86,7 +97,7 @@ function displayStats(data) {
         <tbody>
           ${data.byHall.map(hall => `
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px 15px; font-weight: 600;">Hall ${hall.hall}</td>
+              <td style="padding: 12px 15px; font-weight: 600;">${getHallName(hall.hall)}</td>
               <td style="padding: 12px 15px; text-align: center;">${hall.teams_count}</td>
               <td style="padding: 12px 15px; text-align: center;">${hall.submitted_count}</td>
               <td style="padding: 12px 15px; text-align: center;">${hall.evaluated_count}</td>
@@ -157,30 +168,36 @@ async function loadTeams() {
       const header = document.createElement('div');
       header.className = 'hall-header';
       header.innerHTML = `
-        <div class="hall-header-content">
-          <div class="hall-title-section">
-            <h3 class="hall-title">القاعة ${hall}</h3>
-            <span class="hall-subtitle">Hall ${hall}</span>
-          </div>
-          <div class="hall-stats">
-            <div class="hall-stat-item">
-              <span class="hall-stat-number">${hallTeams.length}</span>
-              <span class="hall-stat-label">فرق</span>
-            </div>
-            <div class="hall-stat-item">
-              <span class="hall-stat-number">${submittedCount}</span>
-              <span class="hall-stat-label">مقدمة</span>
-            </div>
-            <div class="hall-stat-item">
-              <span class="hall-stat-number">${evaluatedCount}</span>
-              <span class="hall-stat-label">مقيمة</span>
-            </div>
-          </div>
-        </div>
-        <div class="hall-toggle-section">
-          <span class="hall-toggle-text">عرض الفرق</span>
-          <span class="hall-toggle-icon">▶</span>
-        </div>
+       <div class="hall-header-content">
+  <div class="hall-title-section">
+    <h3 class="hall-title">${getHallName(hall)}</h3>
+    <span class="hall-subtitle">Hall ${hall}</span>
+  </div>
+</div>
+
+<div class="hall-stats">
+  <div class="hall-stat-item">
+    <span class="hall-stat-number">${hallTeams.length}</span>
+    <span class="hall-stat-label">Teams</span>
+  </div>
+
+  <div class="hall-stat-item">
+    <span class="hall-stat-number">${submittedCount}</span>
+    <span class="hall-stat-label">Submit</span>
+  </div>
+
+  <div class="hall-stat-item">
+    <span class="hall-stat-number">${evaluatedCount}</span>
+    <span class="hall-stat-label">Evaluat</span>
+  </div>
+
+  <div class="hall-toggle-section">
+    <span class="hall-toggle-text">View Teams</span>
+    <span class="hall-toggle-icon">▶</span>
+  </div>
+</div>
+
+
       `;
 
       // Content Container
@@ -193,7 +210,7 @@ async function loadTeams() {
 
       // Render Cards
       if (hallTeams.length === 0) {
-        contentWrapper.innerHTML = '<p class="hall-empty-message">لا توجد فرق في هذه القاعة</p>';
+        contentWrapper.innerHTML = '<p class="hall-empty-message">No teams in this hall</p>';
       } else {
         hallTeams.forEach((team) => {
           const globalIndex = teams.findIndex(t => t.id === team.id);
@@ -250,7 +267,7 @@ function createTeamCard(team, isWinner, rank) {
     ${rankBadge}
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
       <h3 style="margin: 0;">
-  الفريق رقم ${team.team_number ?? '-'}
+  Team #${team.team_number ?? '-'}
 </h3>
 
     </div>
@@ -334,20 +351,22 @@ async function loadJudges() {
       header.innerHTML = `
     <div class="hall-header-content">
       <div class="hall-title-section">
-        <h3 class="hall-title">القاعة ${hall}</h3>
+        <h3 class="hall-title">${getHallName(hall)}</h3>
         <span class="hall-subtitle">Hall ${hall}</span>
       </div>
-      <div class="hall-stats">
-        <div class="hall-stat-item">
-          <span class="hall-stat-number">${judgesByHall[hall].length}</span>
-          <span class="hall-stat-label">حكام</span>
-        </div>
-      </div>
-    </div>
-    <div class="hall-toggle-section">
-      <span class="hall-toggle-text">عرض الحكام</span>
-      <span class="hall-toggle-icon">▶</span>
-    </div>
+     </div>
+<div class="hall-stats">
+  <div class="hall-stat-item">
+    <span class="hall-stat-number">${judgesByHall[hall].length}</span>
+    <span class="hall-stat-label">Judges</span>
+  </div>
+
+  <div class="hall-toggle-section">
+    <span class="hall-toggle-text">View Judges</span>
+    <span class="hall-toggle-icon">▶</span>
+  </div>
+</div>
+
   `;
 
       // Content
@@ -375,16 +394,16 @@ async function loadJudges() {
           ${judge.institution_name ? `<p style="margin:5px 0 0 0;color:#666;font-size:0.85rem;margin-left:5px;">${judge.institution_name}</p>` : ''}
         </div>
         <span class="status-badge ${judge.evaluation_count > 0 ? 'status-evaluated' : 'status-pending'}">
-          ${judge.evaluation_count} تقييم
+          ${judge.evaluation_count} Evaluations
         </span>
       </div>
 
       ${judge.evaluation_count > 0
             ? `<button id="${deleteBtnId}" class="btn btn-block btn-danger">
-               حذف جميع التقييمات
+               Delete All Evaluations
             </button>`
             : `<button disabled class="btn btn-block btn-secondary">
-              لا توجد تقييمات
+              No Evaluations
             </button>`
           }
     `;
@@ -434,11 +453,11 @@ async function loadJudges() {
 
 async function deleteAllJudgeEvaluations(judgeId, judgeName, evaluationCount) {
   if (!judgeId || !judgeName) {
-    alert('❌ معلومات غير صحيحة');
+    alert('❌ Invalid information');
     return;
   }
 
-  if (!confirm(`⚠️ تحذير: هل أنت متأكد من حذف جميع تقييمات الحكم "${judgeName}"؟\n\nسيتم حذف ${evaluationCount} تقييم من جميع الفرق.\nسيتم إعادة حساب متوسطات جميع الفرق تلقائياً.\n\nهذا الإجراء لا يمكن التراجع عنه!`)) {
+  if (!confirm(`⚠️ Warning: Are you sure you want to delete all evaluations for judge "${judgeName}"?\n\n${evaluationCount} evaluation(s) will be deleted from all teams.\nAll team averages will be recalculated automatically.\n\nThis action cannot be undone!`)) {
     return;
   }
 
@@ -476,16 +495,16 @@ async function deleteAllJudgeEvaluations(judgeId, judgeName, evaluationCount) {
     }
 
     if (response.ok) {
-      alert(`✅ تم حذف ${data.deletedCount || evaluationCount} تقييم بنجاح!\nسيتم تحديث الصفحة...`);
+      alert(`✅ Successfully deleted ${data.deletedCount || evaluationCount} evaluation(s)!\nPage will refresh...`);
       // Reload all data
       await loadStats();
       await loadTeams();
       await loadJudges();
     } else {
-      alert(`❌ خطأ (${response.status}): ${data.message || 'فشل حذف التقييمات'}`);
+      alert(`❌ Error (${response.status}): ${data.message || 'Failed to delete evaluations'}`);
     }
   } catch (error) {
     console.error('Error deleting evaluations:', error);
-    alert(`❌ حدث خطأ أثناء حذف التقييمات: ${error.message || 'يرجى المحاولة مرة أخرى'}`);
+    alert(`❌ Error while deleting evaluations: ${error.message || 'Please try again'}`);
   }
 }

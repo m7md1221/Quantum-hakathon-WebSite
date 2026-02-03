@@ -4,6 +4,17 @@ if (!token) {
   goTo('login.html');
 }
 
+// Map hall letters to full names
+function getHallName(hallLetter) {
+  const hallNames = {
+    'A': 'Intelligence',
+    'B': 'Neural',
+    'C': 'Qubit',
+    'D': 'Quantum Core'
+  };
+  return hallNames[hallLetter] || `Hall ${hallLetter}`;
+}
+
 // Global teams variable
 let teams = [];
 
@@ -62,8 +73,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     teams = await hallResponse.json();
 
     // Extract hall from first team (assuming all teams are from same hall)
-    const hall = teams.length > 0 ? teams[0].hall || 'Unknown' : 'No teams assigned';
-    document.getElementById('hall').textContent = hall;
+    const hallLetter = teams.length > 0 ? teams[0].hall || 'Unknown' : 'No teams assigned';
+    const hallName = hallLetter === 'Unknown' || hallLetter === 'No teams assigned' ? hallLetter : getHallName(hallLetter);
+    document.getElementById('hall').textContent = hallName;
 
     // Display teams
     const teamsContainer = document.getElementById('teams-container');

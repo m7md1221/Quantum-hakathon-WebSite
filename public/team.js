@@ -4,6 +4,17 @@ if (!token) {
   goTo('login.html');
 }
 
+// Map hall letters to full names
+function getHallName(hallLetter) {
+  const hallNames = {
+    'A': 'Intelligence',
+    'B': 'Neural',
+    'C': 'Qubit',
+    'D': 'Quantum Core'
+  };
+  return hallNames[hallLetter] || `Hall ${hallLetter}`;
+}
+
 let SUBMISSION_DEADLINE = '2026-02-08T06:00:00';
 
 function isDeadlinePassed() {
@@ -104,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const statusDiv = document.getElementById('status');
       statusDiv.innerHTML = `
         <div style="margin-bottom: 15px;">
-          <strong>Hall:</strong> <span style="color: var(--primary-color); font-weight: 600;">${data.hall}</span>
+          <strong>Hall:</strong> <span style="color: var(--primary-color); font-weight: 600;">${getHallName(data.hall)}</span>
         </div>
         <div style="margin-bottom: 15px;">
           <strong>Status:</strong>

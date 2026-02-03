@@ -4,6 +4,17 @@ if (!token) {
   goTo('login.html');
 }
 
+// Map hall letters to full names
+function getHallName(hallLetter) {
+  const hallNames = {
+    'A': 'Intelligence',
+    'B': 'Neural',
+    'C': 'Qubit',
+    'D': 'Quantum Core'
+  };
+  return hallNames[hallLetter] || `Hall ${hallLetter}`;
+}
+
 let resultsData = []; // Store results for export
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -37,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     <strong class="team-number">الفريق رقم ${result.team_number}</strong><br>
     <span class="team-name">${result.name}</span>
             ${result.institution_name ? `<div style="margin-top: 4px; color: #666; font-size: 0.9rem;">${result.institution_name}</div>` : ''}
-            <small style="color: var(--text-secondary);">Hall ${result.hall}</small>
+            <small style="color: var(--text-secondary);">${getHallName(result.hall)}</small>
           </div>
           <div class="score" style="font-size: 1.1rem;">${scoreOutOf100 !== 'N/A' ? scoreOutOf100 + '/100' : 'N/A'}</div>
         `;
@@ -71,7 +82,7 @@ function exportToCSV() {
     ...resultsData.map((result, index) => [
       index + 1,
       result.team_number,
-      result.hall,
+      getHallName(result.hall),
       result.average_score ? parseFloat(result.average_score).toFixed(1) : 'N/A'
     ])
   ];

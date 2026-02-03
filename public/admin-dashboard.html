@@ -52,25 +52,25 @@
     </div>
 
     <div class="card">
-      <h2>إدارة التقييمات</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 15px;">إدارة تقييمات الحكام - يمكنك حذف تقييم حكم معين من جميع الفرق</p>
+      <h2>Manage Evaluations</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 15px;">Manage judge evaluations - You can delete all evaluations from a specific judge</p>
       <div id="judges-loading">Loading judges...</div>
       <div id="judges-container" style="display: none;"></div>
     </div>
 
     <div class="card">
-      <h2>تعديل درجات المعايير</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 15px;">عدّل درجات معايير التقييم لأي فريق - سيتم حساب المتوسط تلقائياً وإضافة تعليق بأن التعديل من الإدمن</p>
+      <h2>Edit Criteria Scores</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 15px;">Edit evaluation criteria scores for any team - Average will be calculated automatically with admin note</p>
       <div style="margin-bottom: 15px;">
-          <button id="open-team-picker" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
-            <span id="selected-team-display">اختر الفريق...</span>
+          <button id="open-team-picker" class="btn" style="width: 100%; padding: 15px; font-size: 16px; display: flex; align-items: center; justify-content: space-between; background: white; color: var(--primary-color); border: 2px solid var(--primary-color);">
+            <span id="selected-team-display">Select team...</span>
             <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
               <path d="M8 11.5l-4-4h8l-4 4z"/>
             </svg>
           </button>
       </div>
       <div id="team-scores-container" style="display: none;">
-        <div id="scores-loading">جاري التحميل...</div>
+        <div id="scores-loading">Loading...</div>
         <div id="scores-content"></div>
       </div>
     </div>
@@ -80,13 +80,13 @@
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; max-height: 85vh; background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
           <div style="padding: 20px; border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-              <h3 style="margin: 0; font-size: 1.3rem; font-weight: 700;">اختر الفريق</h3>
+              <h3 style="margin: 0; font-size: 1.3rem; font-weight: 700;">Select Team</h3>
               <button id="close-team-picker" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">×</button>
             </div>
-            <input type="text" id="team-search-modal" placeholder="ابحث برقم الفريق أو الاسم..." style="width: 100%; padding: 12px 15px; border: none; border-radius: 8px; font-size: 16px; background: white;">
+            <input type="text" id="team-search-modal" placeholder="Search by team number or name..." style="width: 100%; padding: 12px 15px; border: none; border-radius: 8px; font-size: 16px; background: white;">
           </div>
           <div id="teams-list-modal" style="flex: 1; overflow-y: auto; padding: 15px;">
-            <div style="text-align: center; color: #6b7280; padding: 20px;">جاري التحميل...</div>
+            <div style="text-align: center; color: #6b7280; padding: 20px;">Loading...</div>
           </div>
         </div>
       </div>
@@ -94,23 +94,23 @@
     <!-- Modal for editing score -->
     <div id="editScoreModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
       <div class="card" style="max-width: 500px; width: 90%;">
-        <h2>تعديل الدرجة</h2>
+        <h2>Edit Score</h2>
         <form id="editScoreForm">
           <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">معيار التقييم:</label>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Evaluation Criterion:</label>
             <input type="text" id="criterionName" disabled style="width: 100%; padding: 8px; background: #f5f5f5;">
           </div>
           <div style="margin-bottom: 15px;">
-            <label for="newScore" style="display: block; margin-bottom: 5px; font-weight: bold;">الدرجة الجديدة (حسب المعيار):</label>
+            <label for="newScore" style="display: block; margin-bottom: 5px; font-weight: bold;">New Score (based on criterion):</label>
             <input type="number" id="newScore" min="0" step="1" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
           </div>
           <div style="margin-bottom: 15px;">
-            <label for="adminNote" style="display: block; margin-bottom: 5px; font-weight: bold;">ملاحظة (اختياري):</label>
+            <label for="adminNote" style="display: block; margin-bottom: 5px; font-weight: bold;">Note (optional):</label>
             <textarea id="adminNote" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: vertical; height: 60px;"></textarea>
           </div>
           <div style="display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-success">حفظ التعديل</button>
-            <button type="button" class="btn btn-secondary" onclick="closeEditModal()">إلغاء</button>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
           </div>
         </form>
       </div>

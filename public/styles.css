@@ -741,6 +741,7 @@ body.page-exit {
     align-items: center;
     gap: 30px;
     flex: 1;
+    
 }
 
 .hall-title-section {
@@ -763,12 +764,13 @@ body.page-exit {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 1px;
+    
 }
-
 .hall-stats {
     display: flex;
     gap: 25px;
     align-items: center;
+    
 }
 
 .hall-stat-item {
@@ -780,6 +782,7 @@ body.page-exit {
     background: rgba(37, 99, 235, 0.08);
     border-radius: 8px;
     min-width: 70px;
+
 }
 
 .hall-stat-number {
@@ -869,6 +872,8 @@ body.page-exit {
         flex-direction: column;
         gap: 15px;
         width: 100%;
+            border-radius: 8px;
+
     }
 
     .hall-stats {

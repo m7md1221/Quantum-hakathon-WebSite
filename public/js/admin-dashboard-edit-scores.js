@@ -4,6 +4,7 @@ const API_BASE = window.location.origin + '/api';
 let allTeams = [];
 let currentEditingScore = null;
 let currentMaxScore = 10;
+let selectedTeamId = null;
 
 // Load all teams for the dropdown
 async function loadTeamsForScoreEdit() {
@@ -21,38 +22,119 @@ async function loadTeamsForScoreEdit() {
     }
     
     allTeams = await response.json();
-    populateTeamSelect();
+    renderTeamsInModal();
   } catch (error) {
     console.error('Error loading teams:', error);
   }
 }
 
-function populateTeamSelect() {
-  const select = document.getElementById('team-select-score');
+// Render teams in modal
+function renderTeamsInModal(filteredTeams = null) {
+  const teamsToShow = filteredTeams || allTeams;
+  const container = document.getElementById('teams-list-modal');
   
-  // Clear existing options except the first one
-  while (select.options.length > 1) {
-    select.remove(1);
+  // Update header with count
+  const modalHeader = document.querySelector('#team-picker-modal h3');
+  if (modalHeader) {
+    const count = teamsToShow.length;
+    const totalCount = allTeams.length;
+    if (filteredTeams) {
+      modalHeader.textContent = `اختر الفريق (${count} من ${totalCount})`;
+    } else {
+      modalHeader.textContent = `اختر الفريق (${totalCount} فريق)`;
+    }
   }
   
-  allTeams.forEach(team => {
-    const option = document.createElement('option');
-    option.value = team.id;
-    option.textContent = `#${team.team_number} - ${team.name} (Hall ${team.hall})`;
-    select.appendChild(option);
-  });
-}
-
-// Load evaluations for selected team
-document.getElementById('team-select-score')?.addEventListener('change', async (e) => {
-  const teamId = e.target.value;
-  
-  if (!teamId) {
-    document.getElementById('team-scores-container').style.display = 'none';
+  if (teamsToShow.length === 0) {
+    container.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 40px; font-size: 15px;">لا توجد فرق تطابق البحث</div>';
     return;
   }
   
-  await loadTeamEvaluations(teamId);
+  container.innerHTML = teamsToShow.map(team => `
+    <div class="team-picker-card" data-team-id="${team.id}" style="background: white; border: 2px solid #e5e7eb; border-radius: 10px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s;" 
+         onmouseover="this.style.borderColor='#667eea'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102,126,234,0.2)'" 
+         onmouseout="this.style.borderColor='#e5e7eb'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="flex: 1;">
+          <div style="font-size: 18px; font-weight: 700; color: #667eea; margin-bottom: 5px;">فريق #${team.team_number}</div>
+          <div style="font-size: 14px; color: #1f2937; margin-bottom: 3px;">${team.name}</div>
+          <div style="font-size: 13px; color: #6b7280;">
+            <span style="display: inline-block; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 12px; font-weight: 600;">Hall ${team.hall}</span>
+          </div>
+        </div>
+        <svg width="24" height="24" fill="#667eea" viewBox="0 0 16 16">
+          <path d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+        </svg>
+      </div>
+    </div>
+  `).join('');
+  
+  // Add click handlers
+  document.querySelectorAll('.team-picker-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const teamId = card.dataset.teamId;
+      selectTeam(teamId);
+    });
+  });
+}
+
+// Select team from modal
+function selectTeam(teamId) {
+  selectedTeamId = teamId;
+  const team = allTeams.find(t => t.id == teamId);
+  
+  if (team) {
+    document.getElementById('selected-team-display').textContent = `#${team.team_number} - ${team.name}`;
+    document.getElementById('team-picker-modal').style.display = 'none';
+    loadTeamEvaluations(teamId);
+  }
+}
+
+// Modal controls
+document.getElementById('open-team-picker')?.addEventListener('click', () => {
+  document.getElementById('team-picker-modal').style.display = 'block';
+  document.getElementById('team-search-modal').value = '';
+  renderTeamsInModal();
+  document.getElementById('team-search-modal').focus();
+});
+
+document.getElementById('close-team-picker')?.addEventListener('click', () => {
+  document.getElementById('team-picker-modal').style.display = 'none';
+});
+
+// Close modal on background click
+document.getElementById('team-picker-modal')?.addEventListener('click', (e) => {
+  if (e.target.id === 'team-picker-modal') {
+    document.getElementById('team-picker-modal').style.display = 'none';
+  }
+});
+
+// Search functionality
+document.getElementById('team-search-modal')?.addEventListener('input', (e) => {
+  const searchTerm = e.target.value.toLowerCase().trim();
+  
+  if (!searchTerm) {
+    renderTeamsInModal();
+    return;
+  }
+  
+  const filtered = allTeams.filter(team => {
+    const teamNumber = String(team.team_number || '');
+    const teamName = (team.name || '').toLowerCase();
+    return teamNumber.includes(searchTerm) || teamName.includes(searchTerm);
+  });
+  
+  renderTeamsInModal(filtered);
+});
+
+// Keyboard support (ESC to close)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('team-picker-modal');
+    if (modal && modal.style.display === 'block') {
+      modal.style.display = 'none';
+    }
+  }
 });
 
 async function loadTeamEvaluations(teamId) {

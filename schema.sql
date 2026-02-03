@@ -57,7 +57,7 @@ CREATE TABLE evaluation_scores (
   id SERIAL PRIMARY KEY,
   evaluation_id INTEGER REFERENCES evaluations(id) ON DELETE CASCADE,
   criterion_key VARCHAR(50) REFERENCES criteria(key) ON DELETE CASCADE,
-  score DECIMAL(5,2) NOT NULL CHECK (score >= 0 AND score <= 10),
+  score DECIMAL(5,2) NOT NULL CHECK (score >= 0 AND score <= 15),
   UNIQUE(evaluation_id, criterion_key)
 );
 

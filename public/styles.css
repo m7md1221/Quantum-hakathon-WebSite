@@ -855,4 +855,128 @@ body {
     .hall-teams-grid {
         grid-template-columns: 1fr;
     }
+
+    /* Fix select dropdown on mobile */
+    select {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    /* Style for multi-row select (size attribute) */
+    select[size] {
+        height: auto !important;
+        max-height: 250px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    select[size] option {
+        padding: 12px 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* Make container scrollable on mobile */
+    .container {
+        padding: 15px;
+    }
+
+    .card {
+        padding: 20px;
+        margin: 15px 0;
+    }
+
+    /* Reduce text size for better mobile experience */
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .header p {
+        font-size: 0.95rem;
+    }
+
+    /* Better button sizing on mobile */
+    .btn {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+
+    /* Grid adjustments */
+    .grid-2,
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Search input styling */
+    input[type="text"],
+    input[type="search"] {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
 }
+
+    /* Modal animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translate(-50%, -45%);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+    }
+
+    #team-picker-modal > div {
+        animation: slideUp 0.3s ease-out;
+    }
+
+    /* Team picker card hover effects */
+    .team-picker-card {
+        position: relative;
+    }
+
+    .team-picker-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+        opacity: 0;
+        transition: opacity 0.2s;
+        border-radius: 10px;
+        pointer-events: none;
+    }
+
+    .team-picker-card:hover::after {
+        opacity: 1;
+    }
+
+    /* Scrollbar styling for modal */
+    #teams-list-modal::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #teams-list-modal::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    #teams-list-modal::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 10px;
+    }
+
+    #teams-list-modal::-webkit-scrollbar-thumb:hover {
+        background: #5568d3;
+    }

@@ -62,16 +62,34 @@
       <h2>تعديل درجات المعايير</h2>
       <p style="color: var(--text-secondary); margin-bottom: 15px;">عدّل درجات معايير التقييم لأي فريق - سيتم حساب المتوسط تلقائياً وإضافة تعليق بأن التعديل من الإدمن</p>
       <div style="margin-bottom: 15px;">
-        <label for="team-select-score" style="display: block; margin-bottom: 8px; font-weight: bold; color: #1f2937;">اختر الفريق:</label>
-        <select id="team-select-score" style="width: 100%; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 8px; background: #fff; color: #1f2937; font-size: 14px; box-shadow: 0 1px 2px rgba(16,24,40,0.06); transition: border-color 0.2s, box-shadow 0.2s; cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 fill=%22%236b7280%22 viewBox=%220 0 16 16%22%3E%3Cpath d=%22M8 11.5l-4-4h8l-4 4z%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: left 12px center; background-size: 16px; padding-right: 40px;">
-          <option value="">-- اختر الفريق --</option>
-        </select>
+          <button id="open-team-picker" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
+            <span id="selected-team-display">اختر الفريق...</span>
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 11.5l-4-4h8l-4 4z"/>
+            </svg>
+          </button>
       </div>
       <div id="team-scores-container" style="display: none;">
         <div id="scores-loading">جاري التحميل...</div>
         <div id="scores-content"></div>
       </div>
     </div>
+
+      <!-- Team Picker Modal -->
+      <div id="team-picker-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9999; animation: fadeIn 0.2s;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; max-height: 85vh; background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+          <div style="padding: 20px; border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+              <h3 style="margin: 0; font-size: 1.3rem; font-weight: 700;">اختر الفريق</h3>
+              <button id="close-team-picker" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">×</button>
+            </div>
+            <input type="text" id="team-search-modal" placeholder="ابحث برقم الفريق أو الاسم..." style="width: 100%; padding: 12px 15px; border: none; border-radius: 8px; font-size: 16px; background: white;">
+          </div>
+          <div id="teams-list-modal" style="flex: 1; overflow-y: auto; padding: 15px;">
+            <div style="text-align: center; color: #6b7280; padding: 20px;">جاري التحميل...</div>
+          </div>
+        </div>
+      </div>
 
     <!-- Modal for editing score -->
     <div id="editScoreModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">

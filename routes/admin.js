@@ -23,9 +23,9 @@ router.get('/teams', authenticate, authorize(['admin']), async (req, res) => {
         t.hall,
         p.submitted_at,
         (SELECT COUNT(*) FROM evaluations WHERE team_id = t.id) as evaluation_count,
-        COALESCE(SUM(es.score * c.weight / 10.0), 0) as total_score,
+        COALESCE(SUM(es.score), 0) as total_score,
         CASE 
-          WHEN COUNT(DISTINCT e.judge_id) > 0 THEN COALESCE(SUM(es.score * c.weight / 10.0), 0) / COUNT(DISTINCT e.judge_id)
+          WHEN COUNT(DISTINCT e.judge_id) > 0 THEN COALESCE(SUM(es.score), 0) / COUNT(DISTINCT e.judge_id)
           ELSE 0
         END as average_score
       FROM teams t
@@ -71,7 +71,7 @@ router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
         SELECT
           t.id,
           e.judge_id,
-          SUM(es.score * c.weight / 10) as judge_total
+          SUM(es.score) as judge_total
         FROM teams t
         JOIN evaluations e ON t.id = e.team_id
         JOIN evaluation_scores es ON e.id = es.evaluation_id
@@ -197,7 +197,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
         ju.name as judge_name,
         j.hall as judge_hall,
         e.id as evaluation_id,
-        COALESCE(SUM(es.score * c.weight / 10), 0) as total_score
+        COALESCE(SUM(es.score), 0) as total_score
       FROM judges j
       JOIN users ju ON j.user_id = ju.id
       LEFT JOIN evaluations e ON j.id = e.judge_id AND e.team_id = $1
@@ -215,7 +215,7 @@ router.get('/teams/:teamId', authenticate, authorize(['admin']), async (req, res
         c.name as criterion_name,
         es.score,
         c.weight::FLOAT as weight,
-        10::FLOAT as max_score
+        c.weight::FLOAT as max_score
       FROM judges j
       JOIN users ju ON j.user_id = ju.id
       LEFT JOIN evaluations e ON j.id = e.judge_id AND e.team_id = $1
@@ -246,7 +246,7 @@ router.get('/stats', authenticate, authorize(['admin']), async (req, res) => {
         (SELECT COUNT(DISTINCT team_id) FROM evaluations) as evaluated_teams,
         (SELECT COUNT(*) FROM judges) as total_judges,
         (SELECT AVG(total) FROM (
-          SELECT SUM(es.score * c.weight / 10) as total 
+          SELECT SUM(es.score) as total 
           FROM evaluation_scores es
           JOIN criteria c ON es.criterion_key = c.key
           GROUP BY es.evaluation_id
@@ -401,8 +401,9 @@ router.put('/evaluation-scores/:scoreId', authenticate, authorize(['admin']), as
 
     // Check if score exists and get criterion max_score
     const scoreCheck = await pool.query(
-      `SELECT es.id, es.evaluation_id, 10 as max_score
+      `SELECT es.id, es.evaluation_id, c.weight as max_score
        FROM evaluation_scores es
+       JOIN criteria c ON es.criterion_key = c.key
        WHERE es.id = $1`,
       [parseInt(scoreId)]
     );
@@ -411,7 +412,7 @@ router.put('/evaluation-scores/:scoreId', authenticate, authorize(['admin']), as
       return res.status(404).json({ message: 'Score not found' });
     }
 
-    const maxScore = parseFloat(scoreCheck.rows[0].max_score) || 10;
+    const maxScore = parseFloat(scoreCheck.rows[0].max_score) || 15;
     if (numScore < 0 || numScore > maxScore) {
       return res.status(400).json({ message: `Score must be between 0 and ${maxScore}` });
     }
@@ -445,7 +446,7 @@ router.put('/evaluation-scores/:scoreId', authenticate, authorize(['admin']), as
     let totalScore = 0;
     if (updatedScoresResult.rows.length > 0) {
       totalScore = updatedScoresResult.rows.reduce((sum, row) => {
-        return sum + (parseFloat(row.score) * parseFloat(row.weight) / 100);
+        return sum + parseFloat(row.score);
       }, 0);
     }
 
@@ -487,7 +488,7 @@ router.get('/team-evaluations/:teamId', authenticate, authorize(['admin']), asyn
         j.id as judge_id,
         ju.name as judge_name,
         j.hall as judge_hall,
-        COALESCE(SUM(es.score * c.weight / 10), 0) as total_score
+        COALESCE(SUM(es.score), 0) as total_score
       FROM evaluations e
       JOIN judges j ON e.judge_id = j.id
       JOIN users ju ON j.user_id = ju.id
@@ -511,7 +512,7 @@ router.get('/team-evaluations/:teamId', authenticate, authorize(['admin']), asyn
         c.name as criterion_name,
         es.score,
         c.weight,
-        10 as max_score,
+        c.weight as max_score,
         es.admin_note
       FROM evaluations e
       JOIN judges j ON e.judge_id = j.id

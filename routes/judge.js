@@ -228,6 +228,7 @@ router.post('/evaluate', authenticate, authorize(['judge']), async (req, res) =>
 router.post('/finalize-evaluation', authenticate, authorize(['judge']), async (req, res) => {
   console.log('Received /finalize-evaluation request');
   const { teamId, scores, is_final } = req.body;
+  console.log('Request body:', { teamId, scores: Object.keys(scores || {}), is_final, userId: req.user?.id });
 
   if (!is_final) {
     return res.status(400).json({ message: 'Only final submissions are allowed via this endpoint' });
@@ -235,6 +236,7 @@ router.post('/finalize-evaluation', authenticate, authorize(['judge']), async (r
 
   // Validate input
   if (!teamId || !scores || typeof scores !== 'object') {
+    console.error('Invalid request data:', { teamId, scores });
     return res.status(400).json({ message: 'Invalid request: teamId and scores are required' });
   }
 
@@ -242,75 +244,119 @@ router.post('/finalize-evaluation', authenticate, authorize(['judge']), async (r
   try {
     console.log('Connecting to pool...');
     client = await pool.connect();
-    console.log('Connected.');
+    console.log('Connected successfully.');
 
+    console.log('Fetching judge info for user_id:', req.user.id);
     const judgeResult = await client.query('SELECT id, hall FROM judges WHERE user_id = $1', [req.user.id]);
+    console.log('Judge query result:', judgeResult.rows);
+    
     if (judgeResult.rows.length === 0) {
+      console.error('Judge not found for user_id:', req.user.id);
       return res.status(404).json({ message: 'Judge not found' });
     }
 
     const judgeId = judgeResult.rows[0].id;
     const judgeHall = judgeResult.rows[0].hall;
+    console.log('Judge found:', { judgeId, judgeHall });
 
     // Check if team is in judge's hall
+    console.log('Fetching team info for team_id:', teamId);
     const teamResult = await client.query('SELECT hall FROM teams WHERE id = $1', [teamId]);
+    console.log('Team query result:', teamResult.rows);
+    
     if (teamResult.rows.length === 0) {
+      console.error('Team not found for team_id:', teamId);
       return res.status(404).json({ message: 'Team not found' });
     }
 
     if (teamResult.rows[0].hall !== judgeHall) {
+      console.error('Hall mismatch:', { teamHall: teamResult.rows[0].hall, judgeHall });
       return res.status(403).json({ message: 'You can only evaluate teams in your hall' });
     }
 
     // CHECK IF ALREADY EVALUATED
+    console.log('Checking for existing evaluation...');
     const existingEvaluation = await client.query(
       'SELECT id FROM evaluations WHERE judge_id = $1 AND team_id = $2',
       [judgeId, teamId]
     );
+    console.log('Existing evaluation check:', existingEvaluation.rows);
 
     if (existingEvaluation.rows.length > 0) {
+      console.error('Team already evaluated:', { judgeId, teamId });
       return res.status(400).json({ message: 'Team already evaluated. You cannot modify this evaluation.' });
     }
 
     // Start transaction
+    console.log('Starting transaction...');
     await client.query('BEGIN');
+    console.log('Transaction started.');
 
     // Create evaluation
+    console.log('Creating evaluation record...');
     const evaluationResult = await client.query(
       'INSERT INTO evaluations (judge_id, team_id) VALUES ($1, $2) RETURNING id',
       [judgeId, teamId]
     );
     const evaluationId = evaluationResult.rows[0].id;
+    console.log('Evaluation created with id:', evaluationId);
 
     // Insert scores
+    console.log('Inserting scores...');
     for (const [key, score] of Object.entries(scores)) {
       const numScore = parseFloat(score);
       const maxScore = getMaxScoreForCriterion(key);
+      console.log(`Processing score: ${key} = ${numScore} (max: ${maxScore})`);
+      
       if (isNaN(numScore) || numScore < 0 || numScore > maxScore) {
+        console.error(`Invalid score for ${key}:`, { score: numScore, max: maxScore });
         throw new Error(`Invalid score for ${key}: must be between 0 and ${maxScore}`);
       }
+      
       await client.query(
         'INSERT INTO evaluation_scores (evaluation_id, criterion_key, score) VALUES ($1, $2, $3)',
         [evaluationId, key, numScore]
       );
+      console.log(`Score inserted: ${key} = ${numScore}`);
     }
 
+    console.log('Committing transaction...');
     await client.query('COMMIT');
     console.log('Evaluation submitted successfully');
     res.json({ message: 'Evaluation submitted successfully' });
 
   } catch (error) {
     if (client) {
-      try { await client.query('ROLLBACK'); } catch (e) { console.error('Rollback failed:', e); }
+      try { 
+        console.log('Rolling back transaction...');
+        await client.query('ROLLBACK');
+        console.log('Transaction rolled back.'); 
+      } catch (e) { 
+        console.error('Rollback failed:', e); 
+      }
     }
     console.error('CRITICAL: Error in finalize-evaluation:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error code:', error.code);
+    console.error('Error detail:', error.detail);
 
     // Provide more specific feedback for common database errors
     let errorMessage = 'Server error';
     if (error.code === '23514') { // PostgreSQL Check Constraint Violation
       errorMessage = 'Evaluation failed: One or more scores exceed the allowed limit for their category.';
+      console.error('Constraint violation:', error.constraint);
     } else if (error.code === '23505') { // Unique Violation
       errorMessage = 'This team has already been evaluated.';
+      console.error('Unique violation:', error.constraint);
+    } else if (error.code === '23503') { // Foreign Key Violation
+      errorMessage = 'Invalid reference: Check that the team or judge exists.';
+      console.error('Foreign key violation:', error.constraint);
+    } else if (error.code === '42P01') { // Undefined Table
+      errorMessage = 'Database schema error: Required table does not exist.';
+      console.error('Undefined table:', error.message);
+    } else if (error.code === '42703') { // Undefined Column
+      errorMessage = 'Database schema error: Required column does not exist.';
+      console.error('Undefined column:', error.message);
     } else {
       errorMessage = error.message || 'Internal server error during evaluation submission.';
     }

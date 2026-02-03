@@ -236,7 +236,7 @@
       welcomeActions?.classList.add('hidden');
       loginCard.classList.add('show');
       loginCard.setAttribute('aria-hidden', 'false');
-      loginCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      loginCard.scrollIntoView({ behavior: 'smooth', block: 'end' });
       setTimeout(() => {
         const emailInput = document.getElementById('email');
         emailInput?.focus();

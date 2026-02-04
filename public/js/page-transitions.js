@@ -27,6 +27,8 @@
       const anchor = event.target.closest('a');
       if (!anchor) return;
       if (anchor.target === '_blank' || anchor.hasAttribute('data-no-transition')) return;
+      if (anchor.hasAttribute('download')) return;
+      if (anchor.href && anchor.href.startsWith('blob:')) return;
       if (!isSameOriginLink(anchor)) return;
 
       event.preventDefault();

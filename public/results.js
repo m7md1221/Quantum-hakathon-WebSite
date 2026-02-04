@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const results = await response.json();
     if (response.ok) {
       resultsData = results; // Store for export
+      console.log('Results data with judges:', resultsData); // Debug: Check judges data
       const resultsList = document.getElementById('results');
       const loadingDiv = document.getElementById('results-loading');
 
@@ -77,28 +78,69 @@ function exportToCSV() {
     return;
   }
 
+  console.log('Exporting data:', resultsData); // Debug
+  console.log('First team judges:', resultsData[0]?.judges); // Debug
+
+  // Find maximum number of judges for any team
+  const maxJudges = Math.max(...resultsData.map(result => {
+    const judges = result.judges || [];
+    console.log('Team', result.team_number, 'judges:', judges); // Debug
+    return judges.length;
+  }));
+
+  console.log('Max judges:', maxJudges); // Debug
+
+  // Build dynamic headers for judges
+  const judgeHeaders = [];
+  for (let i = 1; i <= maxJudges; i++) {
+    judgeHeaders.push(`الحاكم ${i}`);
+  }
+
   const csvContent = [
-    ['Rank', 'Team number', 'Hall', 'Average Score (out of 100)'],
-    ...resultsData.map((result, index) => [
-      index + 1,
-      result.team_number,
-      getHallName(result.hall),
-      result.average_score ? parseFloat(result.average_score).toFixed(1) : 'N/A'
-    ])
+    ['الترتيب', 'رقم الفريق', 'اسم الفريق', 'الجهة/المؤسسة', 'القاعة', 'المعدل (من 100)', ...judgeHeaders],
+    ...resultsData.map((result, index) => {
+      const judges = result.judges || [];
+      const judgeColumns = [];
+      for (let i = 0; i < maxJudges; i++) {
+        const judgeName = judges[i] || '';
+        console.log(`Team ${result.team_number}, Judge ${i}:`, judgeName); // Debug
+        judgeColumns.push(judgeName);
+      }
+      return [
+        index + 1,
+        result.team_number,
+        result.name || '',
+        result.institution_name || '',
+        getHallName(result.hall),
+        result.average_score ? parseFloat(result.average_score).toFixed(1) : 'N/A',
+        ...judgeColumns
+      ];
+    })
   ];
 
-  const csvString = csvContent.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+  console.log('CSV Content:', csvContent); // Debug
 
-  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const csvString = csvContent.map(row => row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')).join('\n');
+
+  const BOM = '\uFEFF';
+
+  const blob = new Blob([BOM + csvString], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.setAttribute('href', url);
   link.setAttribute('download', `quantum-khakathon-results-${new Date().toISOString().split('T')[0]}.csv`);
+  link.setAttribute('data-no-transition', 'true');
+  link.setAttribute('rel', 'noopener');
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
-  link.click();
+  link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
   document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 // Add export button event listener
-document.getElementById('export-btn').addEventListener('click', exportToCSV);
+document.getElementById('export-btn').addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  exportToCSV();
+});

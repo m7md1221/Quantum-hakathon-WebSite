@@ -84,7 +84,43 @@ router.get('/results', authenticate, authorize(['admin']), async (req, res) => {
       ORDER BY average_score DESC
     `);
 
-    res.json(resultsResult.rows);
+    // Get judges for each team
+    const judgesResult = await pool.query(`
+      SELECT 
+        e.team_id,
+        TRIM(ju.name) as judge_name
+      FROM evaluations e
+      JOIN judges j ON j.id = e.judge_id
+      JOIN users ju ON ju.id = j.user_id
+      ORDER BY e.team_id, ju.name
+    `);
+
+    console.log('Judges query result - first 3 rows:', judgesResult.rows.slice(0, 3)); // Debug
+
+    // Group judges by team
+    const judgesByTeam = {};
+    judgesResult.rows.forEach(row => {
+      if (!judgesByTeam[row.team_id]) {
+        judgesByTeam[row.team_id] = [];
+      }
+      const judgeName = row.judge_name ? row.judge_name.trim() : null;
+      if (judgeName && !judgesByTeam[row.team_id].includes(judgeName)) {
+        judgesByTeam[row.team_id].push(judgeName);
+      }
+    });
+
+    console.log('Judges by team - team 1:', judgesByTeam[1]); // Debug
+    console.log('Total teams with judges:', Object.keys(judgesByTeam).length); // Debug
+
+    // Add judges array to each team
+    const results = resultsResult.rows.map(team => ({
+      ...team,
+      judges: judgesByTeam[team.id] || []
+    }));
+
+    console.log('Final results - first team:', results[0]); // Debug
+
+    res.json(results);
   } catch (error) {
     console.error('Error in /results:', error);
     res.status(500).json({ message: 'Server error: ' + error.message });

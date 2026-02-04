@@ -280,6 +280,16 @@ body.page-exit {
     border: 1px solid var(--border);
 }
 
+.team-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+.team-grid .card {
+    flex: 1 1 0;
+}
+
 .card-title {
     display: flex;
     align-items: baseline;
@@ -586,6 +596,14 @@ body.page-exit {
     .grid-2,
     .grid-3 {
         grid-template-columns: 1fr;
+    }
+
+    .team-grid {
+        flex-wrap: wrap;
+    }
+
+    .team-grid .card {
+        flex: 1 1 100%;
     }
 }
 

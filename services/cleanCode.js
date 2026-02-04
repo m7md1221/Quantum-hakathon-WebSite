@@ -301,12 +301,9 @@ async function lintAllCode(owner, repo, token, eslintArtifactReport = null) {
     let totalWarnings = 0;
 
     if (scoringBuckets.length) {
-      const totalWeight = scoringBuckets.reduce((sum, b) => sum + Math.max(1, b.files), 0);
-      combinedScore = Math.round(
-        scoringBuckets.reduce((sum, b) => sum + (b.score * Math.max(1, b.files)), 0) / totalWeight
-      );
       totalErrors = scoringBuckets.reduce((sum, b) => sum + b.errors, 0);
       totalWarnings = scoringBuckets.reduce((sum, b) => sum + b.warnings, 0);
+      combinedScore = calculateScoreFromCounts(totalErrors, totalWarnings);
     }
 
     const report = {

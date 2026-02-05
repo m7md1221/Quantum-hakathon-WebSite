@@ -1123,11 +1123,33 @@ body:not(.login-body) .header .logo {
 
 /* Responsive Footer */
 @media (max-width: 768px) {
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-        gap: 12px;
-        padding: 14px 15px;
+    .login-body .container {
+        padding: 15px;
+        max-width: 95%;
+    }
+
+    .login-body .card {
+        padding: 25px;
+        margin: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .login-body .form-group {
+        padding: 0 8px;
+    }
+
+    .login-body .header {
+        padding: 0 15px;
+        margin-bottom: 20px;
+    }
+
+    .login-body .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .login-body .header p {
+        font-size: 0.9rem;
     }
 
     .login-body .btn {

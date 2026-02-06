@@ -1210,6 +1210,12 @@ body:not(.login-body) .header .logo {
         padding: 4px 6px;
         font-size: 10px;
     }
+    .hall-stat-number {
+        font-size: 12px !important;
+        font-weight: 700;
+        max-width: 100%;
+        word-break: break-all;
+    }
 }
 
 .hall-toggle-icon {

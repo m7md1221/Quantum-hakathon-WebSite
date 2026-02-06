@@ -1222,12 +1222,6 @@ body:not(.login-body) .header .logo {
         max-width: 100%;
         word-break: break-all;
     }
-    .hall-stat-label {
-        font-size: 8px !important;
-        font-weight: 600;
-        max-width: 100%;
-        word-break: break-all;
-    }
 }
 
 .hall-toggle-icon {

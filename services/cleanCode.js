@@ -1,8 +1,6 @@
 const { pool } = require('../db');
 const { parseRepoUrl, isRepoPublic, downloadEslintArtifact, downloadRepoZip } = require('../utils/github');
-const { ESLint } = require('eslint');
-const { HTMLHint } = require('htmlhint');
-const stylelint = require('stylelint');
+// Linting libraries removed: now using CodeFactor only
 const fs = require('fs');
 const path = require('path');
 const { execFile } = require('child_process');

@@ -1195,6 +1195,21 @@ body:not(.login-body) .header .logo {
     .hall-toggle-text {
         display: none !important;
     }
+    /* Responsive Hall Statistics Table - smaller font and padding */
+    #detailed-stats {
+        overflow-x: auto;
+        width: 100%;
+        display: block;
+    }
+    #detailed-stats table {
+        font-size: 10px;
+        min-width: 320px;
+        padding: 2px;
+    }
+    #detailed-stats th, #detailed-stats td {
+        padding: 4px 6px;
+        font-size: 10px;
+    }
 }
 
 .hall-toggle-icon {

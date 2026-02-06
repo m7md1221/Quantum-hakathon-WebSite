@@ -671,6 +671,9 @@ body:not(.login-body) .header .logo {
     padding: 40px;
     margin: 0;
     /* Centered by flex parent */
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 480px;
 }
 
 .login-body .card h2 {
@@ -714,6 +717,20 @@ body:not(.login-body) .header .logo {
     background-color: var(--primary-hover);
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.login-body #message {
+    min-height: 60px;
+    margin-top: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+}
+
+.login-body #message .message {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .login-body small {

@@ -1,3 +1,8 @@
+    @media (max-width: 700px) {
+      .hall-toggle-text {
+        display: none !important;
+      }
+    }
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,6 +100,38 @@
       background: #2563eb;
       color: #fff;
       border-color: #2563eb;
+    }
+
+    .grid.grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 700px) {
+      .grid.grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 14px 7px !important;
+      }
+      #team-institution {
+        margin-left: 0 !important;
+        font-size: 1rem !important;
+      }
+      .header h1 {
+        font-size: 1.2rem !important;
+      }
+      .header .logo {
+        width: 60px !important;
+        height: auto !important;
+      }
+      #average-score {
+        font-size: 1.2rem !important;
+      }
+      .btn, .btn-primary, .btn-secondary {
+        font-size: 0.95rem !important;
+        padding: 7px 14px !important;
+      }
     }
   </style>
   <script src="js/page-transitions.js"></script>

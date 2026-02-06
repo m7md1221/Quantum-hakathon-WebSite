@@ -1174,11 +1174,17 @@ body:not(.login-body) .header .logo {
     background: var(--primary-hover);
 }
 
+/* Hide hall-toggle-text on mobile */
 .hall-toggle-text {
     color: white;
     font-weight: 600;
     font-size: 0.9rem;
     white-space: nowrap;
+}
+@media (max-width: 700px) {
+    .hall-toggle-text {
+        display: none !important;
+    }
 }
 
 .hall-toggle-icon {

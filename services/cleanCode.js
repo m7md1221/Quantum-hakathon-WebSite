@@ -1305,44 +1305,50 @@ async function lintAllCode(owner, repo, token, eslintArtifactReport = null) {
 const axios = require('axios');
 
 async function processRepoForTeam(teamId, repoUrl) {
+
   // Mark evaluation as pending
   await pool.query(
     `UPDATE projects SET clean_code_status = $1, last_evaluated_at = $2 WHERE team_id = $3`,
     ['pending', new Date(), teamId]
   );
 
-  // Fetch CodeFactor grade
+  // Retry logic for CodeFactor fetch
   let grade = null;
   let errorMsg = null;
-  try {
-    // CodeFactor API is unofficial; fallback to scraping
-    const codefactorUrl = `https://www.codefactor.io/repository/github/${repoUrl.replace('https://github.com/', '')}`;
-    const res = await axios.get(codefactorUrl);
-    const html = res.data;
-    // Try to extract from <h1>CodeFactor Rating X</h1>
-    let match = html.match(/<h1[^>]*>\s*CodeFactor Rating\s*([A-E][+-]?)\s*<\/h1>/i);
-    if (!match || !match[1]) {
-      // fallback: try badge alt attribute
-      match = html.match(/alt="Repository badge with ([A-E][a-zA-Z]+) rating"/i);
-      if (match && match[1]) {
-        // Convert badge text to grade (e.g. BMinus → B-)
-        const badgeMap = {
-          'APlus': 'A+', 'A': 'A', 'AMinus': 'A-',
-          'BPlus': 'B+', 'B': 'B', 'BMinus': 'B-',
-          'CPlus': 'C+', 'C': 'C', 'CMinus': 'C-',
-          'DPlus': 'D+', 'D': 'D', 'DMinus': 'D-',
-          'EPlus': 'E+', 'E': 'E'
-        };
-        grade = badgeMap[match[1]] || match[1];
+  let attempts = 0;
+  const maxAttempts = 3;
+  while (attempts < maxAttempts && (!grade || grade === 0)) {
+    attempts++;
+    try {
+      const codefactorUrl = `https://www.codefactor.io/repository/github/${repoUrl.replace('https://github.com/', '')}`;
+      const res = await axios.get(codefactorUrl);
+      const html = res.data;
+      let match = html.match(/<h1[^>]*>\s*CodeFactor Rating\s*([A-E][+-]?)\s*<\/h1>/i);
+      if (!match || !match[1]) {
+        match = html.match(/alt="Repository badge with ([A-E][a-zA-Z]+) rating"/i);
+        if (match && match[1]) {
+          const badgeMap = {
+            'APlus': 'A+', 'A': 'A', 'AMinus': 'A-',
+            'BPlus': 'B+', 'B': 'B', 'BMinus': 'B-',
+            'CPlus': 'C+', 'C': 'C', 'CMinus': 'C-',
+            'DPlus': 'D+', 'D': 'D', 'DMinus': 'D-',
+            'EPlus': 'E+', 'E': 'E'
+          };
+          grade = badgeMap[match[1]] || match[1];
+        }
+      } else {
+        grade = match[1].toUpperCase();
       }
-    } else {
-      grade = match[1].toUpperCase();
+      if (!grade) {
+        errorMsg = 'Could not extract CodeFactor grade.';
+      }
+    } catch (err) {
+      errorMsg = 'CodeFactor fetch failed: ' + err.message;
     }
-    if (!grade) {
-      errorMsg = 'Could not extract CodeFactor grade.';
+    // If still null or 0, wait a bit before retrying
+    if ((!grade || grade === 0) && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
     }
-  } catch (err) {
-    errorMsg = 'CodeFactor fetch failed: ' + err.message;
   }
 
 

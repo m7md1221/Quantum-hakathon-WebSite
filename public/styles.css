@@ -1216,6 +1216,18 @@ body:not(.login-body) .header .logo {
         max-width: 100%;
         word-break: break-all;
     }
+    .hall-stat-number {
+        font-size: 10px !important;
+        font-weight: 700;
+        max-width: 100%;
+        word-break: break-all;
+    }
+    .hall-stat-label {
+        font-size: 8px !important;
+        font-weight: 600;
+        max-width: 100%;
+        word-break: break-all;
+    }
 }
 
 .hall-toggle-icon {

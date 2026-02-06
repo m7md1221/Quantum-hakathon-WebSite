@@ -300,16 +300,16 @@ async function loadCleanCodeScore() {
     if (data.clean_code_score !== null && data.clean_code_score !== undefined) {
       scoreEl.textContent = data.clean_code_score + '/100';
       scoreEl.style.color = data.clean_code_score >= 70 ? '#059669' : data.clean_code_score >= 50 ? '#f59e0b' : '#dc2626';
-      errorsEl.textContent = data.eslint_error_count ?? 0;
-      warningsEl.textContent = data.eslint_warning_count ?? 0;
+      errorsEl.textContent = '-';
+      warningsEl.textContent = '-';
       statusEl.textContent = '✅ Evaluated';
       statusEl.style.color = '#059669';
-      
-      // Convert 100-point score to 10-point scale
+
+      // Always convert 100-point score to 10-point scale (rounded to nearest integer)
       const scoreOutOf10 = Math.round((data.clean_code_score / 100) * 10);
       codeQualityDisplay.textContent = scoreOutOf10 + '/10';
       codeQualityInput.value = scoreOutOf10;
-      
+
       if (data.last_evaluated_at) {
         const date = new Date(data.last_evaluated_at);
         messageEl.textContent = `Last evaluated: ${date.toLocaleString()}`;

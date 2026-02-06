@@ -127,8 +127,10 @@ async function downloadRepoZip(owner, repo, token) {
   const headers = { Accept: 'application/vnd.github+json' };
   if (token) headers.Authorization = `token ${token}`;
 
+  const cacheBuster = `t=${Date.now()}`;
+
   const zipRes = await axios.get(
-    `https://api.github.com/repos/${owner}/${repo}/zipball`,
+    `https://api.github.com/repos/${owner}/${repo}/zipball?${cacheBuster}`,
     {
       headers,
       responseType: 'arraybuffer',

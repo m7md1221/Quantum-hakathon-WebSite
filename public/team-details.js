@@ -79,15 +79,9 @@ function displayTeamDetails(data) {
   if (team.submitted_at) {
     downloadBtn.style.display = 'block';
     downloadBtn.onclick = () => openProjectRepository(team.id);
-    // Show clean code info if available
-    const cleanScoreEl = document.getElementById('clean-code-score');
-    const cleanErrorsEl = document.getElementById('clean-errors');
-    const cleanWarningsEl = document.getElementById('clean-warnings');
-    if (project) {
-      cleanScoreEl.textContent = project.clean_code_score !== null ? project.clean_code_score + '/100' : 'N/A';
-      cleanErrorsEl.textContent = project.eslint_error_count ?? '-';
-      cleanWarningsEl.textContent = project.eslint_warning_count ?? '-';
-    }
+    // Clean code score/errors/warnings elements removed from HTML, so skip setting them
+    setupRecalcButton(teamId);
+    loadCleanCodeEvidence(teamId);
   } else {
     downloadBtn.style.display = 'none';
   }
@@ -190,6 +184,255 @@ function displayTeamDetails(data) {
       `;
       criteriaBreakdown.appendChild(criterionDiv);
     });
+  }
+}
+
+function setupRecalcButton(teamId) {
+  const recalcBtn = document.getElementById('recalc-clean-code');
+  const statusEl = document.getElementById('recalc-status');
+  if (!recalcBtn) return;
+
+  recalcBtn.onclick = async () => {
+    recalcBtn.disabled = true;
+    if (statusEl) statusEl.textContent = 'Recalculating...';
+
+    try {
+      const response = await fetch(`/api/admin/projects/${teamId}/clean-code`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to trigger re-evaluation');
+      }
+
+      if (statusEl) statusEl.textContent = 'Recalculation triggered. Checking status...';
+      await pollCleanCodeStatus(teamId, statusEl);
+    } catch (err) {
+      console.error('Recalculate clean code failed:', err);
+      if (statusEl) statusEl.textContent = `Failed: ${err.message}`;
+    } finally {
+      recalcBtn.disabled = false;
+    }
+  };
+}
+
+async function pollCleanCodeStatus(teamId, statusEl, attempts = 10) {
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      const response = await fetch(`/api/admin/projects/${teamId}/clean-code`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to fetch status');
+      }
+
+      const result = await response.json();
+      const status = result.clean_code_status || 'pending';
+
+      if (statusEl) statusEl.textContent = `Status: ${status}`;
+
+      if (status === 'success' || status === 'failed') {
+        const cleanScoreEl = document.getElementById('clean-code-score');
+        const cleanErrorsEl = document.getElementById('clean-errors');
+        const cleanWarningsEl = document.getElementById('clean-warnings');
+
+        if (cleanScoreEl) {
+          cleanScoreEl.textContent = result.clean_code_score !== null && result.clean_code_score !== undefined
+            ? result.clean_code_score + '/100'
+            : 'N/A';
+        }
+        if (cleanErrorsEl) cleanErrorsEl.textContent = result.eslint_error_count ?? '-';
+        if (cleanWarningsEl) cleanWarningsEl.textContent = result.eslint_warning_count ?? '-';
+
+        await loadCleanCodeEvidence(teamId);
+        return;
+      }
+    } catch (err) {
+      if (statusEl) statusEl.textContent = `Status check failed: ${err.message}`;
+      return;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 3000));
+  }
+
+  if (statusEl) statusEl.textContent = 'Status check timed out. Please refresh.';
+}
+
+async function loadCleanCodeEvidence(teamId) {
+  const container = document.getElementById('clean-code-evidence');
+  if (!container) return;
+
+  try {
+    const response = await fetch(`/api/admin/projects/${teamId}/clean-code`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to load clean code evidence');
+    }
+
+    const result = await response.json();
+    let report = result.clean_code_report;
+
+    if (typeof report === 'string') {
+      try {
+        report = JSON.parse(report);
+      } catch (_) {
+        report = null;
+      }
+    }
+
+    if (!report) {
+      container.innerHTML = '<p>No report available.</p>';
+      return;
+    }
+
+    // Show CodeFactor grade if present
+    if (report.codefactor_grade) {
+      container.innerHTML = `
+        <div style="margin-bottom:12px; padding:10px; border-radius:8px; background: #f8fafc; border:1px solid #e6eef6;">
+          <div style="font-weight:700; margin-bottom:6px;">CodeFactor Grade</div>
+          <div style="font-size:1.2rem; color:#4f46e5; font-weight:700;">${report.codefactor_grade} → ${report.codefactor_score}/100</div>
+            <div style="font-size:13px; color:#374151; margin-top:6px;">Grade extracted automatically from codefactor.io. Mapping: A+=100, A=95, A-=88, B+=85, B=80, B-=78, C+=75, C=70, C-=68, D+=65, D=60, D-=58, E+=55, E=50.</div>
+          ${report.error ? `<div style='color:#dc2626; margin-top:8px;'>${report.error}</div>` : ''}
+        </div>
+      `;
+      return;
+    }
+
+    const tooling = Array.isArray(report.tooling) ? report.tooling : [];
+    const notes = Array.isArray(report.notes) ? report.notes : [];
+    const metrics = report.metrics || null;
+
+    let html = '';
+
+    // Show metrics summary if present
+    if (metrics && metrics.scores) {
+      const s = metrics.scores;
+      html += `
+        <div style="margin-bottom:12px; padding:10px; border-radius:8px; background: #f8fafc; border:1px solid #e6eef6;">
+          <div style="font-weight:700; margin-bottom:6px;">Metrics</div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:13px;">
+            <div><strong>Combined:</strong> ${s.combined ?? '-'} /100</div>
+            <div><strong>Lint:</strong> ${s.lint ?? '-'} /100</div>
+            <div><strong>Maintainability:</strong> ${s.maintainability ?? '-'} /100</div>
+            <div><strong>Product:</strong> ${s.product ?? '-'} /100</div>
+            <div><strong>Performance:</strong> ${s.performance ?? (s.performance === null ? 'N/A' : '-') } /100</div>
+          </div>
+        </div>
+      `;
+
+      // maintainability details
+      if (metrics.maintainability) {
+        const m = metrics.maintainability;
+        html += `
+          <div style="margin-bottom:12px;">
+            <strong>Maintainability details:</strong>
+            <div style="font-size:13px; color:#374151; margin-top:6px;">
+              Files: ${m.fileCount}, Total lines: ${m.totalLines}, Avg lines: ${m.avgLines}, Large files: ${m.largeFiles}, Very large: ${m.veryLargeFiles}, TODOs: ${m.todoCount}
+            </div>
+          </div>
+        `;
+      }
+
+      // product signals
+      if (metrics.product) {
+        const p = metrics.product;
+        html += `
+          <div style="margin-bottom:12px;">
+            <strong>Product signals:</strong>
+            <div style="font-size:13px; color:#374151; margin-top:6px;">
+              README: ${p.hasReadme ? 'yes' : 'no'}, LICENSE: ${p.hasLicense ? 'yes' : 'no'}, CONTRIBUTING: ${p.hasContributing ? 'yes' : 'no'}, CHANGELOG: ${p.hasChangelog ? 'yes' : 'no'}, docs: ${p.hasDocsDir ? 'yes' : 'no'}, CI: ${p.hasCi ? 'yes' : 'no'}, tests: ${p.hasTestDir || p.testFileCount > 0 ? 'yes' : 'no'}
+            </div>
+          </div>
+        `;
+      }
+
+      // performance details
+      if (metrics.performance) {
+        const perf = metrics.performance;
+        html += `
+          <div style="margin-bottom:12px;">
+            <strong>Performance report:</strong>
+            <div style="font-size:13px; color:#374151; margin-top:6px;">Source: ${perf.source || '-'}; details: <pre style="white-space:pre-wrap; font-size:12px;">${JSON.stringify(perf.details || {}, null, 2)}</pre></div>
+          </div>
+        `;
+      }
+    }
+
+    if (tooling.length) {
+      html += `
+        <div style="margin-bottom: 12px;">
+          <strong>Tools:</strong>
+          <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 8px;">
+            ${tooling.map(t => `<span style="background: #eef2f7; border: 1px solid #d7dce3; padding: 4px 8px; border-radius: 6px; font-size: 12px;">${t.language}: ${t.tool} (${t.status})</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    if (notes.length) {
+      html += `
+        <div style="margin-bottom: 12px; color: #6b7280;">
+          ${notes.map(n => `<div>• ${n}</div>`).join('')}
+        </div>
+      `;
+    }
+
+    html += `
+      <div style="margin-bottom: 12px; display: flex; gap: 12px; align-items: center; font-size: 12px;">
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; background: #dc2626; border-radius: 50%; display: inline-block;"></span>Error</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; background: #f59e0b; border-radius: 50%; display: inline-block;"></span>Warning</span>
+      </div>
+    `;
+
+    const evidence = report.evidence || {};
+    const sections = Object.entries(evidence);
+
+    if (!sections.length) {
+      html += '<p>No evidence available.</p>';
+      container.innerHTML = html;
+      return;
+    }
+
+    sections.forEach(([key, items]) => {
+      const list = Array.isArray(items) ? items : [];
+      const sortedList = [...list].sort((a, b) => {
+        const aSev = (a.severity || '').toString().toLowerCase();
+        const bSev = (b.severity || '').toString().toLowerCase();
+        const rank = sev => (sev === 'error' ? 0 : sev === 'warning' ? 1 : 2);
+        return rank(aSev) - rank(bSev);
+      });
+      html += `
+        <div style="margin-bottom: 16px;">
+          <h4 style="margin: 0 0 8px 0; color: var(--primary-color); text-transform: uppercase; font-size: 0.9rem;">${key}</h4>
+          <div style="border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: var(--card-bg); max-height: 260px; overflow: auto;">
+            ${sortedList.length ? sortedList.map(item => {
+              const sev = (item.severity || 'issue').toString().toLowerCase();
+              const color = sev === 'error' ? '#dc2626' : sev === 'warning' ? '#f59e0b' : '#6b7280';
+              const label = item.severity || 'issue';
+              return `
+                <div style="padding: 6px 0; border-bottom: 1px dashed #e5e7eb;">
+                  <div style="font-size: 0.9rem; color: ${color};"><strong>${label}</strong> ${item.ruleId ? `• ${item.ruleId}` : ''}</div>
+                  <div style="color: #374151;">${item.message || ''}</div>
+                  <div style="color: #6b7280; font-size: 12px;">${item.file ? item.file : 'unknown'}${item.line ? `:${item.line}` : ''}${item.column ? `:${item.column}` : ''}</div>
+                </div>
+              `;
+            }).join('') : '<div>No issues captured.</div>'}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  } catch (err) {
+    console.error('Error loading clean code evidence:', err);
+    container.innerHTML = `<div class="message error">❌ ${err.message}</div>`;
   }
 }
 

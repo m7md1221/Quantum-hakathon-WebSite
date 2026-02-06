@@ -36,14 +36,12 @@
           </div>
           <div>
             <p><strong>Submitted:</strong> <span id="submitted-at"></span></p>
-            <button id="download-btn" class="btn btn-primary" style="display: none;">View on GitHub</button>
+            <button id="download-btn" class="btn btn-primary github-btn-custom" style="display: none;">View on GitHub</button>
 
-            <p><strong>Average Score:</strong> <span id="average-score"></span></p>
+            <p><strong>Average Score:</strong> <span id="average-score" style="font-size:1.5rem; color:#4f46e5; font-weight:700;"></span></p>
 
-            <p><strong>Clean Code (Automated):</strong> <span id="clean-code-score">-</span>
-            </p>
-
-            <p><strong>Errors:</strong> <span id="clean-errors">-</span> &nbsp; <strong>Warnings:</strong> <span id="clean-warnings">-</span></p>
+            <!-- Clean Code score and errors/warnings removed: now shown only in Clean Code Evidence section -->
+            <!-- Recalculate Clean Code button removed -->
           </div>
         </div>
       </div>
@@ -56,6 +54,12 @@
       <div class="card">
         <h2>Detailed Scores by Criterion</h2>
         <div id="criteria-breakdown"></div>
+      </div>
+
+      <div class="card">
+        <h2>Quality Code Evidence</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 15px;">Sample issues captured by the automated tools.</p>
+        <div id="clean-code-evidence" style="min-height: 60px;"><p>Loading clean code evidence...</p></div>
       </div>
 
       <div style="text-align: center; margin-top: 30px;">
@@ -75,6 +79,23 @@
     </div>
   </footer>
 
+  <style>
+    .github-btn-custom {
+      font-size: 0.95rem;
+      background: #fff;
+      color: #2563eb;
+      border: 2px solid #2563eb;
+      border-radius: 6px;
+      padding: 7px 18px;
+      font-weight: 600;
+      transition: background 0.2s, color 0.2s;
+    }
+    .github-btn-custom:hover, .github-btn-custom:focus {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+    }
+  </style>
   <script src="js/page-transitions.js"></script>
   <script src="team-details.js"></script>
 </body>

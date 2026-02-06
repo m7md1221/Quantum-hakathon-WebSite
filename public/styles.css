@@ -1227,6 +1227,19 @@ body:not(.login-body) .header .logo {
         font-weight: 600;
         letter-spacing: 0.5px;
     }
+    .results-list li {
+        font-size: 12px !important;
+        padding: 8px 6px !important;
+    }
+    .results-list li h3,
+    .results-list li .rank,
+    .results-list li .score {
+        font-size: 13px !important;
+    }
+    .results-list li p,
+    .results-list li span {
+        font-size: 11px !important;
+    }
 }
 
 .hall-toggle-icon {

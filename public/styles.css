@@ -272,6 +272,16 @@ body:not(.login-body) .header .logo {
 .header-tag {
     display: inline-block;
     font-size: 0.85rem;
+        /* Responsive Hall Statistics Table */
+        #detailed-stats {
+            overflow-x: auto;
+            width: 100%;
+            display: block;
+        }
+        #detailed-stats table {
+            font-size: 12px;
+            min-width: 400px;
+        }
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;

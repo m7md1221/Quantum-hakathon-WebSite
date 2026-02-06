@@ -5,11 +5,26 @@ const path = require('path');
 const os = require('os');
 
 function parseRepoUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+
+  const trimmed = url.trim();
+
+  // Support SSH format: git@github.com:owner/repo.git
+  const sshMatch = trimmed.match(/^git@github\.com:([^/]+)\/?([^#?]+)$/i);
+  if (sshMatch) {
+    const owner = sshMatch[1];
+    const repoRaw = sshMatch[2].split('/')[0];
+    const repo = repoRaw.replace(/\.git$/i, '');
+    return owner && repo ? { owner, repo } : null;
+  }
+
   try {
-    const u = new URL(url.trim());
-    const parts = u.pathname.replace(/^\//, '').split('/');
+    const u = new URL(trimmed);
+    const parts = u.pathname.replace(/^\//, '').split('/').filter(Boolean);
     if (parts.length < 2) return null;
-    return { owner: parts[0], repo: parts[1] };
+    const owner = parts[0];
+    const repo = parts[1].replace(/\.git$/i, '');
+    return owner && repo ? { owner, repo } : null;
   } catch (e) {
     return null;
   }

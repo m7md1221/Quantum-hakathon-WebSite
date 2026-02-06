@@ -751,6 +751,315 @@ body:not(.login-body) .header .logo {
     padding-right: 0;
 }
 
+.login-body .guide-cta {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 10px;
+}
+
+.guide-body {
+    background: linear-gradient(135deg, #f0f4f8 0%, #dbeafe 100%);
+    min-height: 100vh;
+}
+
+.guide-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+}
+
+.guide-body .campus-guide {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.guide-body .guide-layout {
+    display: flex;
+    gap: 18px;
+    align-items: stretch;
+    flex-direction: row-reverse;
+}
+
+.guide-body .guide-map {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex: 1 1 80%;
+    min-height: 520px;
+    aspect-ratio: 1126 / 763;
+}
+
+.guide-body .campus-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.guide-body .campus-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.guide-body .campus-overlay #routePath {
+    fill: none;
+    stroke: #2563eb;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 0;
+}
+
+.guide-body .campus-overlay #routePath.animate {
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+    animation: route-draw 1.4s ease forwards;
+}
+
+.guide-body .campus-overlay #routeStart {
+    fill: #ef4444;
+    stroke: #ffffff;
+    stroke-width: 4;
+}
+
+.guide-body .campus-overlay #routeEnd {
+    fill: #22c55e;
+    stroke: #ffffff;
+    stroke-width: 4;
+}
+
+.guide-body .guide-controls {
+    display: grid;
+    gap: 10px;
+    flex: 0 0 20%;
+    max-width: 260px;
+    min-width: 200px;
+    align-content: start;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.guide-body .guide-btn {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #1f2937;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-align: right;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.guide-body .guide-btn:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.guide-body .guide-btn.active {
+    background: #1d4ed8;
+    color: #ffffff;
+    border-color: #1d4ed8;
+}
+
+.guide-body .guide-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.guide-body .guide-link.secondary {
+    border-color: #cbd5f5;
+    color: #475569;
+}
+
+.guide-body .guide-link:hover {
+    background: #eff6ff;
+    border-color: var(--primary-hover);
+    color: var(--primary-hover);
+}
+
+@media (max-width: 900px) {
+    .guide-body .guide-layout {
+        flex-direction: column;
+    }
+
+    .guide-body .guide-controls {
+        flex: 1 1 auto;
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .guide-body .campus-guide {
+        padding: 18px;
+    }
+}
+
+.login-body .campus-guide {
+    width: 100%;
+    max-width: 980px;
+    margin: 20px 0 30px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.login-body .guide-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.login-body .guide-header h2 {
+    font-size: 1.4rem;
+    color: #1f2937;
+    margin-bottom: 6px;
+}
+
+.login-body .guide-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.login-body .guide-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.9fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.login-body .guide-map {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    min-height: 360px;
+}
+
+.login-body .campus-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.login-body .campus-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.login-body .campus-overlay #routePath {
+    fill: none;
+    stroke: #2563eb;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 0;
+}
+
+.login-body .campus-overlay #routePath.animate {
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+    animation: route-draw 1.4s ease forwards;
+}
+
+.login-body .campus-overlay #routeStart {
+    fill: #22c55e;
+    stroke: #ffffff;
+    stroke-width: 4;
+}
+
+.login-body .campus-overlay #routeEnd {
+    fill: #ef4444;
+    stroke: #ffffff;
+    stroke-width: 4;
+}
+
+.login-body .guide-controls {
+    display: grid;
+    gap: 10px;
+}
+
+.login-body .guide-btn {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #1f2937;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-align: right;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.login-body .guide-btn:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.login-body .guide-btn.active {
+    background: #1d4ed8;
+    color: #ffffff;
+    border-color: #1d4ed8;
+}
+
+@keyframes route-draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .login-body .guide-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .login-body .campus-guide {
+        padding: 18px;
+    }
+}
+
+.login-body .btn.btn-outline {
+    background: #ffffff;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.login-body .btn.btn-outline:hover {
+    background: #eff6ff;
+    border-color: var(--primary-hover);
+    color: var(--primary-hover);
+}
+
 /* --- Hall Sections Styles --- */
 .hall-section {
     margin-bottom: 20px;

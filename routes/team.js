@@ -14,6 +14,9 @@ function validateGitHubUrl(url) {
   
   // Must start with https://github.com/
   if (!trimmed.startsWith('https://github.com/')) return false;
+
+  // Reject .git suffix
+  if (trimmed.toLowerCase().endsWith('.git')) return false;
   
   // Basic URL validation - check if it's a valid GitHub URL
   try {
@@ -56,7 +59,7 @@ router.post('/submit', authenticate, authorize(['team']), async (req, res) => {
 
     if (!validateGitHubUrl(github_url)) {
       return res.status(400).json({ 
-        message: 'Invalid GitHub URL. Must start with https://github.com/' 
+        message: 'Invalid GitHub URL. Must start with https://github.com/ and must not end with .git' 
       });
     }
 

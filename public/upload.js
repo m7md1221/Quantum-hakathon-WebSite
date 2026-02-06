@@ -53,6 +53,9 @@ function validateGitHubUrl(url) {
   
   // Must start with https://github.com/
   if (!trimmed.startsWith('https://github.com/')) return false;
+
+  // Reject .git suffix
+  if (trimmed.toLowerCase().endsWith('.git')) return false;
   
   // Check if it's a valid URL
   try {
@@ -79,7 +82,7 @@ document.getElementById('github_url').addEventListener('input', (e) => {
     validationMessage.style.display = 'block';
     validationMessage.style.backgroundColor = '#fee2e2';
     validationMessage.style.color = '#dc2626';
-    validationMessage.textContent = '❌ Invalid GitHub URL. Must start with https://github.com/';
+    validationMessage.textContent = '❌ Invalid GitHub URL. Must start with https://github.com/ and must not end with .git';
   } else {
     validationMessage.style.display = 'block';
     validationMessage.style.backgroundColor = '#dcfce7';
@@ -106,7 +109,7 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
 
   // Final validation
   if (!validateGitHubUrl(githubUrl)) {
-    message.innerHTML = `<div class="message error">❌ Invalid GitHub URL. Must start with https://github.com/</div>`;
+    message.innerHTML = `<div class="message error">❌ Invalid GitHub URL. Must start with https://github.com/ and must not end with .git</div>`;
     return;
   }
 

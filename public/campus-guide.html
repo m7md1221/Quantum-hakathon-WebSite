@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل الهاكاثون داخل الجامعة</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="guide-body">
+  <div class="container guide-container">
+    <div class="header">
+      <img src="images/logo.png" alt="Najah AI Society Logo" class="logo">
+      <h1>دليلك داخل الجامعة</h1>
+      <p>اختر وجهتك وشاهد المسار على خريطة الجامعة.</p>
+    </div>
+
+    <section class="campus-guide" aria-label="دليلك داخل الجامعة">
+      <div class="guide-layout">
+        <div class="guide-map">
+          <img src="images/campus-aerial.jpg" alt="خريطة جوية لجامعة النجاح" class="campus-image">
+          <svg class="campus-overlay" viewBox="0 0 1126 763" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <g id="routeGroup">
+              <path id="routePath" d="" />
+              <circle id="routeStart" cx="0" cy="0" r="10" />
+              <circle id="routeEnd" cx="0" cy="0" r="10" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="guide-controls">
+          <button class="guide-btn" data-destination="innovation_garden">حديقة النجاح للابتكار</button>
+          <button class="guide-btn" data-destination="zafer_theater">مدرج ظافر المصري (وصول الباص)</button>
+          <button class="guide-btn" data-destination="library">مكتبة الجامعة</button>
+          <button class="guide-btn" data-destination="bank">البنك</button>
+          <button class="guide-btn" data-destination="restrooms">الحمّامات</button>
+          <button class="guide-btn" data-destination="cafeteria">الكافتيريا</button>
+          <a href="https://virtualtour.najah.edu/" target="_blank" rel="noopener" class="guide-link">استكشف الجامعة بتقنية 360°</a>
+          <a href="login.html" class="guide-link secondary">العودة لصفحة الترحيب</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/page-transitions.js"></script>
+  <script>
+    const routes = {
+      innovation_garden: {
+        path: 'M37.5 0.0192184C36.7 20.8192 37.1667 26.0192 37.5 26.0192H0.5V134.019L155 149.519L228.5 224.019L223 286.019H183V293.519',
+        start: { x: 37.5, y: 0.0192184 },
+        end: { x: 183, y: 293.519 },
+        transform: { scaleX: 1, scaleY: 1, translateX: 355, translateY: 455 }
+      },
+      zafer_theater: {
+        path: 'M36.5 0.941721C7.7 0.141721 0.5 0.608388 0.5 0.941721L15 205.942H128L52 259.942V241.942',
+        start: { x: 36.5, y: 0.941721 },
+        end: { x: 52, y: 241.942 },
+        transform: { scaleX: 1, scaleY: 1, translateX: 330, translateY: 220 }
+      },
+      library: {
+          path: 'M63.5 34C64.3 52 63.8333 56.5 63.5 56.5L138.5 0.5H0',
+        start: { x: 63.5, y: 34 },
+        end: { x: 0, y: 0 },
+        transform: { scaleX: 1, scaleY: 1, translateX: 330, translateY: 430 }
+      },
+      bank: {
+        path: 'M50 0C50 21.2 50 26.5 50 26.5H0.5V0',
+        start: { x: 50, y: 0 },
+        end: { x: 0.5, y: 0 },
+        transform: { scaleX: 1, scaleY: 1, translateX: 340, translateY: 460 }
+      },
+      restrooms: {
+        path: 'M62.5 0.0120468C61.7 33.212 62.1667 41.512 62.5 41.512M62.5 41.512H0M62.5 41.512L86 5.01205L505.5 12.512V0.0120468',
+        start: { x: 62.5, y: 0.0120468 },
+         end: [
+           { x: 505.5, y: 0.0120468 },
+           { x: 0, y: 41.512 }
+         ],
+        transform: { scaleX: 1, scaleY: 1, translateX: 330, translateY: 460 }
+      },
+      cafeteria: {
+        path: 'M60 0.534042C61.2 26.934 60.5 39.8674 60 43.034M60 43.034H0M60 43.034C78 9.03404 82.5 0.534042 82.5 0.534042L278.5 22.034V0.534042',
+        start: { x: 60, y: 0.534042 },
+        end: [
+          { x: 278.5, y: 0.534042 },
+          { x: 0, y: 43.034 }
+        ],
+        transform: { scaleX: 1, scaleY: 1, translateX: 330, translateY: 460 }
+      }
+    };
+
+    const routeGroup = document.getElementById('routeGroup');
+    const routePath = document.getElementById('routePath');
+    const routeStart = document.getElementById('routeStart');
+    const routeEnd = document.getElementById('routeEnd');
+
+    function showRoute(destinationKey) {
+      const route = routes[destinationKey];
+      if (!route) return;
+
+      const transform = route.transform || { scaleX: 1, scaleY: 1, translateX: 0, translateY: 0 };
+      const scaleX = transform.scaleX ?? 1;
+      const scaleY = transform.scaleY ?? 1;
+      const translateX = transform.translateX ?? 0;
+      const translateY = transform.translateY ?? 0;
+
+      routeGroup.setAttribute('transform', `translate(${translateX} ${translateY}) scale(${scaleX} ${scaleY})`);
+
+      routePath.setAttribute('d', route.path);
+      routeStart.setAttribute('cx', route.start.x);
+      routeStart.setAttribute('cy', route.start.y);
+      routeStart.setAttribute('r', '12');
+      routeStart.setAttribute('fill', '#ef4444');
+      routeStart.setAttribute('stroke', '#ffffff');
+      routeStart.setAttribute('stroke-width', '4');
+
+      const extraEnds = routeGroup.querySelectorAll('.route-end-extra');
+      extraEnds.forEach(node => node.remove());
+
+      const endPoints = Array.isArray(route.end) ? route.end : [route.end];
+      const primaryEnd = endPoints[0];
+
+      routeEnd.setAttribute('cx', primaryEnd.x);
+      routeEnd.setAttribute('cy', primaryEnd.y);
+      routeEnd.setAttribute('r', '12');
+      routeEnd.setAttribute('fill', '#22c55e');
+      routeEnd.setAttribute('stroke', '#ffffff');
+      routeEnd.setAttribute('stroke-width', '4');
+
+      endPoints.slice(1).forEach(point => {
+        const extra = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        extra.setAttribute('class', 'route-end-extra');
+        extra.setAttribute('cx', point.x);
+        extra.setAttribute('cy', point.y);
+        extra.setAttribute('r', '12');
+        extra.setAttribute('fill', '#22c55e');
+        extra.setAttribute('stroke', '#ffffff');
+        extra.setAttribute('stroke-width', '4');
+        routeGroup.appendChild(extra);
+      });
+
+      routePath.classList.remove('animate');
+      void routePath.offsetWidth;
+      routePath.classList.add('animate');
+    }
+
+    document.querySelectorAll('.guide-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.guide-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        showRoute(button.dataset.destination);
+      });
+    });
+
+    showRoute('innovation_garden');
+    document.querySelector('.guide-btn[data-destination="innovation_garden"]')?.classList.add('active');
+  </script>
+</body>
+</html>

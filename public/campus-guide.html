@@ -173,6 +173,7 @@
         </div>
 
         <div class="guide-controls">       
+           <button class="guide-btn" data-destination="bus_entry">دخول الباصات</button>
            <button class="guide-btn" data-destination="zafer_theater">الباصات -> مدرج ظافر المصري</button>
           <button class="guide-btn" data-destination="innovation_garden">مدرج ظافر المصري -> حديقة النجاح </button>
           <button class="guide-btn" data-destination="library">مدرج ظافر المصري -> مكتبة الجامعة</button>
@@ -211,6 +212,12 @@
   </script>
   <script>
     const routes = {
+            bus_entry: {
+              path: 'M0.5 521.5V67L169 0.5H438.5',
+              start: { x: 0.5, y: 521.5 },
+              end: { x: 438.5, y: 0.5 },
+              transform: { scaleX: 1, scaleY: 1, translateX: 180, translateY: 200 }
+            },
       innovation_garden: {
         path: 'M37.5 0.0192184C36.7 20.8192 37.1667 26.0192 37.5 26.0192H0.5V134.019L155 149.519L228.5 224.019L223 286.019H183V293.519',
         start: { x: 37.5, y: 0.0192184 },
@@ -225,10 +232,10 @@
         image: 'images/garden-restrooms2.jpg' // صورة جديدة مخصصة للحمامات في الحديقة
       },
       zafer_theater: {
-        path: 'M36.5 0.941721C7.7 0.141721 0.5 0.608388 0.5 0.941721L15 205.942H128L52 259.942V241.942',
-        start: { x: 36.5, y: 0.941721 },
-        end: { x: 52, y: 241.942 },
-        transform: { scaleX: 1, scaleY: 1, translateX: 330, translateY: 220 }
+        path: 'M272 0.499878C54.8 5.29988 0.5 2.49988 0.5 0.499878L14 241H121L107.5 211.5',
+        start: { x: 272, y: 0.5 },
+        end: { x: 107.5, y: 211.5 },
+        transform: { scaleX: 1, scaleY: 1, translateX: 340, translateY: 190 }
       },
       library: {
           path: 'M63.5 34C64.3 52 63.8333 56.5 63.5 56.5L138.5 0.5H0',
@@ -401,9 +408,8 @@
       });
     });
 
-    showRoute('innovation_garden');
-    showRoute('zafer_theater');
-    document.querySelector('.guide-btn[data-destination="zafer_theater"]')?.classList.add('active');
+    showRoute('bus_entry');
+    document.querySelector('.guide-btn[data-destination="bus_entry"]')?.classList.add('active');
   </script>
 </body>
   <footer class="site-footer">

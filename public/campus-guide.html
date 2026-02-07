@@ -18,8 +18,7 @@
       <div class="guide-layout">
         <div class="guide-map">
           <div class="zoom-controls-bar" style="position:absolute;top:10px;left:10px;z-index:10;display:flex;gap:8px;">
-            <button id="zoom-in" class="zoom-btn" title="تكبير">+</button>
-            <button id="zoom-out" class="zoom-btn" title="تصغير">-</button>
+            <!-- فقط زر ملء الشاشة -->
             <button id="fullscreen-btn" class="zoom-btn" title="ملء الشاشة">⛶</button>
             <button id="exit-fullscreen-btn" class="zoom-btn" title="الخروج من ملء الشاشة" style="display:none;">✕</button>
                     <style>
@@ -107,12 +106,7 @@
                         position: absolute;
                         left: 0;
                         top: 0;
-                        width: 100%;
-                        height: 100%;
-                        max-width: none;
-                        max-height: none;
-                        min-width: 100%;
-                        min-height: 100%;
+                        /* Remove all width/height/min/max constraints */
                         display: block;
                         user-select: none;
                         margin: 0;
@@ -120,6 +114,7 @@
                         border: none;
                         box-sizing: border-box;
                         transition: transform 0.2s;
+                        transform-origin: top left;
                       }
                       .campus-image {
                         cursor: grab;
@@ -194,154 +189,12 @@
 
   <script src="js/page-transitions.js"></script>
   <script>
-    // Zoom & Pan functionality with buttons and fullscreen
+    // فقط زر ملء الشاشة
     const zoomContainer = document.querySelector('.guide-map');
-    const campusImage = document.getElementById('guide-main-image');
-    const campusOverlay = document.querySelector('.campus-overlay');
-    const zoomInBtn = document.getElementById('zoom-in');
-    const zoomOutBtn = document.getElementById('zoom-out');
     const fullscreenBtn = document.getElementById('fullscreen-btn');
     const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
-    let scale = 1;
-    let posX = 0, posY = 0;
-    let isDragging = false;
-    let startX, startY;
-
-    function getMinScale() {
-      const containerRect = zoomContainer.getBoundingClientRect();
-      const imgNaturalWidth = campusImage.naturalWidth;
-      const imgNaturalHeight = campusImage.naturalHeight;
-      // بدون أي هامش إضافي
-      const minScaleX = containerRect.width / imgNaturalWidth;
-      const minScaleY = containerRect.height / imgNaturalHeight;
-      return Math.max(minScaleX, minScaleY);
-    }
-
-    function setTransform() {
-      const containerRect = zoomContainer.getBoundingClientRect();
-      const imgWidth = campusImage.naturalWidth * scale;
-      const imgHeight = campusImage.naturalHeight * scale;
-      let minX, maxX, minY, maxY;
-      if (imgWidth <= containerRect.width) {
-        minX = maxX = 0;
-        posX = 0;
-      } else {
-        minX = -(imgWidth - containerRect.width);
-        maxX = 0;
-        posX = Math.max(minX, Math.min(posX, maxX));
-      }
-      if (imgHeight <= containerRect.height) {
-        minY = maxY = 0;
-        posY = 0;
-      } else {
-        minY = -(imgHeight - containerRect.height);
-        maxY = 0;
-        posY = Math.max(minY, Math.min(posY, maxY));
-      }
-      campusImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-      campusOverlay.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-      // تعطيل زر التصغير إذا كنا على الحد الأدنى
-      const minScale = getMinScale();
-      zoomOutBtn.disabled = scale <= minScale + 0.001;
-      zoomInBtn.disabled = scale >= 3;
-    }
-
-    // أزرار التكبير والتصغير
-    zoomInBtn.addEventListener('click', function() {
-      const minScale = getMinScale();
-      scale = Math.min(scale + 0.15, 3);
-      if (scale < minScale) scale = minScale;
-      setTransform();
-      // تفعيل التحريك اليدوي عند التكبير
-      if (scale > minScale + 0.001) {
-        zoomContainer.onmousedown = function(e) {
-          isDragging = true;
-          startX = e.clientX - posX;
-          startY = e.clientY - posY;
-          campusImage.style.cursor = 'grabbing';
-        };
-        zoomContainer.ontouchstart = function(e) {
-          if (e.touches.length === 1) {
-            isDragging = true;
-            startX = e.touches[0].clientX - posX;
-            startY = e.touches[0].clientY - posY;
-          }
-        };
-      } else {
-        zoomContainer.onmousedown = null;
-        zoomContainer.ontouchstart = null;
-      }
-      // إضافة أحداث التحريك
-      document.onmousemove = function(e) {
-        if (!isDragging) return;
-        posX = e.clientX - startX;
-        posY = e.clientY - startY;
-        setTransform();
-      };
-      document.onmouseup = function() {
-        if (isDragging) {
-          isDragging = false;
-          campusImage.style.cursor = 'grab';
-        }
-      };
-      document.ontouchmove = function(e) {
-        if (!isDragging || e.touches.length !== 1) return;
-        posX = e.touches[0].clientX - startX;
-        posY = e.touches[0].clientY - startY;
-        setTransform();
-      };
-      document.ontouchend = function() {
-        if (isDragging) {
-          isDragging = false;
-          campusImage.style.cursor = 'grab';
-        }
-      };
-    });
-    zoomOutBtn.addEventListener('click', function() {
-      let minScale = getMinScale();
-      if (campusImage.src.includes('garden-restrooms2.jpg') || campusImage.src.includes('campus-aerial.jpg')) {
-        minScale = 1.1432;
-      }
-      if (campusImage.src.includes('campus-aerial.jpg') && scale - 0.15 < 1.1432) {
-        scale = 1.1432;
-      } else {
-        scale = Math.max(scale - 0.15, minScale);
-      }
-      setTransform();
-      // تعطيل الزر إذا وصل للحد الأدنى
-      zoomOutBtn.disabled = scale <= minScale + 0.001;
-      // تعطيل التحريك اليدوي إذا وصل للحد الأدنى
-      if (scale <= minScale + 0.001) {
-        zoomContainer.onmousedown = null;
-        zoomContainer.ontouchstart = null;
-        document.onmousemove = null;
-        document.onmouseup = null;
-        document.ontouchmove = null;
-        document.ontouchend = null;
-      }
-    });
-
-    // ملء الشاشة
-    fullscreenBtn.addEventListener('click', function() {
-      if (zoomContainer.requestFullscreen) {
-        zoomContainer.requestFullscreen();
-      } else if (zoomContainer.webkitRequestFullscreen) {
-        zoomContainer.webkitRequestFullscreen();
-      } else if (zoomContainer.msRequestFullscreen) {
-        zoomContainer.msRequestFullscreen();
-      }
-    });
-    exitFullscreenBtn.addEventListener('click', function() {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    });
-
-    // إظهار/إخفاء زر الخروج من ملء الشاشة
+    fullscreenBtn.onclick = () => zoomContainer.requestFullscreen();
+    exitFullscreenBtn.onclick = () => document.exitFullscreen();
     function updateFullscreenButtons() {
       if (document.fullscreenElement === zoomContainer || document.webkitFullscreenElement === zoomContainer || document.msFullscreenElement === zoomContainer) {
         fullscreenBtn.style.display = 'none';
@@ -354,37 +207,7 @@
     document.addEventListener('fullscreenchange', updateFullscreenButtons);
     document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
     document.addEventListener('msfullscreenchange', updateFullscreenButtons);
-
-    // تم إلغاء التحريك اليدوي للصورة نهائياً
-
-    // إعادة ضبط عند تغيير حجم النافذة
-    window.addEventListener('resize', function() {
-      setTransform();
-    });
-
-    // عند تحميل الصورة لأول مرة
-    campusImage.onload = function() {
-      scale = getMinScale();
-      posX = 0;
-      posY = 0;
-      setTransform();
-      // تعطيل زر التصغير عند الحد الأدنى وتفعيل زر التكبير دائماً
-      let minScale = getMinScale();
-      if (campusImage.src.includes('garden-restrooms2.jpg')) {
-        minScale = 1.1432;
-      }
-      // تعطيل زر التصغير للصورة الأولى عندما يكون scale قريب من 1.1432 أو قريب من الحد الأدنى (مرتين بعد نقطة البداية)
-      if (campusImage.src.includes('campus-aerial.jpg') && (Math.abs(scale - 1.1432) < 0.001 || scale <= minScale + 0.16)) {
-        zoomOutBtn.disabled = true;
-      } else {
-        zoomOutBtn.disabled = scale <= minScale + 0.001;
-      }
-      zoomInBtn.disabled = false;
-    };
-    // إذا كانت الصورة محملة مسبقاً
-    if (campusImage.complete) {
-      campusImage.onload();
-    }
+    updateFullscreenButtons();
   </script>
   <script>
     const routes = {
@@ -395,7 +218,7 @@
         transform: { scaleX: 1, scaleY: 1, translateX: 355, translateY: 455 }
       },
       garden_restrooms: {
-        path: 'M45.3927 25.5C33.7927 55.1 30.8927 62.5 30.8927 62.5L0.8927 89L116.893 145.5L297.893 13.5V0', // مسار جديد للحمامات في الحديقة
+        path: 'M45.3927 25.5C33.7927 55.1 30.8927 62.5 30.8927 62.5L0.8927 89L116.893 145.5L297.893 13.5V0.0120468',
         start: { x: 45.3927, y: 25.5 },
         end: { x: 297.893, y: 0 },
         transform: { scaleX: 1, scaleY: 1, translateX: 680, translateY: 500 },
@@ -579,7 +402,8 @@
     });
 
     showRoute('innovation_garden');
-    document.querySelector('.guide-btn[data-destination="innovation_garden"]')?.classList.add('active');
+    showRoute('zafer_theater');
+    document.querySelector('.guide-btn[data-destination="zafer_theater"]')?.classList.add('active');
   </script>
 </body>
   <footer class="site-footer">

@@ -1262,7 +1262,7 @@ body:not(.login-body) .header .logo {
 }
 
 .hall-content.open {
-    max-height: 5000px;
+    max-height: 50000px;
     padding: 25px;
 }
 

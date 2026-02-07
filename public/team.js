@@ -117,10 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
       
-      // تحديث الـ deadline من الـ backend إذا توفر
-      if (data.deadline) {
-        SUBMISSION_DEADLINE = data.deadline;
-      }
+      // تجاهل أي deadline من السيرفر، الديدلاين دائماً 6:00 AM
       
       const statusDiv = document.getElementById('status');
       statusDiv.innerHTML = `

@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function displayTeamDetails(data) {
+    // تخزين بيانات الفريق في window ليتمكن loadCleanCodeEvidence من الوصول إليها
+    window.lastTeamData = data;
   const { team, evaluations, detailedScores } = data;
   const project = data.team.github_repo_url ? {
     github_repo_url: data.team.github_repo_url,
@@ -74,12 +76,11 @@ function displayTeamDetails(data) {
     : '<span style="color: var(--warning-color); font-weight: 600;">Pending</span>';
   document.getElementById('submitted-at').textContent = team.submitted_at ? new Date(team.submitted_at).toLocaleString() : 'N/A';
 
-  // Project GitHub button
+  // Project GitHub button only
   const downloadBtn = document.getElementById('download-btn');
   if (team.submitted_at) {
     downloadBtn.style.display = 'block';
     downloadBtn.onclick = () => openProjectRepository(team.id);
-    // Clean code score/errors/warnings elements removed from HTML, so skip setting them
     setupRecalcButton(teamId);
     loadCleanCodeEvidence(teamId);
   } else {
@@ -277,6 +278,13 @@ async function loadCleanCodeEvidence(teamId) {
     }
 
     const result = await response.json();
+    // محاولة جلب github_repo_url من كائن الفريق إذا لم يكن موجودًا في النتيجة
+    if (!result.github_repo_url) {
+      // جلب بيانات الفريق من الصفحة (مخزنة في window.lastTeamData عند عرض التفاصيل)
+      if (window.lastTeamData && window.lastTeamData.team && window.lastTeamData.team.github_repo_url) {
+        result.github_repo_url = window.lastTeamData.team.github_repo_url;
+      }
+    }
     let report = result.clean_code_report;
 
     if (typeof report === 'string') {
@@ -294,12 +302,19 @@ async function loadCleanCodeEvidence(teamId) {
 
     // Show CodeFactor grade if present
     if (report.codefactor_grade) {
+      // توليد رابط CodeFactor Issues
+      let issuesBtnHtml = '';
+      if (result.github_repo_url) {
+        const repoPath = result.github_repo_url.replace('https://github.com/', '');
+        issuesBtnHtml = `<button onclick="window.open('https://www.codefactor.io/repository/github/${repoPath}/issues','_blank')" class="btn btn-primary github-btn-custom" style="margin-top:10px;">View CodeFactor Issues</button>`;
+      }
       container.innerHTML = `
         <div style="margin-bottom:12px; padding:10px; border-radius:8px; background: #f8fafc; border:1px solid #e6eef6;">
           <div style="font-weight:700; margin-bottom:6px;">CodeFactor Grade</div>
           <div style="font-size:1.2rem; color:#4f46e5; font-weight:700;">${report.codefactor_grade} → ${report.codefactor_score}/100</div>
-            <div style="font-size:13px; color:#374151; margin-top:6px;">Grade extracted automatically from codefactor.io. Mapping: A+=100, A=95, A-=88, B+=85, B=80, B-=78, C+=75, C=70, C-=68, D+=65, D=60, D-=58, E+=55, E=50.</div>
+            <div style="font-size:13px; color:#374151; margin-top:6px;">Grade extracted automatically from codefactor.io. Mapping: A+=100, A=95, A-=88, B+=85, B=80, B-=78, C+=75, C=70, C-=68, D+=65, D=60, D-=58, E+=55, E=50, F+=40, F=35, F-=30, G+=25, G=20, G-=15, H+=10, H=5, H-=0.</div>
           ${report.error ? `<div style='color:#dc2626; margin-top:8px;'>${report.error}</div>` : ''}
+          ${issuesBtnHtml}
         </div>
       `;
       return;

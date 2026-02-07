@@ -1323,16 +1323,19 @@ async function processRepoForTeam(teamId, repoUrl) {
       const codefactorUrl = `https://www.codefactor.io/repository/github/${repoUrl.replace('https://github.com/', '')}`;
       const res = await axios.get(codefactorUrl);
       const html = res.data;
-      let match = html.match(/<h1[^>]*>\s*CodeFactor Rating\s*([A-E][+-]?)\s*<\/h1>/i);
+      let match = html.match(/<h1[^>]*>\s*CodeFactor Rating\s*([A-H][+-]?)\s*<\/h1>/i);
       if (!match || !match[1]) {
-        match = html.match(/alt="Repository badge with ([A-E][a-zA-Z]+) rating"/i);
+        match = html.match(/alt="Repository badge with ([A-H][a-zA-Z]+) rating"/i);
         if (match && match[1]) {
           const badgeMap = {
             'APlus': 'A+', 'A': 'A', 'AMinus': 'A-',
             'BPlus': 'B+', 'B': 'B', 'BMinus': 'B-',
             'CPlus': 'C+', 'C': 'C', 'CMinus': 'C-',
             'DPlus': 'D+', 'D': 'D', 'DMinus': 'D-',
-            'EPlus': 'E+', 'E': 'E'
+            'EPlus': 'E+', 'E': 'E',
+            'FPlus': 'F+', 'F': 'F', 'FMinus': 'F-',
+            'GPlus': 'G+', 'G': 'G', 'GMinus': 'G-',
+            'HPlus': 'H+', 'H': 'H', 'HMinus': 'H-'
           };
           grade = badgeMap[match[1]] || match[1];
         }
@@ -1353,22 +1356,31 @@ async function processRepoForTeam(teamId, repoUrl) {
 
 
   // Map grade (with +/-) to score
-  const gradeToScore = {
-    'A+': 100,
-    'A': 95,
-    'A-': 88,
-    'B+': 85,
-    'B': 80,
-    'B-': 78,
-    'C+': 75,
-    'C': 70,
-    'C-': 68,
-    'D+': 65,
-    'D': 60,
-    'D-': 58,
-    'E+': 55,
-    'E': 50
-  };
+    const gradeToScore = {
+      'A+': 100,
+      'A': 95,
+      'A-': 88,
+      'B+': 85,
+      'B': 80,
+      'B-': 78,
+      'C+': 75,
+      'C': 70,
+      'C-': 68,
+      'D+': 65,
+      'D': 60,
+      'D-': 58,
+      'E+': 55,
+      'E': 50,
+      'F+': 40,
+      'F': 35,
+      'F-': 30,
+      'G+': 25,
+      'G': 20,
+      'G-': 15,
+      'H+': 10,
+      'H': 5,
+      'H-': 0
+    };
 
   // Try to match grade with +/-
   let mappedScore = 0;
@@ -1379,9 +1391,11 @@ async function processRepoForTeam(teamId, repoUrl) {
   const score = mappedScore;
 
   // Save evaluation results
+  const status = ((grade && gradeToScore[String(grade).trim().toUpperCase()] !== undefined) || (score > 0)) ? 'success' : 'failed';
+  console.log('CleanCode Evaluation:', { teamId, grade, score, status });
   await pool.query(
     `UPDATE projects SET clean_code_score = $1, eslint_error_count = $2, eslint_warning_count = $3, clean_code_report = $4, clean_code_status = $5, clean_code_failure_reason = $6, last_evaluated_at = $7 WHERE team_id = $8`,
-    [score, null, null, JSON.stringify({ codefactor_grade: grade, codefactor_score: score, error: errorMsg }), grade ? 'success' : 'failed', errorMsg, new Date(), teamId]
+    [score, null, null, JSON.stringify({ codefactor_grade: grade, codefactor_score: score, error: errorMsg }), status, errorMsg, new Date(), teamId]
   );
 
   return { score, report: { codefactor_grade: grade, codefactor_score: score, error: errorMsg } };

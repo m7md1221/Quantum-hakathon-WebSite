@@ -15,6 +15,7 @@ function getHallName(hallLetter) {
   return hallNames[hallLetter] || `Hall ${hallLetter}`;
 }
 
+// الديدلاين الساعة 6 صباحاً
 let SUBMISSION_DEADLINE = '2026-02-08T06:00:00';
 
 function isDeadlinePassed() {

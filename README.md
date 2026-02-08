@@ -203,3 +203,15 @@ Specify your license here (e.g., MIT, Apache-2.0). If not open source, state "Al
 ---
 
 If you want, I can also add example cURL commands or a one-page Quick Start in Arabic.
+
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (2)" src="https://github.com/user-attachments/assets/c02181ff-a447-44f7-8fe1-0c7e79b0ed59" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (3)" src="https://github.com/user-attachments/assets/2ed63ff3-cdee-4675-9b5a-d2f776e7153d" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (4)" src="https://github.com/user-attachments/assets/f3287d57-f8f1-4378-a4e0-fe574174bdc9" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_results html(iPad) (1)" src="https://github.com/user-attachments/assets/4c187f5a-53fb-447a-a49f-71a20e55682d" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_login html(iPad)" src="https://github.com/user-attachments/assets/9789e2a5-4e7b-4661-b9ca-65a32ed8f783" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_campus-guide html(iPad)" src="https://github.com/user-attachments/assets/761df704-dba4-4aea-b26e-637abf72dc49" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_team-dashboard html(iPad)" src="https://github.com/user-attachments/assets/60ff8086-69df-45ec-8f41-ad43acba0739" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_judge-dashboard html(iPad)" src="https://github.com/user-attachments/assets/8b89d77e-6824-4133-9f34-3d4c1de84c2c" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad)" src="https://github.com/user-attachments/assets/df3d3472-f459-404e-8b4a-d565d8a584c2" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (1)" src="https://github.com/user-attachments/assets/c71a7378-48a1-4162-be17-4ab56ec079c1" />
+

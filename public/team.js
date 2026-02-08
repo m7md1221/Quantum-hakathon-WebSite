@@ -15,7 +15,7 @@ function getHallName(hallLetter) {
   return hallNames[hallLetter] || `Hall ${hallLetter}`;
 }
 
-let SUBMISSION_DEADLINE = '2026-02-08T08:00:00';
+let SUBMISSION_DEADLINE = '2026-02-08T10:00:00';
 
 function isDeadlinePassed() {
   const deadline = new Date(SUBMISSION_DEADLINE);
@@ -50,13 +50,31 @@ function formatDeadlineDate() {
 }
 
 function updateDeadlineDisplay() {
+    // Countdown timer logic
+    function updateCountdown() {
+      const timerDiv = document.getElementById('countdown-timer');
+      if (!timerDiv) return;
+      const deadline = new Date(SUBMISSION_DEADLINE);
+      const now = new Date();
+      const diff = deadline - now;
+      if (diff <= 0) {
+        timerDiv.textContent = '⏰ Deadline reached!';
+        return;
+      }
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      timerDiv.textContent = `Countdown: ${hours}h ${minutes}m ${seconds}s`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
   const deadlineDisplay = document.getElementById('deadline-display');
   const statusText = document.getElementById('deadline-status-text');
   
   if (!deadlineDisplay) return;
   deadlineDisplay.textContent = formatDeadlineDate();
   deadlineDisplay.style.color = '#059669';
-  statusText.innerHTML = '<strong style="color:#059669;">⏰ The deadline has been extended by 2 hours! New deadline: February 8, 2026 at 08:00 AM</strong>';
+  statusText.innerHTML = '<strong style="color:#059669;">⏰ The deadline has been extended by 4 more hours! New deadline: February 8, 2026 at 10:00 AM</strong>';
   statusText.style.color = '#059669';
 }
 

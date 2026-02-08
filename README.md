@@ -202,3 +202,15 @@ Specify your license here (e.g., MIT, Apache-2.0). If not open source, state "Al
 
 ---
 
+
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_login html(iPad)" src="https://github.com/user-attachments/assets/c0cb8350-5a59-4f11-98d5-b1f5d1500ebf" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_campus-guide html(iPad)" src="https://github.com/user-attachments/assets/9d4ed9ce-acee-486d-880f-71f63e0f13e1" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_team-dashboard html(iPad)" src="https://github.com/user-attachments/assets/e3a4b47b-776a-4e9d-b577-6e07f2bc3983" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_judge-dashboard html(iPad)" src="https://github.com/user-attachments/assets/3b01e9cb-5641-436b-be21-5d8f815f2d0e" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad)" src="https://github.com/user-attachments/assets/83dd4edc-77e4-4784-bce8-4df52e04aa46" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (1)" src="https://github.com/user-attachments/assets/b8bf2b3f-9770-4728-ba3e-58847fd92f2e" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (2)" src="https://github.com/user-attachments/assets/89ba3bda-539a-4c84-b569-ef0a173391ce" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (3)" src="https://github.com/user-attachments/assets/a72e0819-131e-478d-8ffe-993fc050a76b" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (4)" src="https://github.com/user-attachments/assets/ad383bdc-2647-4eb4-85a0-e12cd2b93046" />
+<img width="1750" height="2504" alt="naiqhackathon inno-park co_results html(iPad) (1)" src="https://github.com/user-attachments/assets/8e3f6276-8d70-41df-8b74-6f4978c462c0" />
+

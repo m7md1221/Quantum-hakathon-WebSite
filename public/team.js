@@ -58,7 +58,7 @@ function updateDeadlineDisplay() {
       const now = new Date();
       const diff = deadline - now;
       if (diff <= 0) {
-        timerDiv.textContent = '❌ Submission period has ended. No more uploads allowed.';
+        timerDiv.textContent = ' Submission period has ended. No more uploads allowed.';
         timerDiv.style.color = '#dc2626';
         return;
       }
@@ -75,7 +75,7 @@ function updateDeadlineDisplay() {
   if (!deadlineDisplay) return;
   deadlineDisplay.textContent = formatDeadlineDate();
   deadlineDisplay.style.color = '#059669';
-  statusText.innerHTML = '<strong style="color:#059669;">⏰ The deadline has been extended by 4.5 more hours! New deadline: February 8, 2026 at 10:30 AM</strong>';
+  statusText.innerHTML = '<strong style="color:#059669;"> The deadline has been extended by 4.5 more hours! New deadline: February 8, 2026 at 10:30 AM</strong>';
   statusText.style.color = '#059669';
 }
 
@@ -91,7 +91,7 @@ function updateUploadButton(isSubmitted) {
     uploadBtn.style.pointerEvents = 'none';
     uploadBtn.style.opacity = '0.5';
     uploadBtn.title = 'Submission period has ended';
-    uploadBtn.textContent = '❌ Submission period has ended. No more uploads allowed.';
+    uploadBtn.textContent = ' Submission period has ended. No more uploads allowed.';
   } else if (isSubmitted) {
     uploadBtn.classList.remove('btn-success');
     uploadBtn.classList.add('btn-primary');

@@ -1,5 +1,9 @@
 const token = localStorage.getItem('token');
-const SUBMISSION_DEADLINE = '2026-02-15T23:59:59';
+const SUBMISSION_DEADLINE = (() => {
+  const now = new Date();
+  now.setHours(now.getHours() + 2);
+  return now.toISOString();
+})();
 
 if (!token) {
   goTo('login.html');

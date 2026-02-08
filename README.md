@@ -152,4 +152,54 @@ I can add a short Arabic Quick Start at the top if you want.
 
 ---
 
+
+## Project Structure
+
+```
+├── server.js              # Main server file
+├── db.js                  # Database connection
+├── routes/                # API route handlers (admin, judge, team, auth)
+├── public/                # Frontend files (HTML, JS, CSS)
+├── migrations/            # SQL migration scripts
+├── utils/                 # Utility modules
+├── services/              # Business logic modules
+├── seed.js                # Seed database for testing
+├── fix_github_column.js   # DB schema fixer script
+└── ...                    # Other scripts and docs
+```
+
+---
+
+## Running Tests
+
+If you have test scripts, run them with:
+
+```bash
+npm test
+```
+or run individual test files:
+```bash
+node test_admin_score_editing.js
+```
+
+---
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## Contact & Support
+
+For questions or support, open an issue or contact the maintainer.
+
+---
+
+## License
+
+Specify your license here (e.g., MIT, Apache-2.0). If not open source, state "All rights reserved."
+
+---
+
 If you want, I can also add example cURL commands or a one-page Quick Start in Arabic.

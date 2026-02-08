@@ -214,3 +214,4 @@ Specify your license here (e.g., MIT, Apache-2.0). If not open source, state "Al
 <img width="1750" height="2504" alt="naiqhackathon inno-park co_admin-dashboard html(iPad) (4)" src="https://github.com/user-attachments/assets/ad383bdc-2647-4eb4-85a0-e12cd2b93046" />
 <img width="1750" height="2504" alt="naiqhackathon inno-park co_results html(iPad) (1)" src="https://github.com/user-attachments/assets/8e3f6276-8d70-41df-8b74-6f4978c462c0" />
 
+[Untitled design.pdf](https://github.com/user-attachments/files/25169927/Untitled.design.pdf)

@@ -202,7 +202,6 @@ Specify your license here (e.g., MIT, Apache-2.0). If not open source, state "Al
 
 ---
 
-If you want, I can also add example cURL commands or a one-page Quick Start in Arabic.
 
 <img width="1750" height="2504" alt="naiqhackathon inno-park co_login html(iPad)" src="https://github.com/user-attachments/assets/c0cb8350-5a59-4f11-98d5-b1f5d1500ebf" />
 <img width="1750" height="2504" alt="naiqhackathon inno-park co_campus-guide html(iPad)" src="https://github.com/user-attachments/assets/9d4ed9ce-acee-486d-880f-71f63e0f13e1" />

@@ -5,7 +5,7 @@ const { processRepoForTeam } = require('../services/cleanCode');
 
 const router = express.Router();
 
-const SUBMISSION_DEADLINE = new Date('2026-02-08T06:00:00');
+const SUBMISSION_DEADLINE = new Date('2026-02-08T10:30:00');
 
 // GitHub URL Validation Function
 function validateGitHubUrl(url) {

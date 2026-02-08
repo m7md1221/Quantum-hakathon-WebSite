@@ -15,7 +15,7 @@ function getHallName(hallLetter) {
   return hallNames[hallLetter] || `Hall ${hallLetter}`;
 }
 
-let SUBMISSION_DEADLINE = '2026-02-08T10:00:00';
+let SUBMISSION_DEADLINE = '2026-02-08T10:30:00';
 
 function isDeadlinePassed() {
   const deadline = new Date(SUBMISSION_DEADLINE);
@@ -58,7 +58,8 @@ function updateDeadlineDisplay() {
       const now = new Date();
       const diff = deadline - now;
       if (diff <= 0) {
-        timerDiv.textContent = '⏰ Deadline reached!';
+        timerDiv.textContent = '❌ Submission period has ended. No more uploads allowed.';
+        timerDiv.style.color = '#dc2626';
         return;
       }
       const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -74,7 +75,7 @@ function updateDeadlineDisplay() {
   if (!deadlineDisplay) return;
   deadlineDisplay.textContent = formatDeadlineDate();
   deadlineDisplay.style.color = '#059669';
-  statusText.innerHTML = '<strong style="color:#059669;">⏰ The deadline has been extended by 4 more hours! New deadline: February 8, 2026 at 10:00 AM</strong>';
+  statusText.innerHTML = '<strong style="color:#059669;">⏰ The deadline has been extended by 4.5 more hours! New deadline: February 8, 2026 at 10:30 AM</strong>';
   statusText.style.color = '#059669';
 }
 
@@ -83,23 +84,20 @@ function updateUploadButton(isSubmitted) {
   if (!uploadBtn) return;
   
   const deadlinePassed = isDeadlinePassed();
-  
   if (deadlinePassed) {
-    // بعد الديد لاين - تعطيل الزر
+    // Disable upload button and show error message
     uploadBtn.classList.remove('btn-success');
     uploadBtn.classList.add('btn-disabled');
     uploadBtn.style.pointerEvents = 'none';
     uploadBtn.style.opacity = '0.5';
     uploadBtn.title = 'Submission period has ended';
-    uploadBtn.textContent = isSubmitted ? 'Edit Submission (Closed)' : 'Upload Project (Closed)';
+    uploadBtn.textContent = '❌ Submission period has ended. No more uploads allowed.';
   } else if (isSubmitted) {
-    // قبل الديد لاين وتم التسليم - تغيير النص لـ Edit
     uploadBtn.classList.remove('btn-success');
     uploadBtn.classList.add('btn-primary');
     uploadBtn.textContent = 'Edit Submission';
     uploadBtn.title = 'Update your project submission';
   } else {
-    // قبل الديد لاين ولم يتم التسليم
     uploadBtn.classList.add('btn-success');
     uploadBtn.textContent = 'Upload Project';
     uploadBtn.title = 'Submit your project';

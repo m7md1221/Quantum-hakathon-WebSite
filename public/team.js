@@ -15,7 +15,7 @@ function getHallName(hallLetter) {
   return hallNames[hallLetter] || `Hall ${hallLetter}`;
 }
 
-let SUBMISSION_DEADLINE = '2026-02-08T06:00:00';
+let SUBMISSION_DEADLINE = '2026-02-08T08:00:00';
 
 function isDeadlinePassed() {
   const deadline = new Date(SUBMISSION_DEADLINE);
@@ -54,21 +54,10 @@ function updateDeadlineDisplay() {
   const statusText = document.getElementById('deadline-status-text');
   
   if (!deadlineDisplay) return;
-  
-  if (isDeadlinePassed()) {
-    deadlineDisplay.textContent = formatDeadlineDate();
-    deadlineDisplay.style.color = '#dc2626';
-    statusText.innerHTML = '<strong>⚠️ Submission Period Has Ended</strong>';
-    statusText.style.color = '#dc2626';
-  } else {
-    deadlineDisplay.textContent = formatDeadlineDate();
-    deadlineDisplay.style.color = '#059669';
-    
-    const remaining = getTimeRemaining();
-    if (remaining) {
-      statusText.innerHTML = `<strong style="color: #02724f;">✓ Time Remaining: ${remaining.days}d ${remaining.hours}h ${remaining.minutes}m</strong>`;
-    }
-  }
+  deadlineDisplay.textContent = formatDeadlineDate();
+  deadlineDisplay.style.color = '#059669';
+  statusText.innerHTML = '<strong style="color:#059669;">⏰ The deadline has been extended by 2 hours! New deadline: February 8, 2026 at 08:00 AM</strong>';
+  statusText.style.color = '#059669';
 }
 
 function updateUploadButton(isSubmitted) {
